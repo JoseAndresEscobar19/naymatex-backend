@@ -1,11 +1,8 @@
-from rest_framework import permissions, viewsets
-from .serializers import *
+from django.shortcuts import render
 from .models import *
 
-# Create your views here.
+# Admin.
 
 
-class ClienteView(viewsets.ModelViewSet):
-    serializer_class = ClienteSerializer
-    # permission_classes = (permissions.IsAuthenticated,)
-    queryset = Cliente.objects.all()
+def home(request):
+    return render(request, 'principal.html')

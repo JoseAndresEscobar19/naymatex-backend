@@ -1,0 +1,125 @@
+.panel {
+  background-color: white;
+}
+
+body {
+  background-image: url("../../images/fondo.png");
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Do not repeat the image */
+  background-size: cover; /* Resize the background image to cover the entire container */
+}
+
+/* Extra small devices (phones, 600px and down) */
+
+@media only screen and (max-width: 600px) {
+  .main-div {
+    width: 100%;
+  }
+  img {
+    height: 152px;
+  }
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+
+@media only screen and (min-width: 600px) {
+  .main-div {
+    width: 60%;
+  }
+  img {
+    height: 152px;
+  }
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+
+@media only screen and (min-width: 768px) {
+  .main-div {
+    width: 40%;
+  }
+  img {
+    height: 152px;
+  }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+
+@media only screen and (min-width: 992px) {
+  .main-div {
+    width: 38%;
+  }
+  img {
+    height: 152px;
+  }
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+  .main-div {
+    width: 30%;
+  }
+
+  img {
+    height: 142px;
+  }
+}
+
+@media only screen and (min-width: 1500px) {
+  .main-div {
+    width: 20%;
+  }
+
+  img {
+    height: 142px;
+  }
+}
+
+small {
+  color: black;
+}
+
+.login-header {
+  font-size: large;
+  /* background-image: url('../../images/logo.png') ; */
+}
+
+.login-title {
+  text-align: center;
+  color: white;
+}
+
+.btn-success {
+  width: 100%;
+}
+
+.login-container {
+  padding: 1rem;
+}
+
+.btn-login {
+  text-align: center;
+}
+
+input {
+  border: 1px solid #aaa !important;
+}
+
+input:focus {
+  border: 1px solid black !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.btn-login button {
+  width: 100%;
+  border-radius: 0px;
+  border: 0px;
+  background-color: #005492;
+}
+
+.btn-login button:hover {
+  width: 100%;
+  border-radius: 0px;
+  border: 0px;
+  background-color: #00375e;
+}

@@ -57,6 +57,81 @@ class Cliente(models.Model):
         return self.codigo + ' - ' + self.detalles.apellidos
 
 
+class TipoCategoria(models.Model):
+    nombre_tipo = models.CharField(max_length=64)
+
+    def __str__(self):
+        return self.nombre_tipo
+
+
+class Categoria(models.Model):
+    nombre = models.CharField(max_length=64)
+    tipo = models.ForeignKey(
+        TipoCategoria, related_name="categorias", on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return self.nombre
+
+
+class Producto(models.Model):
+    codigo = models.CharField(max_length=64, blank=True)
+    nombre = models.CharField(max_length=255)
+    descripcion = models.TextField()
+    precio = models.DecimalField(max_digits=6, decimal_places=2)
+    cantidad = models.PositiveIntegerField()
+    categoria = models.ManyToManyField(
+        Categoria)
+
+    def __str__(self):
+        return self.codigo + " - " + self.nombre
+
+
+class Orden(models.Model):
+    codigo = models.CharField(max_length=64, blank=True)
+    cliente = models.ForeignKey(Cliente, on_delete=models.SET_NULL, null=True)
+    empleado = models.ForeignKey(
+        Empleado, on_delete=models.SET_NULL, null=True)
+    fecha = models.DateTimeField(auto_now_add=True)
+    subtotal = models.DecimalField(max_digits=5, decimal_places=2)
+    iva = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    descuento = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    valor_total = models.DecimalField(
+        max_digits=5, decimal_places=2, default=0)
+
+    def calcular_iva(self):
+        iva = self.subtotal * 0.12
+        self.iva = iva
+        self.save()
+        return iva
+
+    def calcular_total(self):
+        total = self.subtotal + self.iva - self.descuento
+        self.valor_total = total
+        self.save()
+        return total
+
+    def __str__(self):
+        return self.codigo + " - " + self.fecha
+
+
+class DetalleOrden(models.Model):
+    orden = models.ForeignKey(Orden, on_delete=models.CASCADE)
+    producto = models.ForeignKey(
+        Producto, on_delete=models.SET_NULL, null=True)
+    cantidad = models.PositiveIntegerField()
+    valor_total = models.DecimalField(
+        max_digits=5, decimal_places=2, default=0)
+
+    def calcular_total(self):
+        total = self.cantidad*self.producto.precio
+        self.valor_total = total
+        self.save()
+        return total
+
+    def __str__(self):
+        return self.orden.codigo + " - " + self.valor_total
+
+
 class Notificacion(models.Model):
     title = models.CharField(max_length=100)
     body = models.CharField(max_length=500)

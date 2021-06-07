@@ -15,9 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from .routers import *
 
 urlpatterns = [
+    path('', include('seguridad.urls')),
+    path('', include('neymatex.urls')),
+    path('api/', include(neymatex_api.urls)),
+    path('api/', include(seguridad_api)),
     path('admin/', admin.site.urls),
-    path('api/', include('neymatex.urls')),
-    path('api/', include('seguridad.urls')),
 ]

@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 
 from neymatex.models import Empleado, UserDetails
-from neymatex.serializers import DetalleSerializer, EmpleadoSerializer
+from neymatex.serializers import EmpleadoSerializer
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 

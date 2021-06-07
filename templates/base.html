@@ -1,0 +1,15 @@
+<html>
+
+<head>
+  <title>{% block title %} {% endblock title%}</title>
+  {% include "header.html" %}
+  {% block specific_head %} {% endblock specific_head%}
+</head>
+
+<body>
+  {% block content %} {% endblock content %}
+</body>
+{% include "footer.html" %}
+{% block specific_scripts %} {% endblock specific_scripts%}
+
+</html>

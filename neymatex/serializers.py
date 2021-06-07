@@ -1,5 +1,6 @@
+from django.db.models import fields
 from rest_framework import serializers
-from .models import UserDetails, Cliente, Empleado
+from .models import UserDetails, Cliente, Empleado, Producto, Categoria, TipoCategoria
 
 
 class DetalleSerializer(serializers.ModelSerializer):
@@ -29,3 +30,26 @@ class EmpleadoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Empleado
         fields = ['id', 'codigo', 'estado', 'detalles']
+
+
+class CategoriaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Categoria
+        fields = ['id', 'nombre']
+
+
+class TipoCategoriaSerializer(serializers.ModelSerializer):
+    categorias = CategoriaSerializer(many=True)
+
+    class Meta:
+        model = TipoCategoria
+        fields = ['id', 'nombre_tipo', 'categorias']
+
+
+class ProductoSerializer(serializers.ModelSerializer):
+    # categoria = CategoriaSerializer(many=True)
+
+    class Meta:
+        model = Producto
+        fields = ['id', 'codigo', 'nombre',
+                  'descripcion', 'precio', 'cantidad', 'categoria']
