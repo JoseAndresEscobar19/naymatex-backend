@@ -7,13 +7,15 @@ from .serializers import *
 
 
 class ClienteView(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.AllowAny,)
+    # permission_classes = (permissions.IsAuthenticated,)
     serializer_class = ClienteSerializer
     queryset = Cliente.objects.all()
 
 
 class EmpleadoView(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.AllowAny,)
+    # permission_classes = (permissions.IsAuthenticated,)
     serializer_class = EmpleadoSerializer
     queryset = Empleado.objects.all()
 

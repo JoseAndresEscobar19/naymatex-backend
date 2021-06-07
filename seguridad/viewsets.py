@@ -13,7 +13,8 @@ from .models import *
 
 
 class RegistrarAPI(generics.GenericAPIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    # permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.AllowAny,)
     serializer_class = RegistrarSerializer
 
     def post(self, request, *args, **kwargs):
@@ -38,7 +39,8 @@ class LoginAPI(KnoxLoginView):
 
 
 class EmpleadoAPI(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    # permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.AllowAny,)
 
     def get(self, request, format=None):
         empleado = Empleado.objects.get(usuario=request.user)

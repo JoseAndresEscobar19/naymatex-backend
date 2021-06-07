@@ -7,32 +7,35 @@
     <div class="collapse navbar-collapse" id="navbarCollapse">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item {% if request.resolver_match.view_name == 'principal' %}active{% endif %}">
-          <a class="nav-link" href="{% url 'principal' %}">Empresas <span class="sr-only">(current)</span></a>
+          <a class="nav-link" href="{% url 'principal' %}">Principal <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item {% if request.resolver_match.view_name == 'listar_empleados' %}active{% endif %}">
+          <a class="nav-link" href="{% url 'listar_empleados' %}">Empleados <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item {% if request.resolver_match.view_name == 'usuarios' %}active{% endif %}">
-          {% if user.is_superuser%}
-          <a class="nav-link" href="{% url 'usuarios' %}">
+          {% if user.is_staff%}
+          <a class="nav-link" href="#">
             Usuarios
           </a>
           {% endif %}
         </li>
         <li class="nav-item {% if request.resolver_match.view_name == 'base' %}active{% endif %}">
-          <a class="nav-link" href="{% url 'base' %}">
+          <a class="nav-link" href="#">
             Cargar datos a base
           </a>
         </li>
         <li class="nav-item {% if request.resolver_match.view_name == 'filtrar' %}active{% endif %}">
-          <a class="nav-link" href="{% url 'filtrar' %}">
+          <a class="nav-link" href="#">
             Filtrar datos
           </a>
         </li>
       </ul>
-      <span class="v-align white-text mr-2">{{user.username}} ({{user.rol}})</span>
+      <span class="v-align white-text mr-2">{{user.username}} ({{user.group}})</span>
       {% if user.is_authenticated %}
-      <a class="v-align align-middle btn btn-light btn-sm" href="{% url 'logout' %}?next={{request.path}}"><i
+      <a class="v-align align-middle btn btn-light btn-sm" href="{% url 'logout_admin' %}?next={{request.path}}"><i
           class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
       {% else %}
-      <a class="v-align align-middle btn btn-light btn-sm" href="{% url 'login' %}?next={{request.path}}"><i
+      <a class="v-align align-middle btn btn-light btn-sm" href="{% url 'login_admin' %}?next={{request.path}}"><i
           class="fas fa-sign-out-alt"></i> Iniciar Sesión</a>
       {% endif %}
     </div>

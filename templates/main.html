@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
+{% include "navbar.html" %}
 <div class="container pt-5 main">
-  <div class="content-inside"></div>
+  <div class="content-inside">
+    {% block main %}
+
+    {% endblock main %}
+  </div>
 </div>
 {% endblock content %}

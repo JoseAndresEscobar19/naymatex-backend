@@ -1,0 +1,72 @@
+{% extends "main.html" %}
+{% load static %}
+{% block main %}
+
+<div class="row  mt-5">
+  <div class="col">
+    <h2 class="text-left">EMPLEADOS</h2>
+    <hr>
+  </div>
+  <div class="col">
+    <a href="{% url 'agregar_empleado' %}" class="btn btn-primary  float-right">Agregar empleado <i
+        class="fas fa-plus-circle"> </i></a>
+  </div>
+</div>
+<div class="row  mt-4">
+  <div class="col-12 table-container">
+    <table class="table table-responsive-sm table-hover text-center" id="tabla-empleados">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col">Nombres</th>
+          <th scope="col">Apellidos</th>
+          <th scope="col">Correo</th>
+          <th scope="col">Rol</th>
+          <th scope="col">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if empleados %}
+        {% for empleado in empleados %}
+        <tr class="text-center">
+          <td scope="row">{{empleado.detalles.nombres}}</td>
+          <td scope="row">{{empleado.detalles.apellidos}}</td>
+          <td>{{empleado.usuario.username}}</td>
+          <td>{{empleado.rol}}</td>
+          <td>
+            {% if not empleado.is_superuser %}
+            <a href="{% url 'editar_empleado' pk=empleado.pk %}" class="btn btn-sm btn-primary"><span
+                class="fas fa-edit "></span></a>
+            <a class="btn btn-sm btn-danger use-modal" data-toggle='modal' data-target="#mainModal"
+              data-url="{%url 'empleado_confirmar_eliminacion' pk=empleado.pk%}" href="#">
+              <i class="fas fa-trash"></i></a>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="modal fade" id="mainModal" tabindex="-1" role="dialog" aria-labelledby="title" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>
+{% if messages%}
+{% for message in messages %}
+<div class="alert alert-danger" role="alert">
+  {{message}}
+</div>
+{% endfor %}
+{%endif%}
+{% endblock main %}
+
+{% block specific_scripts %}
+<script src="{% static 'js/DTable.js' %}"></script>
+<script src="{% static 'js/utilsModal.js' %}"></script>
+<script>
+  $(document).ready(init_datatable("tabla-empleados"))
+</script>
+{% endblock %}
