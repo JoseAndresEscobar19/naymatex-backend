@@ -39,6 +39,7 @@ class RegistrarSerializer(serializers.ModelSerializer):
         user = User.objects.create(
             username=validated_data['email'], email=validated_data['email'])
         user.set_password(validated_data['password'])
+        user.save()
         detalles = UserDetails.objects.create(**detalles_data)
         Empleado.objects.create(
             usuario=user, detalles=detalles, **empleado_data)
