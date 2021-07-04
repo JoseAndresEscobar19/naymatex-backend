@@ -20,16 +20,6 @@
         <li class="nav-item {% if request.resolver_match.namespace == 'neymatex:producto' %}active{% endif %}">
           <a class="nav-link" href="{% url 'neymatex:producto:listar' %}">Productos</a>
         </li>
-        <li class="nav-item {% if request.resolver_match.view_name == 'listar_producto' %}active{% endif %}">
-          <a class="nav-link" href="#">
-            Cargar datos a base
-          </a>
-        </li>
-        <li class="nav-item {% if request.resolver_match.view_name == 'filtrar' %}active{% endif %}">
-          <a class="nav-link" href="#">
-            Filtrar datos
-          </a>
-        </li>
       </ul>
       <span class="v-align white-text mr-2">{{user.username}} ({{user.group}})</span>
       {% if user.is_authenticated %}

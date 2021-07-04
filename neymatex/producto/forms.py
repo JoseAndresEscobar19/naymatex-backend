@@ -40,6 +40,7 @@ class ProductoForm(forms.ModelForm):
                 Column('descripcion', css_class='col-12 col-lg-8'),
             ),
             Row(
+                Column('unidad', css_class='col-12 col-lg-2'),
                 Column(PrependedText('precio', '$'),
                        css_class='col-12 col-lg-3'),
                 Column('cantidad', css_class='col-12 col-lg-3'),
@@ -63,6 +64,7 @@ class ProductoEditarForm(forms.ModelForm):
             "codigo": forms.HiddenInput(),
             "is_active": forms.HiddenInput(),
             "categoria": forms.SelectMultiple(),
+            'descripcion': forms.Textarea(attrs={'rows': 5}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -80,6 +82,7 @@ class ProductoEditarForm(forms.ModelForm):
                 Column('descripcion', css_class='col-12 col-lg-8'),
             ),
             Row(
+                Column('unidad', css_class='col-12 col-lg-2'),
                 Column(PrependedText('precio', '$'),
                        css_class='col-12 col-lg-3'),
                 Column('cantidad', css_class='col-12 col-lg-3'),

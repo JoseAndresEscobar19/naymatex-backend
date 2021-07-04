@@ -65,7 +65,6 @@ class CrearCliente(LoginRequiredMixin, CreateView):
             sec = '0'*(4-len(pre))+pre
         except self.model.DoesNotExist:
             sec = '0001'
-        print(sec)
         form.instance.codigo = sec
         return super().form_valid(form)
 

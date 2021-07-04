@@ -21,6 +21,7 @@ urlpatterns = [
     path('', include('seguridad.urls')),
     path('', include('neymatex.urls')),
     path('api/', include(neymatex_api.urls)),
+    path('api/', include(neymatex_api2)),
     path('api/', include(seguridad_api)),
     path('admin/', admin.site.urls),
 ]

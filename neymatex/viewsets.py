@@ -1,4 +1,7 @@
+from django.db.models import Q
 from rest_framework import permissions, viewsets
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .models import *
 from .serializers import *
@@ -35,4 +38,17 @@ class CategoriaView(viewsets.ModelViewSet):
 class ProductoView(viewsets.ModelViewSet):
     permission_classes = (permissions.AllowAny,)
     serializer_class = ProductoSerializer
-    queryset = Producto.objects.all()
+
+    def get_queryset(self):
+        query = self.request.query_params.get('q')
+        queryset = Producto.objects.all()
+        if query:
+            queryset = queryset.filter(Q(nombre__icontains=query) | Q(codigo__icontains=query))
+        return queryset
+
+
+class OrdenAPI(APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def get(self, request, format=None):
+        return Response(Orden.objects.all())

@@ -6,15 +6,6 @@ from knox import views as knox_views
 
 
 """
-    Here are listed CRUD APIS, using Django Rest Viewsets.
-    Each api is build from:
-        - A model
-        - A serializer class (How the model should be serialized)
-        - A viewset (a generic Class to provide standard CRUD functionality through API REST for a given model )
-        - A router (only a signature to expose the api)
-"""
-
-"""
  APIS Neymatex
 """
 neymatex_api = routers.DefaultRouter()
@@ -25,6 +16,7 @@ neymatex_api.register(
     r'tipo-categorias', TipoCategoriaView, 'tipo_categoria')
 neymatex_api.register(r'categorias', CategoriaView, 'categoria')
 
+neymatex_api2 = [path('orden/', OrdenAPI.as_view(), name='orden'), ]
 """
  APIS Seguridad
 """

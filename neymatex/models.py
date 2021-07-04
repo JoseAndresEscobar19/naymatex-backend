@@ -39,7 +39,7 @@ class Empleado(models.Model):
                               choices=Status.choices, default=Status.REGULAR)
 
     def __str__(self):
-        return self.codigo + ' - ' + self.detalles.cedula + ' - ' + self.detalles.nombres
+        return self.codigo + ' - ' + self.detalles.cedula + ' - ' + self.usuario.username
 
 
 class Cliente(models.Model):
@@ -58,7 +58,7 @@ class Cliente(models.Model):
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.codigo + ' - ' + self.detalles.apellidos
+        return self.codigo + ' - ' + self.detalles.nombres + ' ' + self.detalles.apellidos
 
 
 class TipoCategoria(models.Model):
@@ -70,11 +70,12 @@ class TipoCategoria(models.Model):
 
 class Categoria(models.Model):
     nombre = models.CharField(max_length=64)
+    codigo = models.CharField(max_length=64, default='')
     tipo = models.ForeignKey(
         TipoCategoria, related_name="categorias", on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return self.nombre
+        return self.nombre + ' - ' + self.codigo
 
 
 class Producto(models.Model):
@@ -82,16 +83,22 @@ class Producto(models.Model):
         INSTOCK = 'ISK', 'En Stock'
         OUTSTOCK = 'OSK', 'Sin Stock'
         DISABLED = 'DIs', 'Deshabilitado'
+
+    class Unidad(models.TextChoices):
+        KILOS = 'KLS', 'Kilos'
+        METROS = 'MTS', 'Metros'
+        UNIDAD = 'UND', 'Unidad'
     codigo = models.CharField(max_length=64)
     nombre = models.CharField(max_length=255)
-    descripcion = models.TextField()
+    descripcion = models.TextField(blank=True)
     precio = models.DecimalField(max_digits=6, decimal_places=2)
     cantidad = models.PositiveIntegerField()
     is_active = models.BooleanField(default=True)
     estado = models.CharField(max_length=4, blank=True,
                               choices=Status.choices, default=Status.INSTOCK)
-    categoria = models.ManyToManyField(
-        Categoria)
+    categoria = models.ManyToManyField(Categoria)
+    unidad = models.CharField(
+        max_length=4, choices=Unidad.choices, default=Unidad.UNIDAD)
 
     def __str__(self):
         return self.codigo + " - " + self.nombre
@@ -122,7 +129,7 @@ class Orden(models.Model):
         return total
 
     def __str__(self):
-        return self.codigo + " - " + self.fecha
+        return self.codigo
 
 
 class DetalleOrden(models.Model):

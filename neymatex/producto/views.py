@@ -1,4 +1,5 @@
 import json
+from neymatex.serializers import TipoCategoriaSerializer
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -37,8 +38,11 @@ class CrearProducto(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = self.title
-        context['tipos_categoria'] = json.loads(json.dumps(TipoCategoriaView.as_view(
-            {'get': 'list', 'post': 'list'})(self.request).data))
+        tipo_categoria = []
+        for tipo in TipoCategoria.objects.all():
+            tipo_categoria.append(json.loads(
+                json.dumps(TipoCategoriaSerializer(tipo).data)))
+        context['tipos_categoria'] = tipo_categoria
         return context
 
 
