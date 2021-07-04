@@ -5,6 +5,7 @@ cffi==1.14.5
 cryptography==3.4.7
 Django==3.2.3
 django-cors-headers==3.7.0
+django-crispy-forms==1.11.2
 django-environ==0.4.5
 django-rest-knox==4.1.0
 djangorestframework==3.12.4
