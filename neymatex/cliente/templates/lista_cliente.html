@@ -4,56 +4,52 @@
 
 <div class="row mt-4">
   <div class="col">
-    <h2 class="text-left">EMPLEADOS</h2>
+    <h2 class="text-left">CLIENTES</h2>
   </div>
   <div class="col">
-    <a href="{% url 'seguridad:agregar' %}" class="btn btn-primary float-right">Agregar empleado <i
+    <a href="{% url 'neymatex:cliente:agregar' %}" class="btn btn-primary float-right">Agregar cliente <i
         class="fas fa-plus-circle"> </i></a>
   </div>
   <hr>
 </div>
 <div class="row mt-4">
   <div class="col-12 table-container">
-    <table class="table table-responsive-sm table-hover text-center" id="tabla-empleados">
+    <table class="table table-responsive-sm table-hover text-center" id="tabla-clientes">
       <thead class="thead-light">
         <tr>
           <th scope="col">Código</th>
-          <th scope="col">Usuario</th>
           <th scope="col">Nombres</th>
           <th scope="col">Apellidos</th>
-          <th scope="col">Correo</th>
-          <th scope="col">Rol</th>
+          <th scope="col">Monto crédito</th>
           <th scope="col">Estado</th>
           <th scope="col">Acciones</th>
         </tr>
       </thead>
       <tbody>
-        {% if empleados %}
-        {% for empleado in empleados %}
+        {% if clientes %}
+        {% for cliente in clientes %}
         <tr class="text-center">
-          <td scope="row">{{empleado.codigo}}</td>
-          <td>{{empleado.usuario.username}}</td>
-          <td>{{empleado.detalles.nombres}}</td>
-          <td>{{empleado.detalles.apellidos}}</td>
-          <td>{{empleado.usuario.username}}</td>
-          <td>{{empleado.rol}}</td>
+          <td scope="row">{{cliente.codigo}}</td>
+          <td>{{cliente.detalles.nombres}}</td>
+          <td>{{cliente.detalles.apellidos}}</td>
+          <td>$ {{cliente.monto_credito}}</td>
           <td>
-            {%if empleado.usuario.is_active %}
+            {%if cliente.is_active %}
             <span class="text-success">Habilitado</span>
             {%else%}
             <span class="text-danger">Deshabilitado</span>
             {%endif%}
           </td>
           <td>
-            {% if empleado.usuario.is_active %}
-            <a href="{% url 'seguridad:editar' empleado.pk %}" class="btn btn-sm btn-primary"><i
+            {% if cliente.is_active %}
+            <a href="{% url 'neymatex:cliente:editar' cliente.pk %}" class="btn btn-sm btn-primary"><i
                 class="fas fa-edit "></i></a>
             <a class="btn btn-sm btn-danger use-modal" data-toggle='modal' data-target="#mainModal"
-              data-url="{%url 'seguridad:eliminar' empleado.pk%}" href="#">
+              data-url="{%url 'neymatex:cliente:eliminar' cliente.pk%}" href="#">
               <i class="fas fa-times"></i></a>
             {% else %}
             <a class="btn btn-sm btn-warning use-modal" data-toggle='modal' data-target="#mainModal"
-              data-url="{%url 'seguridad:activar' empleado.pk%}" href="#"><i class="fas fa-check "></i></a>
+              data-url="{%url 'neymatex:cliente:activar' cliente.pk%}" href="#"><i class="fas fa-check "></i></a>
             {% endif %}
           </td>
         </tr>
@@ -69,6 +65,6 @@
 <script src="{% static 'js/DTable.js' %}"></script>
 <script src="{% static 'js/utilsModal.js' %}"></script>
 <script>
-  $(document).ready(init_datatable("tabla-empleados"))
+  $(document).ready(init_datatable("tabla-clientes"))
 </script>
 {% endblock %}

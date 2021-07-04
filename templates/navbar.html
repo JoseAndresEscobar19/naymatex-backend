@@ -6,20 +6,21 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item {% if request.resolver_match.view_name == 'principal' %}active{% endif %}">
-          <a class="nav-link" href="{% url 'principal' %}">Principal <span class="sr-only">(current)</span></a>
+        <li class="nav-item {% if request.resolver_match.view_name == 'neymatex:principal' %}active{% endif %}">
+          <a class="nav-link" href="{% url 'neymatex:principal' %}">Dashboard <span class="sr-only">(current)</span></a>
         </li>
-        <li class="nav-item {% if request.resolver_match.view_name == 'listar_empleados' %}active{% endif %}">
-          <a class="nav-link" href="{% url 'listar_empleados' %}">Empleados <span class="sr-only">(current)</span></a>
+        {% if user.is_staff%}
+        <li class="nav-item {% if request.resolver_match.namespace == 'seguridad' %}active{% endif %}">
+          <a class="nav-link" href="{% url 'seguridad:listar' %}">Empleados</a>
         </li>
-        <li class="nav-item {% if request.resolver_match.view_name == 'usuarios' %}active{% endif %}">
-          {% if user.is_staff%}
-          <a class="nav-link" href="#">
-            Usuarios
-          </a>
-          {% endif %}
+        {% endif %}
+        <li class="nav-item {% if request.resolver_match.namespace == 'neymatex:cliente' %}active{% endif %}">
+          <a class="nav-link" href="{% url 'neymatex:cliente:listar' %}">Clientes</a>
         </li>
-        <li class="nav-item {% if request.resolver_match.view_name == 'base' %}active{% endif %}">
+        <li class="nav-item {% if request.resolver_match.namespace == 'neymatex:producto' %}active{% endif %}">
+          <a class="nav-link" href="{% url 'neymatex:producto:listar' %}">Productos</a>
+        </li>
+        <li class="nav-item {% if request.resolver_match.view_name == 'listar_producto' %}active{% endif %}">
           <a class="nav-link" href="#">
             Cargar datos a base
           </a>
@@ -32,11 +33,13 @@
       </ul>
       <span class="v-align white-text mr-2">{{user.username}} ({{user.group}})</span>
       {% if user.is_authenticated %}
-      <a class="v-align align-middle btn btn-light btn-sm" href="{% url 'logout_admin' %}?next={{request.path}}"><i
-          class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+      <a class="v-align align-middle btn btn-light btn-sm"
+        href="{% url 'seguridad:logout_admin' %}?next={{request.path}}"><i class="fas fa-sign-out-alt"></i> Cerrar
+        Sesión</a>
       {% else %}
-      <a class="v-align align-middle btn btn-light btn-sm" href="{% url 'login_admin' %}?next={{request.path}}"><i
-          class="fas fa-sign-out-alt"></i> Iniciar Sesión</a>
+      <a class="v-align align-middle btn btn-light btn-sm"
+        href="{% url 'seguridad:login_admin' %}?next={{request.path}}"><i class="fas fa-sign-out-alt"></i> Iniciar
+        Sesión</a>
       {% endif %}
     </div>
   </nav>

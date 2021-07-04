@@ -1,0 +1,76 @@
+{% extends "main.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block main %}
+<div class="row mt-4">
+  <div class="col">
+    <h2 class="text-left">
+      <span>{{title|upper}}</span>
+      {% if form.codigo.value %}
+      <span class="text-right float-right">Código: {{form.codigo.value}}</span>
+      {% endif %}
+    </h2>
+    <hr>
+    <form method="POST" novalidate>
+      {% csrf_token %}
+      {% crispy form %}
+      <hr>
+      <div class="form-row">
+        <h4 for="categoria" class="col-12">Categorías</h4>
+        <div class="col-12">
+          {% if form.categoria.errors %}
+          <span id="error_id_categoria" class="invalid-feedback d-block">
+            <strong>Este campo es requerido.</strong>
+          </span>
+          {% endif %}
+        </div>
+        {% for tipo in tipos_categoria%}
+        <div class="col-12 col-md-6 col-xl-4">
+          <label for="categoria">{{ tipo.nombre_tipo|capfirst }}</label>
+          <select class="categoria-options form-control {% if form.categoria.errors %}is-invalid {% endif %}">
+            <option value="">-----------</option>
+            {% for categoria in tipo.categorias %}
+            <option value="{{categoria.id}}">{{categoria.nombre}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        {% endfor %}
+      </div>
+      <hr>
+      <input type="submit" id="send" class="btn btn-primary" value="Enviar">
+    </form>
+  </div>
+</div>
+{% endblock main %}
+{% block specific_scripts %}
+<script>
+  var categoriaValues = []
+  $(document).ready(function (e) {
+    categoriaValues = $('select#id_categoria').val();
+    console.log(categoriaValues);
+    if (categoriaValues.length > 0) {
+      $.each(categoriaValues, function (index, val) {
+        $('select.categoria-options').each(function () {
+          var found = $('option', this).filter(function () {return this.value == val}).length;
+          if (found) {
+            $(this).val(val);
+            return false;
+          }
+        })
+      })
+    }
+  });
+
+  $('#send').click(function (e) {
+    e.preventDefault();
+    categoriaValues = []
+    $('select.categoria-options').each(function () {
+      categoriaValues.push($(this).val());
+    })
+    $('select#id_categoria').val(categoriaValues);
+    console.log(categoriaValues);
+    $('form').submit();
+  })
+</script>
+{% endblock specific_scripts %}

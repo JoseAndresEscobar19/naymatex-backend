@@ -23,6 +23,9 @@ class UserDetails(models.Model):
 
 
 class Empleado(models.Model):
+    class Meta:
+        ordering = ['codigo']
+
     class Status(models.TextChoices):
         EXCELLENT = 'EX', 'Excelente'
         GOOD = 'GD', 'Bueno'
@@ -32,7 +35,7 @@ class Empleado(models.Model):
     codigo = models.CharField(max_length=255, blank=True)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     detalles = models.ForeignKey(UserDetails, on_delete=models.CASCADE)
-    estado = models.CharField(max_length=4, blank=True,
+    estado = models.CharField(max_length=4,
                               choices=Status.choices, default=Status.REGULAR)
 
     def __str__(self):
@@ -52,6 +55,7 @@ class Cliente(models.Model):
                               choices=Status.choices, default=Status.REGULAR)
     monto_credito = models.DecimalField(
         max_digits=6, decimal_places=2, null=True, blank=True)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.codigo + ' - ' + self.detalles.apellidos
@@ -74,11 +78,18 @@ class Categoria(models.Model):
 
 
 class Producto(models.Model):
-    codigo = models.CharField(max_length=64, blank=True)
+    class Status(models.TextChoices):
+        INSTOCK = 'ISK', 'En Stock'
+        OUTSTOCK = 'OSK', 'Sin Stock'
+        DISABLED = 'DIs', 'Deshabilitado'
+    codigo = models.CharField(max_length=64)
     nombre = models.CharField(max_length=255)
     descripcion = models.TextField()
     precio = models.DecimalField(max_digits=6, decimal_places=2)
     cantidad = models.PositiveIntegerField()
+    is_active = models.BooleanField(default=True)
+    estado = models.CharField(max_length=4, blank=True,
+                              choices=Status.choices, default=Status.INSTOCK)
     categoria = models.ManyToManyField(
         Categoria)
 

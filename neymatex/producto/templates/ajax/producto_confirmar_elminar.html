@@ -1,20 +1,20 @@
 <div class="modal-header">
-  <h5 class="modal-title" id="ordenTitle">Desactivar empleado</h5>
+  <h5 class="modal-title" id="ordenTitle">Deshabilitar producto</h5>
   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<form method="POST" action="{% url 'seguridad:eliminar' empleado.pk %}">
+<form method="POST" action="{% url 'neymatex:producto:eliminar' producto.pk %}">
   {% csrf_token %}
 
   <div class="modal-body">
-    ¿Desea desactivar el siguiente empleado?
+    ¿Desea deshabilitar el siguiente producto?
     <div class="row">
       <div class="col-3">
         Código
       </div>
       <div class="col">
-        {{empleado.codigo}}
+        {{producto.codigo}}
       </div>
     </div>
     <div class="row">
@@ -22,37 +22,28 @@
         Nombre
       </div>
       <div class="col">
-        {{empleado.detalles.nombres}}
+        {{producto.nombre}}
       </div>
     </div>
     <div class="row">
       <div class="col-3">
-        Apellidos
+        Precio
       </div>
       <div class="col">
-        {{empleado.detalles.apellidos}}
+        $ {{producto.precio}}
       </div>
     </div>
     <div class="row">
       <div class="col-3">
-        Estado
+        Cantidad
       </div>
       <div class="col">
-        {{empleado.get_estado_display}}
+        {{producto.cantidad}}
       </div>
     </div>
-    <div class="row">
-      <div class="col-3">
-        Sexo
-      </div>
-      <div class="col">
-        {{empleado.detalles.get_sexo_display}}
-      </div>
-    </div>
-  </div>
   </div>
   <div class="modal-footer">
     <button class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-    <button id="anular" class="btn btn-danger mr-3" type="submit"> Desactivar </button>
+    <button id="anular" class="btn btn-danger mr-3" type="submit"> Deshabilitar </button>
   </div>
 </form>

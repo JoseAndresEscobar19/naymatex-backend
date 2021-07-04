@@ -3,7 +3,8 @@
 }
 
 body {
-  background-image: url("../../images/fondo.png");
+  /* background-image: url("../../images/fondo.png"); */
+  background-color: #920000;
   background-position: center; /* Center the image */
   background-repeat: no-repeat; /* Do not repeat the image */
   background-size: cover; /* Resize the background image to cover the entire container */
@@ -114,12 +115,12 @@ input:focus {
   width: 100%;
   border-radius: 0px;
   border: 0px;
-  background-color: #005492;
+  background-color: #920000;
 }
 
 .btn-login button:hover {
   width: 100%;
   border-radius: 0px;
   border: 0px;
-  background-color: #00375e;
+  background-color: #6b0000;
 }

@@ -1,20 +1,20 @@
 <div class="modal-header">
-  <h5 class="modal-title" id="ordenTitle">Desactivar empleado</h5>
+  <h5 class="modal-title" id="ordenTitle">Desactivar cliente</h5>
   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<form method="POST" action="{% url 'seguridad:eliminar' empleado.pk %}">
+<form method="POST" action="{% url 'neymatex:cliente:eliminar' cliente.pk %}">
   {% csrf_token %}
 
   <div class="modal-body">
-    ¿Desea desactivar el siguiente empleado?
+    ¿Desea desactivar el siguiente cliente?
     <div class="row">
       <div class="col-3">
         Código
       </div>
       <div class="col">
-        {{empleado.codigo}}
+        {{cliente.codigo}}
       </div>
     </div>
     <div class="row">
@@ -22,7 +22,7 @@
         Nombre
       </div>
       <div class="col">
-        {{empleado.detalles.nombres}}
+        {{cliente.detalles.nombres}}
       </div>
     </div>
     <div class="row">
@@ -30,7 +30,7 @@
         Apellidos
       </div>
       <div class="col">
-        {{empleado.detalles.apellidos}}
+        {{cliente.detalles.apellidos}}
       </div>
     </div>
     <div class="row">
@@ -38,7 +38,7 @@
         Estado
       </div>
       <div class="col">
-        {{empleado.get_estado_display}}
+        {{cliente.get_estado_display}}
       </div>
     </div>
     <div class="row">
@@ -46,7 +46,7 @@
         Sexo
       </div>
       <div class="col">
-        {{empleado.detalles.get_sexo_display}}
+        {{cliente.detalles.get_sexo_display}}
       </div>
     </div>
   </div>

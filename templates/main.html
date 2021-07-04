@@ -3,9 +3,22 @@
 {% include "navbar.html" %}
 <div class="container pt-5 main">
   <div class="content-inside">
+    {% if messages%}
+    {% for message in messages %}
+    <div {% if message.tags %} class="alert alert-{{ message.tags }}" {% endif %} role="alert">
+      {{message}}
+    </div>
+    {% endfor %}
+    {%endif%}
     {% block main %}
 
     {% endblock main %}
+  </div>
+</div>
+<div class="modal fade" id="mainModal" tabindex="-1" role="dialog" aria-labelledby="title" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+    </div>
   </div>
 </div>
 {% endblock content %}

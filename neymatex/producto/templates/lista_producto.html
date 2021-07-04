@@ -1,0 +1,71 @@
+{% extends "main.html" %}
+{% load static %}
+{% block main %}
+
+<div class="row mt-4">
+  <div class="col">
+    <h2 class="text-left">PRODUCTOS</h2>
+  </div>
+  <div class="col">
+    <a href="{% url 'neymatex:producto:agregar' %}" class="btn btn-primary float-right">Agregar producto <i
+        class="fas fa-plus-circle">
+      </i></a>
+  </div>
+  <hr>
+</div>
+<div class="row mt-4">
+  <div class="col-12 table-container">
+    <table class="table table-responsive-sm table-hover text-center" id="tabla-producto">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col">Código</th>
+          <th scope="col">Nombre</th>
+          <th scope="col">Precio</th>
+          <th scope="col">Cantidad Stock</th>
+          <th scope="col">Estado</th>
+          <th scope="col">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if productos %}
+        {% for producto in productos %}
+        <tr class="text-center">
+          <td scope="row">{{producto.codigo}}</td>
+          <td scope="row">{{producto.nombre}}</td>
+          <td scope="row">$ {{producto.precio}}</td>
+          <td scope="row">{{producto.cantidad}}</td>
+          <td scope="row">
+            {% if producto.estado == "ISK" %}
+            <span class="text-success font-weight-bold">{{producto.get_estado_display}}</span>
+            {% else %}
+            <span class="text-danger font-weight-bold">{{producto.get_estado_display}}</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if producto.is_active %}
+            <a href="{% url 'neymatex:producto:editar' producto.pk %}" class="btn btn-sm btn-primary"><i
+                class="fas fa-edit "></i></a>
+            <a class="btn btn-sm btn-danger use-modal" data-toggle='modal' data-target="#mainModal"
+              data-url="{%url 'neymatex:producto:eliminar' producto.pk%}" href="#">
+              <i class="fas fa-times"></i></a>
+            {% else %}
+            <a class="btn btn-sm btn-warning use-modal" data-toggle='modal' data-target="#mainModal"
+              data-url="{%url 'neymatex:producto:activar' producto.pk%}" href="#"><i class="fas fa-check "></i></a>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock main %}
+
+{% block specific_scripts %}
+<script src="{% static 'js/DTable.js' %}"></script>
+<script src="{% static 'js/utilsModal.js' %}"></script>
+<script>
+  $(document).ready(init_datatable("tabla-producto"))
+</script>
+{% endblock %}
