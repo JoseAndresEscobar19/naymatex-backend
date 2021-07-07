@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+import decimal
 # Create your models here.
 
 
@@ -105,6 +105,11 @@ class Producto(models.Model):
 
 
 class Orden(models.Model):
+    class Status(models.TextChoices):
+        NOPAG = 'NPG', 'No pagado'
+        CANCEL = 'CNC', 'Cancelada'
+        PAID = 'PAG', 'Pagado'
+
     codigo = models.CharField(max_length=64, blank=True)
     cliente = models.ForeignKey(Cliente, on_delete=models.SET_NULL, null=True)
     empleado = models.ForeignKey(
@@ -115,30 +120,49 @@ class Orden(models.Model):
     descuento = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     valor_total = models.DecimalField(
         max_digits=5, decimal_places=2, default=0)
+    estado = models.CharField(
+        max_length=4, choices=Status.choices, default=Status.NOPAG)
+
+    def calcular_subtotales(self):
+        subtotal = 0
+        for item in self.detalles.all():
+            subtotal += item.valor_total
+        self.subtotal = subtotal
+        return subtotal
 
     def calcular_iva(self):
-        iva = self.subtotal * 0.12
+        iva = self.subtotal * decimal.Decimal(0.12)
         self.iva = iva
-        self.save()
         return iva
 
     def calcular_total(self):
         total = self.subtotal + self.iva - self.descuento
         self.valor_total = total
-        self.save()
         return total
+
+    def save(self, *args, **kwargs):
+        self.calcular_subtotales()
+        self.calcular_iva()
+        self.calcular_total()
+        return super().save(*args, **kwargs)
 
     def __str__(self):
         return self.codigo
 
 
 class DetalleOrden(models.Model):
-    orden = models.ForeignKey(Orden, on_delete=models.CASCADE)
+    orden = models.ForeignKey(
+        Orden, related_name="detalles", on_delete=models.CASCADE)
     producto = models.ForeignKey(
         Producto, on_delete=models.SET_NULL, null=True)
     cantidad = models.PositiveIntegerField()
     valor_total = models.DecimalField(
         max_digits=5, decimal_places=2, default=0)
+
+    def save(self, *args, **kwargs):
+        total = self.cantidad*self.producto.precio
+        self.valor_total = total
+        return super().save(*args, **kwargs)
 
     def calcular_total(self):
         total = self.cantidad*self.producto.precio
@@ -147,7 +171,7 @@ class DetalleOrden(models.Model):
         return total
 
     def __str__(self):
-        return self.orden.codigo + " - " + self.valor_total
+        return self.orden.codigo + " - " + str(self.valor_total)
 
 
 class Notificacion(models.Model):
