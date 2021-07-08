@@ -47,10 +47,13 @@ class TipoCategoriaSerializer(serializers.ModelSerializer):
 
 
 class ProductoSerializer(serializers.ModelSerializer):
+    unidad = serializers.CharField(source='get_unidad_display')
+    estado = serializers.CharField(source='get_estado_display')
+
     class Meta:
         model = Producto
-        fields = ['id', 'codigo', 'nombre', 'unidad',
-                  'descripcion', 'precio', 'cantidad', 'categoria']
+        fields = ['id', 'codigo', 'nombre', 'is_active', 'estado', 'unidad',
+                  'descripcion', 'precio', 'cantidad', 'imagen', 'categoria', ]
 
 
 class DetalleOrdenSerializer(serializers.ModelSerializer):

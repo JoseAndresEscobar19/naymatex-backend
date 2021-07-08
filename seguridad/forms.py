@@ -75,13 +75,13 @@ class UsuarioDetallesForm(forms.ModelForm):
         self.helper.form_tag = False
         self.helper.layout = Layout(
             Row(
-                Column('cedula', css_class='col-6 col-xl-2'),
+                Column('cedula', css_class='col-6 col-xl-4'),
                 Column('nombres', css_class='col-6 col-xl-4'),
                 Column('apellidos', css_class='col-6 col-xl-4'),
-                Column('sexo', css_class='col-6 col-xl-2'),
-                Column('telefono', css_class='col-6 col-xl-3'),
-                Column('telefono2', css_class='col-6 col-xl-3'),
-                Column('direccion', css_class='col-6'),
+                Column('sexo', css_class='col-6 col-xl-4'),
+                Column('telefono', css_class='col-6 col-xl-4'),
+                Column('telefono2', css_class='col-6 col-xl-4'),
+                Column('direccion', css_class='col-12 col-lg-8'),
             ),
         )
 

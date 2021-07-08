@@ -1,6 +1,8 @@
-from django.db import models
-from django.contrib.auth.models import User
 import decimal
+
+from django.contrib.auth.models import User
+from django.db import models
+
 # Create your models here.
 
 
@@ -73,6 +75,7 @@ class Categoria(models.Model):
     codigo = models.CharField(max_length=64, default='')
     tipo = models.ForeignKey(
         TipoCategoria, related_name="categorias", on_delete=models.SET_NULL, null=True)
+    imagen = models.ImageField(upload_to='categoria/', null=True, blank=True)
 
     def __str__(self):
         return self.nombre + ' - ' + self.codigo
@@ -82,7 +85,7 @@ class Producto(models.Model):
     class Status(models.TextChoices):
         INSTOCK = 'ISK', 'En Stock'
         OUTSTOCK = 'OSK', 'Sin Stock'
-        DISABLED = 'DIs', 'Deshabilitado'
+        DISABLED = 'DIS', 'Deshabilitado'
 
     class Unidad(models.TextChoices):
         KILOS = 'KLS', 'Kilos'
@@ -99,6 +102,7 @@ class Producto(models.Model):
     categoria = models.ManyToManyField(Categoria)
     unidad = models.CharField(
         max_length=4, choices=Unidad.choices, default=Unidad.UNIDAD)
+    imagen = models.ImageField(upload_to='producto/', null=True, blank=True)
 
     def __str__(self):
         return self.codigo + " - " + self.nombre

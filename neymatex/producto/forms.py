@@ -17,12 +17,14 @@ class ProductoForm(forms.ModelForm):
             "precio": 'Precio',
             "cantidad": 'Cantidad (Stock)',
             "categoria": 'Categorías',
+            "imagen": 'Imagen',
         }
         widgets = {
             "estado": forms.HiddenInput(),
             "is_active": forms.HiddenInput(),
             'descripcion': forms.Textarea(attrs={'rows': 5}),
             "categoria": forms.SelectMultiple(),
+            "imagen": forms.FileInput()
         }
 
     def __init__(self, *args, **kwargs):
@@ -35,15 +37,16 @@ class ProductoForm(forms.ModelForm):
                 'is_active',
                 'estado',
                 Column('categoria', css_class='col-12 d-none'),
-                Column('codigo', css_class='col-12 col-lg-3'),
-                Column('nombre', css_class='col-12 col-lg-5'),
-                Column('descripcion', css_class='col-12 col-lg-8'),
+                Column('codigo', css_class='col-12 col-lg-4'),
+                Column('nombre', css_class='col-12 col-lg-8'),
+                Column('descripcion', css_class='col-12 col-lg-12'),
             ),
             Row(
-                Column('unidad', css_class='col-12 col-lg-2'),
+                Column('unidad', css_class='col-12 col-lg-4'),
+                Column('cantidad', css_class='col-12 col-lg-4'),
                 Column(PrependedText('precio', '$'),
-                       css_class='col-12 col-lg-3'),
-                Column('cantidad', css_class='col-12 col-lg-3'),
+                       css_class='col-12 col-lg-4'),
+                Column('imagen', css_class='col-12 col-lg-8'),
             ),
         )
 
@@ -65,6 +68,7 @@ class ProductoEditarForm(forms.ModelForm):
             "is_active": forms.HiddenInput(),
             "categoria": forms.SelectMultiple(),
             'descripcion': forms.Textarea(attrs={'rows': 5}),
+            "imagen": forms.FileInput(),
         }
 
     def __init__(self, *args, **kwargs):
@@ -77,14 +81,15 @@ class ProductoEditarForm(forms.ModelForm):
                 'is_active',
                 'codigo',
                 Column('categoria', css_class='col-12 d-none'),
-                Column('estado', css_class='col-12 col-lg-3'),
-                Column('nombre', css_class='col-12 col-lg-5'),
-                Column('descripcion', css_class='col-12 col-lg-8'),
+                Column('estado', css_class='col-12 col-lg-4'),
+                Column('nombre', css_class='col-12 col-lg-8'),
+                Column('descripcion', css_class='col-12 col-lg-12'),
             ),
             Row(
-                Column('unidad', css_class='col-12 col-lg-2'),
+                Column('unidad', css_class='col-12 col-lg-4'),
+                Column('cantidad', css_class='col-12 col-lg-5'),
                 Column(PrependedText('precio', '$'),
-                       css_class='col-12 col-lg-3'),
-                Column('cantidad', css_class='col-12 col-lg-3'),
+                       css_class='col-12 col-lg-5'),
+                Column('imagen', css_class='col-12 col-lg-8'),
             ),
         )

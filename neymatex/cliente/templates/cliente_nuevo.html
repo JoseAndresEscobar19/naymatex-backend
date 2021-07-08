@@ -4,22 +4,23 @@
 
 {% block main %}
 <div class="row mt-4">
-  <div class="col">
-    <h2 class="text-left">
-      <span>{{title|upper}}</span>
-      {% if form.codigo.value %}
-      <span class="text-right float-right" disabled>Código: {{form.codigo.value}}</span>
-      {% endif %}
+  <div class="col-12 col-lg-8">
+    <h2>
+      <div class="row">
+        <div class="col-12 col-lg-6">{{title|upper}}</div>
+        {% if form.codigo.value %}
+        <div class="col-12 col-lg-6 text-right">Código: {{form.codigo.value}}</div>
+        {% endif %}
+      </div>
     </h2>
     <hr>
-    <form method="POST" novalidate>
+    <form method="POST" novalidate enctype="multipart/form-data">
       {% csrf_token %}
       {% crispy user_details_form %}
       <hr>
       {% crispy form %}
       <hr>
       <input type="submit" class="btn btn-primary" value="Enviar">
-      {{user}}
     </form>
   </div>
 </div>

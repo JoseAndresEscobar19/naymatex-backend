@@ -35,7 +35,7 @@ class ClienteForm(forms.ModelForm):
                 Column(
                     PrependedText('monto_credito', '$',
                                   placeholder=""),
-                    css_class='col-4'
+                    css_class='col-lg-4 col-6'
                 ),
             ),
         )
