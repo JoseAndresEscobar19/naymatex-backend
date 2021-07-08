@@ -32,7 +32,7 @@
           <td scope="row">{{cliente.codigo}}</td>
           <td>{{cliente.detalles.nombres}}</td>
           <td>{{cliente.detalles.apellidos}}</td>
-          <td>$ {{cliente.monto_credito}}</td>
+          <td>$ {{cliente.monto_credito|default_if_none:'0,00'}}</td>
           <td>
             {%if cliente.is_active %}
             <span class="text-success">Habilitado</span>

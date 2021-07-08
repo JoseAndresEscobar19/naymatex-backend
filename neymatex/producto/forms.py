@@ -68,7 +68,7 @@ class ProductoEditarForm(forms.ModelForm):
             "is_active": forms.HiddenInput(),
             "categoria": forms.SelectMultiple(),
             'descripcion': forms.Textarea(attrs={'rows': 5}),
-            "imagen": forms.FileInput(),
+            "imagen": forms.ClearableFileInput(),
         }
 
     def __init__(self, *args, **kwargs):
@@ -87,9 +87,9 @@ class ProductoEditarForm(forms.ModelForm):
             ),
             Row(
                 Column('unidad', css_class='col-12 col-lg-4'),
-                Column('cantidad', css_class='col-12 col-lg-5'),
+                Column('cantidad', css_class='col-12 col-lg-4'),
                 Column(PrependedText('precio', '$'),
-                       css_class='col-12 col-lg-5'),
-                Column('imagen', css_class='col-12 col-lg-8'),
+                       css_class='col-12 col-lg-4'),
+                Column('imagen', css_class='col-12'),
             ),
         )
