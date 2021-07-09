@@ -72,6 +72,10 @@ REST_FRAMEWORK = {
     ]
 }
 
+REST_KNOX = {
+    'USER_SERIALIZER': 'seguridad.serializers.UserSerializer',
+}
+
 ROOT_URLCONF = 'backend.urls'
 
 TEMPLATES = [

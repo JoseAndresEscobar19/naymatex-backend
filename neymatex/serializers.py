@@ -35,7 +35,7 @@ class EmpleadoSerializer(serializers.ModelSerializer):
 class CategoriaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Categoria
-        fields = ['id', 'codigo', 'nombre']
+        fields = ['id', 'codigo', 'nombre', 'imagen']
 
 
 class TipoCategoriaSerializer(serializers.ModelSerializer):
