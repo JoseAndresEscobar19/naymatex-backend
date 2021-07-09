@@ -30,6 +30,17 @@ class RegistrarAPI(generics.GenericAPIView):
 class LoginAPI(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
 
+    def get_post_response_data(self, request, token, instance):
+        data = super().get_post_response_data(request, token, instance)
+        try:
+            empleado = Empleado.objects.get(usuario=request.user)
+            print(empleado)
+            empleado_serializer = EmpleadoSerializer(empleado).data
+            data['empleado'] = empleado_serializer
+        except Empleado.DoesNotExist:
+            print("No existe empleado con el usuario enviado.")
+        return data
+
     def post(self, request, format=None):
         serializer = AuthTokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
