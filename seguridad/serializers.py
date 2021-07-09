@@ -8,11 +8,9 @@ from rest_framework.validators import UniqueValidator
 
 
 class UserSerializer(serializers.ModelSerializer):
-    empleado = EmpleadoSerializer()
-
     class Meta:
         model = User
-        fields = ('id', 'email', 'empleado')
+        fields = ('id', 'email')
 
 
 class RegistrarSerializer(serializers.ModelSerializer):
