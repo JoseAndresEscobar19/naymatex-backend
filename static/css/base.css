@@ -66,8 +66,11 @@ html {
   line-height: 35px !important;
 }
 
-input {
-  border: 1px solid #aaa !important;
+input.form-control,
+select.form-control,
+textarea.form-control,
+.custom-file .custom-file-label {
+  border: 1px solid #aaa;
 }
 
 input:focus {

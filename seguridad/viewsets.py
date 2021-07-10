@@ -37,6 +37,8 @@ class LoginAPI(KnoxLoginView):
             print(empleado)
             empleado_serializer = EmpleadoSerializer(empleado).data
             data['empleado'] = empleado_serializer
+            data['user']['is_gerente'] = request.user.groups.filter(
+                name='Gerente').exists()
         except Empleado.DoesNotExist:
             print("No existe empleado con el usuario enviado.")
         return data

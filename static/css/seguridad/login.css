@@ -101,10 +101,6 @@ small {
   text-align: center;
 }
 
-input {
-  border: 1px solid #aaa !important;
-}
-
 input:focus {
   border: 1px solid black !important;
   box-shadow: none !important;

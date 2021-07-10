@@ -52,8 +52,7 @@ class ProductoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Producto
-        fields = ['id', 'codigo', 'nombre', 'is_active', 'estado', 'unidad',
-                  'descripcion', 'precio', 'cantidad', 'imagen', 'categoria', ]
+        fields = '__all__'
 
 
 class DetalleOrdenSerializer(serializers.ModelSerializer):

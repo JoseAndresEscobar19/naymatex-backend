@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'neymatex',
     'neymatex.cliente',
     'neymatex.producto',
+    'neymatex.orden',
 ]
 
 MIDDLEWARE = [

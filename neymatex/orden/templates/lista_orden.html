@@ -1,0 +1,67 @@
+{% extends "main.html" %}
+{% load static %}
+{% block main %}
+
+<div class="row mt-4">
+  <div class="col">
+    <h2 class="text-left">PEDIDOS</h2>
+  </div>
+  <hr>
+</div>
+<div class="row mt-4">
+  <div class="col-12 table-container">
+    <table class="table table-responsive-md table-hover text-center" id="tabla-orden">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col">Código</th>
+          <th scope="col">Cliente</th>
+          <th scope="col">Empleado</th>
+          <th scope="col">Fecha</th>
+          <th scope="col">Subotal</th>
+          <th scope="col">Total</th>
+          <th scope="col">Estado</th>
+          <th scope="col">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if ordenes %}
+        {% for orden in ordenes %}
+        <tr class="text-center">
+          <td scope="row">{{orden.codigo}}</td>
+          <td scope="row">{{orden.cliente}}</td>
+          <td scope="row">{{orden.empleado}}</td>
+          <td scope="row">{{orden.fecha}}</td>
+          <td scope="row">$ {{orden.subtotal}}</td>
+          <td scope="row">$ {{orden.valor_total}}</td>
+          <td scope="row">
+            {% if orden.estado == "ISK" %}
+            <span class="text-success font-weight-bold">{{orden.get_estado_display}}</span>
+            {% else %}
+            <span class="text-danger font-weight-bold">{{orden.get_estado_display}}</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if orden.estado != "NOPAG" %}
+            <a href="{% url 'neymatex:producto:editar' orden.pk %}" class="btn btn-sm btn-primary"><i
+                class="fas fa-eye "></i></a>
+            <a class="btn btn-sm btn-danger use-modal" data-toggle='modal' data-target="#mainModal"
+              data-url="{%url 'neymatex:orden:eliminar' orden.pk%}" href="#">
+              <i class="fas fa-times"></i></a>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock main %}
+
+{% block specific_scripts %}
+<script src="{% static 'js/DTable.js' %}"></script>
+<script src="{% static 'js/utilsModal.js' %}"></script>
+<script>
+  $(document).ready(init_datatable("tabla-orden"))
+</script>
+{% endblock %}

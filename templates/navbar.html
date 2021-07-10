@@ -9,7 +9,7 @@
         <li class="nav-item {% if request.resolver_match.view_name == 'neymatex:principal' %}active{% endif %}">
           <a class="nav-link" href="{% url 'neymatex:principal' %}">Dashboard <span class="sr-only">(current)</span></a>
         </li>
-        {% if user.is_staff%}
+        {% if perms.neymatex.is_gerente %}
         <li class="nav-item {% if request.resolver_match.namespace == 'seguridad' %}active{% endif %}">
           <a class="nav-link" href="{% url 'seguridad:listar' %}">Empleados</a>
         </li>
@@ -19,6 +19,9 @@
         </li>
         <li class="nav-item {% if request.resolver_match.namespace == 'neymatex:producto' %}active{% endif %}">
           <a class="nav-link" href="{% url 'neymatex:producto:listar' %}">Productos</a>
+        </li>
+        <li class="nav-item {% if request.resolver_match.namespace == 'neymatex:orden' %}active{% endif %}">
+          <a class="nav-link" href="{% url 'neymatex:orden:listar' %}">Ordenes</a>
         </li>
       </ul>
       <span class="v-align white-text mr-2">{{user.username}} ({{user.group}})</span>

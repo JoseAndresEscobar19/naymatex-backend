@@ -26,7 +26,7 @@ class UserDetails(models.Model):
 
 class Empleado(models.Model):
     class Meta:
-        ordering = ['codigo']
+        ordering = ['-codigo']
 
     class Status(models.TextChoices):
         EXCELLENT = 'EX', 'Excelente'
@@ -40,8 +40,13 @@ class Empleado(models.Model):
     estado = models.CharField(max_length=4,
                               choices=Status.choices, default=Status.REGULAR)
 
+    class Meta:
+        permissions = [
+            ("is_gerente", "Puede ver y modificar todo contenido"),
+        ]
+
     def __str__(self):
-        return self.codigo + ' - ' + self.detalles.cedula + ' - ' + self.usuario.username
+        return self.detalles.nombres + ' ' + self.detalles.apellidos
 
 
 class Cliente(models.Model):
@@ -60,7 +65,7 @@ class Cliente(models.Model):
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.codigo + ' - ' + self.detalles.nombres + ' ' + self.detalles.apellidos
+        return self.detalles.nombres + ' ' + self.detalles.apellidos
 
 
 class TipoCategoria(models.Model):
@@ -94,7 +99,18 @@ class Producto(models.Model):
     codigo = models.CharField(max_length=64)
     nombre = models.CharField(max_length=255)
     descripcion = models.TextField(blank=True)
+    uso = models.TextField(blank=True, default='')
+    composicion = models.CharField(max_length=255, default='')
+    ancho = models.FloatField(default=0.0)
     precio = models.DecimalField(max_digits=6, decimal_places=2)
+    precioMetro = models.DecimalField(
+        max_digits=6, decimal_places=2, default=0)
+    precioMetroEspecial = models.DecimalField(
+        max_digits=6, decimal_places=2, default=0)
+    precioRollo = models.DecimalField(
+        max_digits=6, decimal_places=2, default=0)
+    precioRolloEspecial = models.DecimalField(
+        max_digits=6, decimal_places=2, default=0)
     cantidad = models.PositiveIntegerField()
     is_active = models.BooleanField(default=True)
     estado = models.CharField(max_length=4, blank=True,
@@ -109,6 +125,9 @@ class Producto(models.Model):
 
 
 class Orden(models.Model):
+    class Meta:
+        ordering = ['-fecha']
+
     class Status(models.TextChoices):
         NOPAG = 'NPG', 'No pagado'
         CANCEL = 'CNC', 'Cancelada'

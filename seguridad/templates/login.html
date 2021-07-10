@@ -7,24 +7,27 @@
 {% block content %}
 <div class="d-flex align-items-center justify-content-center" id="login-main" style="height: 100%">
   <div class="main-div">
-    {% for error in form.non_field_errors %}
-    <small class="white-text"><i class="fas fa-exclamation-triangle"></i>{{ error }}</small>
-    {% endfor %}
-    <div class="panel py-4 px-3 px-xl-5">
+    <div class="panel py-4 px-3 px-xl-4">
       <form name="loginForm" class="m-0" method="post">
         {% csrf_token %}
-        <!-- Tiene que mostrarse solo si el login falla -->
-        <div class="login-header m-0 py-5 text-center">
-          <img src="{% static 'images\logo_neymatex_reduced.jpg' %}" alt="logo" class="img-fluid" />
+        <div class="login-header m-0 py-3 text-center">
+          <img src="{% static 'images\logo_neymatex_reduced.jpg' %}" alt="logo" class="img-fluid w-75" />
         </div>
         <div class="login-container">
+          {% if messages%}
+          {% for message in messages %}
+          <small class="text-danger">{{message}}</small>
+          {% endfor %}
+          {%endif%}
           <div class="form-group">
-            <input type="text" class="form-control" id="username" name="username" placeholder="Usuario" />
+            <input type="text" class="form-control {%if messages%}is-invalid{%endif%}" id="username" name="username"
+              placeholder="Usuario" />
           </div>
-          <div class="form-group mt-4">
-            <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" />
+          <div class="form-group mt-3">
+            <input type="password" class="form-control {%if messages%}is-invalid{%endif%}" id="password" name="password"
+              placeholder="Contraseña" />
           </div>
-          <div class="btn-login mt-5 mb-3">
+          <div class="btn-login mt-4 mb-2">
             <button type="submit" class="btn btn-secondary login">INICIAR SESIÓN</button>
           </div>
           {% if request.GET.next %}
@@ -32,6 +35,7 @@
           {% endif %}
         </div>
       </form>
+      {{form.errors}}
     </div>
   </div>
 </div>

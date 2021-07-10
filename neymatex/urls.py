@@ -10,4 +10,6 @@ urlpatterns = [
     path('clientes/', include('neymatex.cliente.urls', namespace="cliente")),
     # Producto
     path('producto/', include('neymatex.producto.urls', namespace="producto")),
+    # Ordenes
+    path('orden/', include('neymatex.orden.urls', namespace="orden")),
 ]
