@@ -1,0 +1,87 @@
+{% extends "main.html" %}
+{% load static %}
+
+{% block main %}
+<div class="row mt-4">
+  <div class="col-12 col-lg-8">
+    <h2>
+      <div class="row">
+        <div class="col-12 col-lg-6">{{title|upper}}</div>
+        <div class="col-12 col-lg-6 text-right">Código: {{orden.codigo}}</div>
+      </div>
+    </h2>
+    <hr>
+    <div class="row mb-3">
+      <div class="col-6">
+        Estado: {{orden.get_estado_display}}
+      </div>
+      <div class="col-6">
+        Fecha: {{orden.fecha}}
+      </div>
+      <div class="col-6">
+        Cliente: {{orden.cliente}}
+      </div>
+      <div class="col-6">
+        Empleado: {{orden.empleado}}
+      </div>
+    </div>
+    {% if productos %}
+    <table class="table">
+      <tbody>
+        {%for detalle in productos%}
+        <tr>
+          <td>
+            {% if detalle.producto.imagen %}
+            <img src="{{detalle.producto.imagen.url}}" alt="" width="80" height="80">
+            {% else %}
+            <img src="{% static 'images/default_product.png' %}" alt="" width="80" height="80">
+            {% endif %}
+          </td>
+          <td>{{detalle.producto.nombre}}</td>
+          <td>{{detalle.cantidad}}</td>
+          <td class="text-right">$ {{detalle.valor_total}}</td>
+        </tr>
+        {%endfor%}
+      </tbody>
+    </table>
+    {% endif %}
+    <hr>
+    <div class="d-flex justify-content-end">
+      <div class="col-2">
+        Subtotal
+      </div>
+      <div class="col-2 text-right">
+        $ {{orden.subtotal}}
+      </div>
+    </div>
+    <div class="d-flex justify-content-end">
+      <div class="col-2">
+        iva (12%)
+      </div>
+      <div class="col-2 text-right">
+        $ {{orden.iva}}
+      </div>
+    </div>
+    <div class="d-flex justify-content-end">
+      <div class="col-2">
+        Descuento
+      </div>
+      <div class="col-2 text-right">
+        - $ {{orden.descuento}}
+      </div>
+    </div>
+    <div class="d-flex justify-content-end">
+      <div class="col-2">
+        Total
+      </div>
+      <div class="col-2 text-right">
+        $ {{orden.valor_total}}
+      </div>
+    </div>
+    <hr>
+  </div>
+</div>
+{{form.errors}}
+{% endblock main %}
+{% block specific_scripts %}
+{% endblock specific_scripts %}

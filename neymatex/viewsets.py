@@ -60,5 +60,14 @@ class OrdenView(viewsets.ModelViewSet):
     serializer_class = OrdenSerializer
 
     def get_queryset(self):
-        queryset = Orden.objects.all()
+        queryset = Orden.objects.exclude(estado=Orden.Status.CANCEL)
+        return queryset
+
+
+class NotificacionView(viewsets.ModelViewSet):
+    permission_classes = (permissions.AllowAny,)
+    serializer_class = NotificacionSerializer
+
+    def get_queryset(self):
+        queryset = Notificacion.objects.all()
         return queryset

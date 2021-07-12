@@ -6,69 +6,24 @@ from crispy_forms.layout import Layout, Row, Column, Div
 from crispy_forms.bootstrap import PrependedText
 
 
-class ProductoForm(forms.ModelForm):
+class OrdenForm(forms.ModelForm):
     class Meta:
-        model = Producto
+        model = Orden
         fields = "__all__"
         labels = {
             "codigo": "Código",
-            "nombre": 'Nombre',
-            "descripcion": 'Descripción',
-            "precio": 'Precio',
-            "cantidad": 'Cantidad (Stock)',
-            "categoria": 'Categorías',
-            "imagen": 'Imagen',
+            "estado": 'Estado del Pedido',
         }
         widgets = {
-            "estado": forms.HiddenInput(),
-            "is_active": forms.HiddenInput(),
-            'descripcion': forms.Textarea(attrs={'rows': 5}),
-            "categoria": forms.SelectMultiple(),
-            "imagen": forms.FileInput()
-        }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.disable_csrf = True
-        self.helper.form_tag = False
-        self.helper.layout = Layout(
-            Row(
-                'is_active',
-                'estado',
-                Column('categoria', css_class='col-12 d-none'),
-                Column('codigo', css_class='col-12 col-lg-4'),
-                Column('nombre', css_class='col-12 col-lg-8'),
-                Column('descripcion', css_class='col-12 col-lg-12'),
-            ),
-            Row(
-                Column('unidad', css_class='col-12 col-lg-4'),
-                Column('cantidad', css_class='col-12 col-lg-4'),
-                Column(PrependedText('precio', '$'),
-                       css_class='col-12 col-lg-4'),
-                Column('imagen', css_class='col-12 col-lg-8'),
-            ),
-        )
-
-
-class ProductoEditarForm(forms.ModelForm):
-    class Meta:
-        model = Producto
-        fields = "__all__"
-        labels = {
-            "nombre": 'Nombre',
-            "descripcion": 'Descripción',
-            "precio": 'Precio',
-            "cantidad": 'Cantidad (Stock)',
-            "categoria": 'Categorías',
-        }
-        widgets = {
-            "estado": forms.Select(attrs={"disabled": True}),
             "codigo": forms.HiddenInput(),
-            "is_active": forms.HiddenInput(),
-            "categoria": forms.SelectMultiple(),
-            'descripcion': forms.Textarea(attrs={'rows': 5}),
-            "imagen": forms.ClearableFileInput(),
+            # "fecha": forms.TextInput(),
+            # "cliente": forms.Select(),
+            # "empleado": forms.Select(),
+            # "subtotal": forms.HiddenInput(),
+            # "iva": forms.HiddenInput(),
+            # "descuento": forms.HiddenInput(),
+            # "valor_total": forms.HiddenInput(),
+            "estado": forms.Select(),
         }
 
     def __init__(self, *args, **kwargs):
@@ -78,18 +33,21 @@ class ProductoEditarForm(forms.ModelForm):
         self.helper.form_tag = False
         self.helper.layout = Layout(
             Row(
-                'is_active',
                 'codigo',
-                Column('categoria', css_class='col-12 d-none'),
-                Column('estado', css_class='col-12 col-lg-4'),
-                Column('nombre', css_class='col-12 col-lg-8'),
-                Column('descripcion', css_class='col-12 col-lg-12'),
+                'estado',
+                Column('cliente', css_class='col-12 col-lg-4'),
+                Column('empleado', css_class='col-12 col-lg-4'),
+                Column('fecha', css_class='col-12 col-lg-4'),
+                Column('subtotal', css_class='col-12 col-lg-4'),
+                Column('iva', css_class='col-12 col-lg-4'),
+                Column('descuento', css_class='col-12 col-lg-4'),
+                Column('valor_total', css_class='col-12 col-lg-4'),
             ),
-            Row(
-                Column('unidad', css_class='col-12 col-lg-4'),
-                Column('cantidad', css_class='col-12 col-lg-4'),
-                Column(PrependedText('precio', '$'),
-                       css_class='col-12 col-lg-4'),
-                Column('imagen', css_class='col-12'),
-            ),
+            # Row(
+            #     Column('unidad', css_class='col-12 col-lg-4'),
+            #     Column('cantidad', css_class='col-12 col-lg-4'),
+            #     Column(PrependedText('precio', '$'),
+            #            css_class='col-12 col-lg-4'),
+            #     Column('imagen', css_class='col-12 col-lg-8'),
+            # ),
         )

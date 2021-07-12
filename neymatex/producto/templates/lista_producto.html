@@ -20,7 +20,10 @@
         <tr>
           <th scope="col">Código</th>
           <th scope="col">Nombre</th>
-          <th scope="col">Precio</th>
+          <th scope="col">Precio Metro</th>
+          <th scope="col">Precio Metro Especial</th>
+          <th scope="col">Precio Rollo</th>
+          <th scope="col">Precio Rollo Especial</th>
           <th scope="col">Cantidad Stock</th>
           <th scope="col">Estado</th>
           <th scope="col">Acciones</th>
@@ -32,7 +35,10 @@
         <tr class="text-center">
           <td scope="row">{{producto.codigo}}</td>
           <td scope="row">{{producto.nombre}}</td>
-          <td scope="row">$ {{producto.precio}}</td>
+          <td scope="row">$ {{producto.precioMetro}}</td>
+          <td scope="row">$ {{producto.precioMetroEspecial}}</td>
+          <td scope="row">$ {{producto.precioRollo}}</td>
+          <td scope="row">$ {{producto.precioRolloEspecial}}</td>
           <td scope="row">{{producto.cantidad}}</td>
           <td scope="row">
             {% if producto.estado == "ISK" %}

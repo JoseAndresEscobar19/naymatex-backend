@@ -9,20 +9,26 @@
         <li class="nav-item {% if request.resolver_match.view_name == 'neymatex:principal' %}active{% endif %}">
           <a class="nav-link" href="{% url 'neymatex:principal' %}">Dashboard <span class="sr-only">(current)</span></a>
         </li>
-        {% if perms.neymatex.is_gerente %}
+        {% if perms.neymatex.view_empleado %}
         <li class="nav-item {% if request.resolver_match.namespace == 'seguridad' %}active{% endif %}">
           <a class="nav-link" href="{% url 'seguridad:listar' %}">Empleados</a>
         </li>
         {% endif %}
+        {% if perms.neymatex.view_cliente %}
         <li class="nav-item {% if request.resolver_match.namespace == 'neymatex:cliente' %}active{% endif %}">
           <a class="nav-link" href="{% url 'neymatex:cliente:listar' %}">Clientes</a>
         </li>
+        {% endif %}
+        {% if perms.neymatex.view_producto %}
         <li class="nav-item {% if request.resolver_match.namespace == 'neymatex:producto' %}active{% endif %}">
           <a class="nav-link" href="{% url 'neymatex:producto:listar' %}">Productos</a>
         </li>
+        {% endif %}
+        {% if perms.neymatex.view_orden %}
         <li class="nav-item {% if request.resolver_match.namespace == 'neymatex:orden' %}active{% endif %}">
-          <a class="nav-link" href="{% url 'neymatex:orden:listar' %}">Ordenes</a>
+          <a class="nav-link" href="{% url 'neymatex:orden:listar' %}">Pedidos</a>
         </li>
+        {% endif %}
       </ul>
       <span class="v-align white-text mr-2">{{user.username}} ({{user.group}})</span>
       {% if user.is_authenticated %}

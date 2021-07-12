@@ -40,11 +40,6 @@ class Empleado(models.Model):
     estado = models.CharField(max_length=4,
                               choices=Status.choices, default=Status.REGULAR)
 
-    class Meta:
-        permissions = [
-            ("is_gerente", "Puede ver y modificar todo contenido"),
-        ]
-
     def __str__(self):
         return self.detalles.nombres + ' ' + self.detalles.apellidos
 
@@ -102,7 +97,6 @@ class Producto(models.Model):
     uso = models.TextField(blank=True, default='')
     composicion = models.CharField(max_length=255, default='')
     ancho = models.FloatField(default=0.0)
-    precio = models.DecimalField(max_digits=6, decimal_places=2)
     precioMetro = models.DecimalField(
         max_digits=6, decimal_places=2, default=0)
     precioMetroEspecial = models.DecimalField(
@@ -129,9 +123,9 @@ class Orden(models.Model):
         ordering = ['-fecha']
 
     class Status(models.TextChoices):
-        NOPAG = 'NPG', 'No pagado'
-        CANCEL = 'CNC', 'Cancelada'
-        PAID = 'PAG', 'Pagado'
+        NOPAG = 'NPG', 'Pendiente de Pago'
+        CANCEL = 'CNC', 'Anulada'
+        PAID = 'PAG', 'Pagada'
 
     codigo = models.CharField(max_length=64, blank=True)
     cliente = models.ForeignKey(Cliente, on_delete=models.SET_NULL, null=True)
@@ -164,9 +158,9 @@ class Orden(models.Model):
         return total
 
     def save(self, *args, **kwargs):
-        self.calcular_subtotales()
+        # self.calcular_subtotales()
         self.calcular_iva()
-        self.calcular_total()
+        # self.calcular_total()
         return super().save(*args, **kwargs)
 
     def __str__(self):
@@ -182,16 +176,14 @@ class DetalleOrden(models.Model):
     valor_total = models.DecimalField(
         max_digits=5, decimal_places=2, default=0)
 
-    def save(self, *args, **kwargs):
-        total = self.cantidad*self.producto.precio
-        self.valor_total = total
-        return super().save(*args, **kwargs)
-
     def calcular_total(self):
         total = self.cantidad*self.producto.precio
         self.valor_total = total
-        self.save()
         return total
+
+    def save(self, *args, **kwargs):
+        # self.calcular_total()
+        return super().save(*args, **kwargs)
 
     def __str__(self):
         return self.orden.codigo + " - " + str(self.valor_total)

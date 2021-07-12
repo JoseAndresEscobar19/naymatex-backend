@@ -1,4 +1,3 @@
-from neymatex.serializers import DetalleSerializer
 from django.contrib.auth import login
 from rest_framework import generics, permissions, status
 from rest_framework.views import APIView
@@ -34,7 +33,6 @@ class LoginAPI(KnoxLoginView):
         data = super().get_post_response_data(request, token, instance)
         try:
             empleado = Empleado.objects.get(usuario=request.user)
-            print(empleado)
             empleado_serializer = EmpleadoSerializer(empleado).data
             data['empleado'] = empleado_serializer
             data['user']['is_gerente'] = request.user.groups.filter(
@@ -47,6 +45,10 @@ class LoginAPI(KnoxLoginView):
         serializer = AuthTokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
+        if not user.is_active:
+            return Response({
+                "detail": 'Usuario deshabilitado. Contácte Administración'
+            }, status=status.HTTP_423_LOCKED)
         login(request, user)
         return super(LoginAPI, self).post(request, format=None)
 

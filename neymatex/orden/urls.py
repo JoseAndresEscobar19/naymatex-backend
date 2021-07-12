@@ -6,7 +6,7 @@ app_name = OrdenConfig.name
 urlpatterns = [
     path('', ListarOrdenes.as_view(), name='listar'),
     # path('agregar/', CrearOrden.as_view(), name='agregar'),
-    # path('editar/<pk>/', EditarOrden.as_view(), name='editar'),
+    path('ver/<pk>/', VerOrden.as_view(), name='ver'),
     path('eliminar/<pk>/', orden_confirmar_eliminacion,
          name='eliminar')
 ]

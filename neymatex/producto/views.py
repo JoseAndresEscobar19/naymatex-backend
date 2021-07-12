@@ -1,26 +1,26 @@
 import json
-from neymatex.serializers import TipoCategoriaSerializer
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import request
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, UpdateView
 from neymatex.models import *
-from neymatex.viewsets import TipoCategoriaView
-from rest_framework.response import Response
+from neymatex.serializers import TipoCategoriaSerializer
+from seguridad.views import EmpleadoPermissionRequieredMixin
 
 from .forms import ProductoEditarForm, ProductoForm
 
 
 # Create your views here.
 # PRODUCTO
-class ListarProductos(LoginRequiredMixin, ListView):
+class ListarProductos(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, ListView):
     # required_permission = 'seguridad'
     model = Producto
     context_object_name = 'productos'
     template_name = "lista_producto.html"
+    permission_required = 'neymatex.view_producto'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -28,12 +28,13 @@ class ListarProductos(LoginRequiredMixin, ListView):
         return context
 
 
-class CrearProducto(LoginRequiredMixin, CreateView):
+class CrearProducto(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, CreateView):
     model = Producto
     form_class = ProductoForm
     template_name = 'producto_nuevo.html'
     title = "Crear producto"
     success_url = reverse_lazy('neymatex:producto:listar')
+    permission_required = 'neymatex.view_producto'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -46,12 +47,13 @@ class CrearProducto(LoginRequiredMixin, CreateView):
         return context
 
 
-class EditarProducto(LoginRequiredMixin, UpdateView):
+class EditarProducto(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, UpdateView):
     model = Producto
     form_class = ProductoEditarForm
     template_name = 'producto_nuevo.html'
     title = "Editar producto"
     success_url = reverse_lazy('neymatex:producto:listar')
+    permission_required = 'neymatex.view_producto'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -63,25 +65,8 @@ class EditarProducto(LoginRequiredMixin, UpdateView):
         context['tipos_categoria'] = tipo_categoria
         return context
 
-    def post(self, request, *args, **kwargs):
-        print(request.POST)
-        return super().post(request, *args, **kwargs)
 
-#         self.object = self.get_object()
-#         cliente_form = self.form_class(request.POST, instance=self.object)
-#         detalles_form = self.user_details_form_class(
-#             request.POST, instance=self.object.detalles)
-#         if cliente_form.is_valid() and detalles_form.is_valid():
-#             detalles = detalles_form.save()
-#             cliente = cliente_form.save(commit=False)
-#             cliente.detalles = detalles
-#             cliente.save()
-#             messages.success(request, "Cliente editado con éxito.")
-#             return HttpResponseRedirect(self.success_url)
-#         else:
-#             return self.render_to_response({"form": cliente_form, "user_details_form": detalles_form, "title": self.title})
-
-
+@login_required()
 def producto_confirmar_eliminacion(request, pk):
     producto = Producto.objects.get(id=pk)
     if request.POST:
@@ -93,6 +78,7 @@ def producto_confirmar_eliminacion(request, pk):
     return render(request, "ajax/producto_confirmar_elminar.html", {"producto": producto})
 
 
+@login_required()
 def producto_confirmar_activar(request, pk):
     producto = Producto.objects.get(id=pk)
     if request.POST:

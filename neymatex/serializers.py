@@ -1,6 +1,6 @@
 from django.db.models import fields
 from rest_framework import serializers
-from .models import DetalleOrden, Orden, UserDetails, Cliente, Empleado, Producto, Categoria, TipoCategoria
+from .models import *
 
 
 class DetalleSerializer(serializers.ModelSerializer):
@@ -58,7 +58,7 @@ class ProductoSerializer(serializers.ModelSerializer):
 class DetalleOrdenSerializer(serializers.ModelSerializer):
     class Meta:
         model = DetalleOrden
-        fields = "__all__"
+        fields = ["producto", "cantidad", "valor_total"]
 
 
 class OrdenSerializer(serializers.ModelSerializer):
@@ -68,3 +68,9 @@ class OrdenSerializer(serializers.ModelSerializer):
         model = Orden
         fields = ["id", "codigo", "fecha", "subtotal", "iva", "descuento",
                   "valor_total", "cliente", "empleado", "detalles"]
+
+
+class NotificacionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notificacion
+        fields = '__all__'

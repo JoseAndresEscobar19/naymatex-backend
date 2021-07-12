@@ -77,6 +77,9 @@ REST_KNOX = {
     'USER_SERIALIZER': 'seguridad.serializers.UserSerializer',
 }
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.AllowAllUsersModelBackend']
+
 ROOT_URLCONF = 'backend.urls'
 
 TEMPLATES = [

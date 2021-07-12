@@ -1,22 +1,23 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, UpdateView
+from neymatex.models import *
 from seguridad.forms import UsuarioDetallesForm
+from seguridad.views import EmpleadoPermissionRequieredMixin
 
 from .forms import ClienteEditarForm, ClienteForm
 
-from neymatex.models import *
-
 
 # Create your views here.
-class ListarClientes(LoginRequiredMixin, ListView):
-    # required_permission = 'seguridad'
+class ListarClientes(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, ListView):
     model = Cliente
     context_object_name = 'clientes'
     template_name = "lista_cliente.html"
+    permission_required = 'neymatex.view_cliente'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -24,13 +25,14 @@ class ListarClientes(LoginRequiredMixin, ListView):
         return context
 
 
-class CrearCliente(LoginRequiredMixin, CreateView):
+class CrearCliente(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, CreateView):
     model = Cliente
     form_class = ClienteForm
     user_details_form_class = UsuarioDetallesForm
     template_name = 'cliente_nuevo.html'
     title = "Crear cliente"
     success_url = reverse_lazy('neymatex:cliente:listar')
+    permission_required = 'neymatex.add_cliente'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -59,23 +61,15 @@ class CrearCliente(LoginRequiredMixin, CreateView):
         else:
             return self.render_to_response({"form": cliente_form, "user_details_form": usuario_detalles_form, "title": self.title})
 
-    def form_valid(self, form):
-        try:
-            pre = str(int(self.model.objects.latest('pk').pk+1))
-            sec = '0'*(4-len(pre))+pre
-        except self.model.DoesNotExist:
-            sec = '0001'
-        form.instance.codigo = sec
-        return super().form_valid(form)
 
-
-class EditarCliente(LoginRequiredMixin, UpdateView):
+class EditarCliente(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, UpdateView):
     model = Cliente
     form_class = ClienteEditarForm
     user_details_form_class = UsuarioDetallesForm
     template_name = 'cliente_nuevo.html'
     title = "Editar Cliente"
     success_url = reverse_lazy('neymatex:cliente:listar')
+    permission_required = 'neymatex.change_cliente'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -101,6 +95,7 @@ class EditarCliente(LoginRequiredMixin, UpdateView):
             return self.render_to_response({"form": cliente_form, "user_details_form": detalles_form, "title": self.title})
 
 
+@login_required()
 def cliente_confirmar_eliminacion(request, pk):
     cliente = Cliente.objects.get(id=pk)
     if request.POST:
@@ -111,6 +106,7 @@ def cliente_confirmar_eliminacion(request, pk):
     return render(request, "ajax/cliente_confirmar_elminar.html", {"cliente": cliente})
 
 
+@login_required()
 def cliente_confirmar_activar(request, pk):
     cliente = Cliente.objects.get(id=pk)
     if request.POST:

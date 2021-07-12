@@ -34,16 +34,18 @@
           <td scope="row">$ {{orden.subtotal}}</td>
           <td scope="row">$ {{orden.valor_total}}</td>
           <td scope="row">
-            {% if orden.estado == "ISK" %}
-            <span class="text-success font-weight-bold">{{orden.get_estado_display}}</span>
-            {% else %}
+            {% if orden.estado == "NPG" %}
+            <span class="text-warning font-weight-bold">{{orden.get_estado_display}}</span>
+            {% elif orden.estado == "CNC" %}
             <span class="text-danger font-weight-bold">{{orden.get_estado_display}}</span>
+            {% else %}
+            <span class="text-success font-weight-bold">{{orden.get_estado_display}}</span>
             {% endif %}
           </td>
           <td>
-            {% if orden.estado != "NOPAG" %}
-            <a href="{% url 'neymatex:producto:editar' orden.pk %}" class="btn btn-sm btn-primary"><i
+            <a href="{% url 'neymatex:orden:ver' orden.pk %}" class="btn btn-sm btn-primary"><i
                 class="fas fa-eye "></i></a>
+            {% if orden.estado != "CNC" %}
             <a class="btn btn-sm btn-danger use-modal" data-toggle='modal' data-target="#mainModal"
               data-url="{%url 'neymatex:orden:eliminar' orden.pk%}" href="#">
               <i class="fas fa-times"></i></a>

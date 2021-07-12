@@ -1,10 +1,14 @@
+from urllib.parse import urlparse
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import (AccessMixin, LoginRequiredMixin,
+                                        PermissionRequiredMixin)
 from django.contrib.auth.models import User
+from django.contrib.auth.views import redirect_to_login
+from django.core.exceptions import PermissionDenied
 from django.http.response import HttpResponseRedirect
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, resolve_url
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, UpdateView
 from neymatex.models import Empleado
@@ -38,7 +42,11 @@ def login_user(request):
             messages.error(
                 request, 'Nombre de usuario o contraseña incorrecto.')
             return redirect('seguridad:login_admin')
-    return render(request, 'login.html', {"title": "Iniciar Sesión"})
+    else:
+        if request.user and request.user.is_authenticated:
+            return redirect('neymatex:principal')
+        else:
+            return render(request, 'login.html', {"title": "Iniciar Sesión"})
 
 
 def logout_user(request):
@@ -47,11 +55,35 @@ def logout_user(request):
         return redirect('seguridad:login_admin')
 
 
-class ListarEmpleados(LoginRequiredMixin, ListView):
-    # required_permission = 'seguridad'
+class EmpleadoPermissionRequieredMixin(PermissionRequiredMixin, AccessMixin):
+    raise_exception = False
+
+    def handle_no_permission(self):
+        if self.raise_exception:
+            raise PermissionDenied(self.get_permission_denied_message())
+        path = self.request.build_absolute_uri()
+        resolved_login_url = resolve_url(self.get_login_url())
+        # If the login url is the same scheme and net location then use the
+        # path as the "next" url.
+        login_scheme, login_netloc = urlparse(resolved_login_url)[:2]
+        current_scheme, current_netloc = urlparse(path)[:2]
+        if (
+            (not login_scheme or login_scheme == current_scheme) and
+            (not login_netloc or login_netloc == current_netloc)
+        ):
+            path = self.request.get_full_path()
+        return redirect_to_login(
+            path,
+            resolved_login_url,
+            self.get_redirect_field_name(),
+        )
+
+
+class ListarEmpleados(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, ListView):
     model = Empleado
     context_object_name = 'empleados'
     template_name = "lista_empleado.html"
+    permission_required = 'neymatex.view_empleado'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -59,7 +91,7 @@ class ListarEmpleados(LoginRequiredMixin, ListView):
         return context
 
 
-class CrearEmpleado(LoginRequiredMixin, CreateView):
+class CrearEmpleado(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, CreateView):
     model = Empleado
     form_class = EmpleadoForm
     user_form_class = UsuarioForm
@@ -67,6 +99,7 @@ class CrearEmpleado(LoginRequiredMixin, CreateView):
     template_name = 'empleado_nuevo.html'
     title = "Crear empleado"
     success_url = reverse_lazy('seguridad:listar')
+    permission_required = 'neymatex.add_empleado'
 
     def get_context_data(self, **kwargs):
         context = super(CrearEmpleado, self).get_context_data(**kwargs)
@@ -112,7 +145,7 @@ class CrearEmpleado(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class EditarEmpleado(LoginRequiredMixin, UpdateView):
+class EditarEmpleado(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, UpdateView):
     model = Empleado
     form_class = EmpleadoEditarForm
     user_form_class = UsuarioEditarForm
@@ -120,6 +153,7 @@ class EditarEmpleado(LoginRequiredMixin, UpdateView):
     template_name = 'empleado_nuevo.html'
     title = "Editar empleado"
     success_url = reverse_lazy('seguridad:listar')
+    permission_required = 'neymatex.change_empleado'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -155,6 +189,7 @@ class EditarEmpleado(LoginRequiredMixin, UpdateView):
                                             "user_details_form": usuario_detalles_form, "title": self.title})
 
 
+@login_required()
 def empleado_confirmar_eliminacion(request, pk):
     empleado = Empleado.objects.get(id=pk)
     if request.POST:
@@ -166,6 +201,7 @@ def empleado_confirmar_eliminacion(request, pk):
     return render(request, "ajax/empleado_confirmar_elminar.html", {"empleado": empleado})
 
 
+@login_required()
 def empleado_confirmar_activar(request, pk):
     empleado = Empleado.objects.get(id=pk)
     if request.POST:
