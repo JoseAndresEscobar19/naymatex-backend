@@ -66,8 +66,19 @@ class OrdenSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Orden
-        fields = ["id", "codigo", "fecha", "subtotal", "iva", "descuento",
-                  "valor_total", "cliente", "empleado", "detalles"]
+        fields = ["id", "codigo", "fecha", "cliente", "cliente_referencial", "empleado",
+                  "subtotal", "iva", "descuento", "valor_total",  "detalles"]
+
+    def create(self, validated_data):
+        detalles_data = validated_data.pop('detalles')
+        orden = Orden.objects.create(**validated_data)
+        pre = str(orden.pk)
+        sec = '0'*(9-len(pre))+pre
+        orden.codigo = sec
+        orden.save()
+        for producto in detalles_data:
+            DetalleOrden.objects.create(orden=orden, **producto)
+        return orden
 
 
 class NotificacionSerializer(serializers.ModelSerializer):

@@ -129,6 +129,7 @@ class Orden(models.Model):
 
     codigo = models.CharField(max_length=64, blank=True)
     cliente = models.ForeignKey(Cliente, on_delete=models.SET_NULL, null=True)
+    cliente_referencial = models.CharField(max_length=255, blank=True)
     empleado = models.ForeignKey(
         Empleado, on_delete=models.SET_NULL, null=True)
     fecha = models.DateTimeField(auto_now_add=True)
