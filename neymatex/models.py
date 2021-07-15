@@ -1,6 +1,6 @@
 import decimal
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Group, User
 from django.db import models
 
 # Create your models here.
@@ -140,6 +140,8 @@ class Orden(models.Model):
         max_digits=5, decimal_places=2, default=0)
     estado = models.CharField(
         max_length=4, choices=Status.choices, default=Status.NOPAG)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def calcular_subtotales(self):
         subtotal = 0
@@ -192,10 +194,12 @@ class DetalleOrden(models.Model):
 
 class Notificacion(models.Model):
     title = models.CharField(max_length=100)
-    body = models.CharField(max_length=500)
+    body = models.TextField()
     imagen = models.ImageField(
         upload_to='notificacion/', null=True, blank=True)
-    usuario = models.ManyToManyField(Empleado, blank=True)
+    grupo_usuarios = models.ManyToManyField(Group, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title

@@ -29,6 +29,11 @@
           <a class="nav-link" href="{% url 'neymatex:orden:listar' %}">Pedidos</a>
         </li>
         {% endif %}
+        {% if perms.neymatex.view_notificacion %}
+        <li class="nav-item {% if request.resolver_match.namespace == 'neymatex:notificacion' %}active{% endif %}">
+          <a class="nav-link" href="{% url 'neymatex:notificacion:listar' %}">Notificaciones</a>
+        </li>
+        {% endif %}
       </ul>
       <span class="v-align white-text mr-2">{{user.username}} ({{user.group}})</span>
       {% if user.is_authenticated %}

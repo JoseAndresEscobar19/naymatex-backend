@@ -1,0 +1,62 @@
+{% extends "main.html" %}
+{% load static %}
+{% block main %}
+
+<div class="row mt-4">
+  <div class="col">
+    <h2 class="text-left">Notificaciones</h2>
+  </div>
+  <div class="col">
+    <a href="{% url 'neymatex:notificacion:agregar' %}" class="btn btn-primary float-right">Enviar nueva <i
+        class="fas fa-plus-circle"> </i></a>
+  </div>
+  <hr>
+</div>
+<div class="row mt-4">
+  <div class="col-12 table-container">
+    <table class="table table-responsive-md table-hover text-center" id="tabla-clientes">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Título</th>
+          <th scope="col">Enviado a</th>
+          <th scope="col">Fecha de envío</th>
+          <th scope="col">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if notificaciones %}
+        {% for notificacion in notificaciones %}
+        <tr class="text-center">
+          <td scope="row">{{forloop.counter}}</td>
+          <td>{{notificacion.title}}</td>
+          <td>{{notificacion.to_whom}}</td>
+          <td>{{notificacion.created_at}}</td>
+          <td>
+            {% if cliente.is_active %}
+            <a href="{% url 'neymatex:cliente:editar' cliente.pk %}" class="btn btn-sm btn-primary"><i
+                class="fas fa-edit "></i></a>
+            <a class="btn btn-sm btn-danger use-modal" data-toggle='modal' data-target="#mainModal"
+              data-url="{%url 'neymatex:cliente:eliminar' cliente.pk%}" href="#">
+              <i class="fas fa-times"></i></a>
+            {% else %}
+            <a class="btn btn-sm btn-warning use-modal" data-toggle='modal' data-target="#mainModal"
+              data-url="{%url 'neymatex:cliente:activar' cliente.pk%}" href="#"><i class="fas fa-check "></i></a>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock main %}
+
+{% block specific_scripts %}
+<script src="{% static 'js/DTable.js' %}"></script>
+<script src="{% static 'js/utilsModal.js' %}"></script>
+<script>
+  $(document).ready(init_datatable("tabla-clientes"))
+</script>
+{% endblock %}

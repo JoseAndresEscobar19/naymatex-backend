@@ -16,6 +16,7 @@ neymatex_api.register(
     r'tipo-categorias', TipoCategoriaView, 'tipo_categoria')
 neymatex_api.register(r'categorias', CategoriaView, 'categoria')
 neymatex_api.register(r'ordenes', OrdenView, 'orden')
+neymatex_api.register(r'notificaciones', NotificacionView, 'notificacion')
 
 neymatex_api2 = [
     # path('orden/', OrdenAPI.as_view(), name='orden'),

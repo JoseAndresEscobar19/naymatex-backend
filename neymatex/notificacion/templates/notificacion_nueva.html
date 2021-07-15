@@ -1,0 +1,26 @@
+{% extends "main.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block main %}
+<div class="row mt-4">
+  <div class="col-12 col-lg-8">
+    <h2>
+      <div class="row">
+        <div class="col-12 col-lg-6">{{title|upper}}</div>
+        {% if form.codigo.value %}
+        <div class="col-12 col-lg-6 text-right">Código: {{form.codigo.value}}</div>
+        {% endif %}
+      </div>
+    </h2>
+    <hr>
+    <form method="POST" novalidate enctype="multipart/form-data">
+      {% csrf_token %}
+      <hr>
+      {% crispy form %}
+      <hr>
+      <input type="submit" class="btn btn-primary" value="Enviar">
+    </form>
+  </div>
+</div>
+{% endblock main %}

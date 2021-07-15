@@ -12,4 +12,7 @@ urlpatterns = [
     path('producto/', include('neymatex.producto.urls', namespace="producto")),
     # Ordenes
     path('orden/', include('neymatex.orden.urls', namespace="orden")),
+    # Notificaciones
+    path('notificacion/', include('neymatex.notificacion.urls',
+         namespace="notificacion")),
 ]
