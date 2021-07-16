@@ -62,7 +62,15 @@ class OrdenView(viewsets.ModelViewSet):
     def get_queryset(self):
         query_empleado = self.request.query_params.get('emp')
         query_cliente = self.request.query_params.get('cli')
-        queryset = Orden.objects.exclude(estado=Orden.Status.CANCEL)
+        query_pag = self.request.query_params.get('estado')
+        queryset = Orden.objects.all()
+        if query_pag:
+            if query_pag == '0':
+                queryset = queryset.filter(estado=Orden.Status.NOPAG)
+            elif query_pag == '1':
+                queryset = queryset.filter(estado=Orden.Status.PAID)
+            elif query_pag == '9':
+                queryset = queryset.filter(estado=Orden.Status.CANCEL)
         if query_cliente:
             queryset = queryset.filter(cliente_referencial=query_cliente)
         if query_empleado:

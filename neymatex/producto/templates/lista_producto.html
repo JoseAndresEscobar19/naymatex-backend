@@ -24,7 +24,8 @@
           <th scope="col">Precio Metro Especial</th>
           <th scope="col">Precio Rollo</th>
           <th scope="col">Precio Rollo Especial</th>
-          <th scope="col">Cantidad Stock</th>
+          <th scope="col">Cantidad metros</th>
+          <th scope="col">Cantidad rollos</th>
           <th scope="col">Estado</th>
           <th scope="col">Acciones</th>
         </tr>
@@ -39,7 +40,8 @@
           <td scope="row">$ {{producto.precioMetroEspecial}}</td>
           <td scope="row">$ {{producto.precioRollo}}</td>
           <td scope="row">$ {{producto.precioRolloEspecial}}</td>
-          <td scope="row">{{producto.cantidad}}</td>
+          <td scope="row">{{producto.cantidad_metro}}</td>
+          <td scope="row">{{producto.cantidad_rollo}}</td>
           <td scope="row">
             {% if producto.estado == "ISK" %}
             <span class="text-success font-weight-bold">{{producto.get_estado_display}}</span>

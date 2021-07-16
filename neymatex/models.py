@@ -39,6 +39,7 @@ class Empleado(models.Model):
     detalles = models.ForeignKey(UserDetails, on_delete=models.CASCADE)
     estado = models.CharField(max_length=4,
                               choices=Status.choices, default=Status.REGULAR)
+    imagen = models.ImageField(upload_to='empeleado/', null=True, blank=True)
 
     def __str__(self):
         return self.detalles.nombres + ' ' + self.detalles.apellidos
@@ -105,7 +106,8 @@ class Producto(models.Model):
         max_digits=6, decimal_places=2, default=0)
     precioRolloEspecial = models.DecimalField(
         max_digits=6, decimal_places=2, default=0)
-    cantidad = models.PositiveIntegerField()
+    cantidad_metro = models.PositiveIntegerField()
+    cantidad_rollo = models.PositiveIntegerField()
     is_active = models.BooleanField(default=True)
     estado = models.CharField(max_length=4, blank=True,
                               choices=Status.choices, default=Status.INSTOCK)
@@ -175,18 +177,10 @@ class DetalleOrden(models.Model):
         Orden, related_name="detalles", on_delete=models.CASCADE)
     producto = models.ForeignKey(
         Producto, on_delete=models.SET_NULL, null=True)
-    cantidad = models.PositiveIntegerField()
+    cantidad_metro = models.PositiveIntegerField()
+    cantidad_rollo = models.PositiveIntegerField()
     valor_total = models.DecimalField(
         max_digits=5, decimal_places=2, default=0)
-
-    def calcular_total(self):
-        total = self.cantidad*self.producto.precio
-        self.valor_total = total
-        return total
-
-    def save(self, *args, **kwargs):
-        # self.calcular_total()
-        return super().save(*args, **kwargs)
 
     def __str__(self):
         return self.orden.codigo + " - " + str(self.valor_total)

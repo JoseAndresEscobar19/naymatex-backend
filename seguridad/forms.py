@@ -9,12 +9,13 @@ from crispy_forms.layout import Div, Layout, Row, Column
 class UsuarioForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ["username", 'email']
+        fields = ["username", 'email', 'groups']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['email'].required = True
         self.fields['username'].help_text = None
+        self.fields['groups'].help_text = 'Use Ctrl para quitar o agregar al usuario a varios grupos.'
         self.helper = FormHelper()
         self.helper.disable_csrf = True
         self.helper.form_tag = False
@@ -22,6 +23,9 @@ class UsuarioForm(UserCreationForm):
             Row(
                 Column('username', css_class='col-4'),
                 Column('email', css_class='col-8'),
+                Column('groups', css_class='col-6'),
+            ),
+            Row(
                 Column('password1', css_class='col-6'),
                 Column('password2', css_class='col-6'),
             ),
@@ -31,12 +35,13 @@ class UsuarioForm(UserCreationForm):
 class UsuarioEditarForm(UserChangeForm):
     class Meta:
         model = User
-        fields = ["username", 'email']
+        fields = ["username", 'email', 'groups']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['email'].required = True
         self.fields['username'].help_text = None
+        self.fields['groups'].help_text = 'Use Ctrl para quitar o agregar al usuario a varios grupos.'
         self.helper = FormHelper()
         self.helper.disable_csrf = True
         self.helper.form_tag = False
@@ -44,6 +49,7 @@ class UsuarioEditarForm(UserChangeForm):
             Row(
                 Column('username', css_class='col-4'),
                 Column('email', css_class='col-8'),
+                Column('groups', css_class='col-6'),
             ),
         )
 
@@ -119,5 +125,6 @@ class EmpleadoEditarForm(forms.ModelForm):
             Row(
                 'codigo',
                 Column('estado', css_class='col-4'),
+                Column('imagen', css_class='col-8'),
             ),
         )

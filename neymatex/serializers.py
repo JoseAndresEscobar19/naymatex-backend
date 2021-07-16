@@ -29,7 +29,7 @@ class EmpleadoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Empleado
-        fields = ['id', 'codigo', 'estado', 'detalles']
+        fields = ['id', 'codigo', 'estado', 'imagen', 'detalles']
 
 
 class CategoriaSerializer(serializers.ModelSerializer):
@@ -58,15 +58,17 @@ class ProductoSerializer(serializers.ModelSerializer):
 class DetalleOrdenSerializer(serializers.ModelSerializer):
     class Meta:
         model = DetalleOrden
-        fields = ["producto", "cantidad", "valor_total"]
+        fields = ["producto", "cantidad_metro",
+                  "cantidad_rollo", "valor_total"]
 
 
 class OrdenSerializer(serializers.ModelSerializer):
     detalles = DetalleOrdenSerializer(many=True)
+    estado = serializers.CharField(source='get_estado_display')
 
     class Meta:
         model = Orden
-        fields = ["id", "codigo", "fecha", "cliente", "cliente_referencial", "empleado",
+        fields = ["id", "codigo", "fecha", "estado", "cliente", "cliente_referencial", "empleado",
                   "subtotal", "iva", "descuento", "valor_total",  "detalles"]
 
     def create(self, validated_data):
