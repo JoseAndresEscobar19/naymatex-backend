@@ -1,4 +1,3 @@
-from django.db.models import fields
 from rest_framework import serializers
 from .models import *
 
@@ -86,4 +85,4 @@ class OrdenSerializer(serializers.ModelSerializer):
 class NotificacionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notificacion
-        fields = '__all__'
+        fields = ['id', 'title', 'body', 'imgen', 'created_at']

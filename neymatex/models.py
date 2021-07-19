@@ -187,11 +187,16 @@ class DetalleOrden(models.Model):
 
 
 class Notificacion(models.Model):
+    class Meta:
+        ordering = ['-created_at']
+
     title = models.CharField(max_length=100)
     body = models.TextField()
     imagen = models.ImageField(
         upload_to='notificacion/', null=True, blank=True)
     grupo_usuarios = models.ManyToManyField(Group, blank=True)
+    usuarios = models.ManyToManyField(
+        User, blank=True, related_name="notificaciones")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

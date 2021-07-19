@@ -14,15 +14,26 @@
       </div>
     </h2>
     <hr>
-    <form method="POST" novalidate>
+    {% if form.imagen.value %}
+    <img src="{{form.imagen.value.url}}" alt="perfil-empleado" width="120" height="120" class="mb-3 img-thumbnail">
+    {% endif %}
+    <form method="POST" novalidate enctype="multipart/form-data">
       {% csrf_token %}
       {% crispy user_form %}
       {% crispy form %}
+      <div class="d-none" id="img-cont">
+        <b>Preview de foto</b>
+        <br>
+        <img id="img-id" src="#" alt="imagen cargada" class="img-thumbnail w-50" />
+      </div>
       <hr>
       {% crispy user_details_form %}
       <hr>
-      <input type="submit" class="btn btn-primary" value="Enviar">
+      <input type="submit" class="btn btn-primary" value="Guardar">
     </form>
   </div>
 </div>
 {% endblock main %}
+{% block specific_scripts %}
+<script type="text/javascript" src="{% static 'js/preview-image.js' %}"></script>
+{% endblock specific_scripts %}

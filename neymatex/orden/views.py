@@ -20,6 +20,7 @@ from .forms import OrdenForm
 # Create your views here.
 # PEDIDOS
 class ListarOrdenes(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, ListView):
+    paginate_by = 25
     model = Orden
     context_object_name = 'ordenes'
     template_name = "lista_orden.html"

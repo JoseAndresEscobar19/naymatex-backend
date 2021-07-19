@@ -30,25 +30,26 @@
         <tr class="text-center">
           <td scope="row">{{forloop.counter}}</td>
           <td>{{notificacion.title}}</td>
-          <td>{{notificacion.to_whom}}</td>
+          <td>
+            {% if notificacion.grupo_usuarios %}
+            {% for grupo in notificacion.grupo_usuarios.all %}
+            {{grupo}}<br>
+            {% endfor %}
+            {% endif %}
+          </td>
           <td>{{notificacion.created_at}}</td>
           <td>
-            {% if cliente.is_active %}
-            <a href="{% url 'neymatex:cliente:editar' cliente.pk %}" class="btn btn-sm btn-primary"><i
-                class="fas fa-edit "></i></a>
-            <a class="btn btn-sm btn-danger use-modal" data-toggle='modal' data-target="#mainModal"
-              data-url="{%url 'neymatex:cliente:eliminar' cliente.pk%}" href="#">
-              <i class="fas fa-times"></i></a>
-            {% else %}
-            <a class="btn btn-sm btn-warning use-modal" data-toggle='modal' data-target="#mainModal"
-              data-url="{%url 'neymatex:cliente:activar' cliente.pk%}" href="#"><i class="fas fa-check "></i></a>
-            {% endif %}
+            <a data-toggle='modal' data-target="#mainModal"
+              data-url="{% url 'neymatex:notificacion:reenviar' notificacion.pk %}" href="#"
+              class="btn btn-sm btn-primary use-modal btn-action" title="Reenviar"><i class="fas fa-edit"></i></a>
           </td>
         </tr>
         {% endfor %}
         {% endif %}
       </tbody>
     </table>
+    <div class="pagination text-center">
+    </div>
   </div>
 </div>
 {% endblock main %}
@@ -57,6 +58,6 @@
 <script src="{% static 'js/DTable.js' %}"></script>
 <script src="{% static 'js/utilsModal.js' %}"></script>
 <script>
-  $(document).ready(init_datatable("tabla-clientes"))
+  $(document).ready(init_pagination({{page_obj.paginator.num_pages}}, {{page_obj.number}}))
 </script>
 {% endblock %}

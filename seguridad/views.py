@@ -80,6 +80,7 @@ class EmpleadoPermissionRequieredMixin(PermissionRequiredMixin, AccessMixin):
 
 
 class ListarEmpleados(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, ListView):
+    paginate_by = 25
     model = Empleado
     context_object_name = 'empleados'
     template_name = "lista_empleado.html"
@@ -112,7 +113,7 @@ class CrearEmpleado(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, Create
 
     def post(self, request, *args, **kwargs):
         self.object = None
-        empleado_form = self.form_class(request.POST)
+        empleado_form = self.form_class(request.POST, request.FILES)
         usuario_form = self.user_form_class(request.POST)
         usuario_detalles_form = self.user_details_form_class(request.POST)
         if usuario_form.is_valid() and empleado_form.is_valid() and usuario_detalles_form.is_valid():
@@ -133,16 +134,6 @@ class CrearEmpleado(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, Create
         else:
             return self.render_to_response({"form": empleado_form, "user_form": usuario_form,
                                             "user_details_form": usuario_detalles_form, "title": self.title})
-
-    def form_valid(self, form):
-        try:
-            pre = str(int(self.model.objects.latest('pk').pk+1))
-            sec = '0'*(4-len(pre))+pre
-        except self.model.DoesNotExist:
-            sec = '0001'
-        print(sec)
-        form.instance.codigo = sec
-        return super().form_valid(form)
 
 
 class EditarEmpleado(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, UpdateView):
@@ -170,7 +161,8 @@ class EditarEmpleado(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, Updat
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        empleado_form = self.form_class(request.POST, instance=self.object)
+        empleado_form = self.form_class(
+            request.POST, request.FILES, instance=self.object)
         usuario_form = self.user_form_class(
             request.POST, instance=self.object.usuario)
         usuario_detalles_form = self.user_details_form_class(

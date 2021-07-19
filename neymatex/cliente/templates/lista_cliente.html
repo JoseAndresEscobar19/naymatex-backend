@@ -57,6 +57,8 @@
         {% endif %}
       </tbody>
     </table>
+    <div class="pagination text-center">
+    </div>
   </div>
 </div>
 {% endblock main %}
@@ -65,6 +67,6 @@
 <script src="{% static 'js/DTable.js' %}"></script>
 <script src="{% static 'js/utilsModal.js' %}"></script>
 <script>
-  $(document).ready(init_datatable("tabla-clientes"))
+  $(document).ready(init_pagination({{page_obj.paginator.num_pages}}, {{page_obj.number}}))
 </script>
 {% endblock %}

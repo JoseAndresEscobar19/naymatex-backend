@@ -9,7 +9,7 @@ from crispy_forms.bootstrap import PrependedText
 class NotificacionForm(forms.ModelForm):
     class Meta:
         model = Notificacion
-        fields = '__all__'
+        exclude = ('usuarios',)
         labels = {
             "title": "Título",
             "body": "Mensaje",
@@ -17,15 +17,15 @@ class NotificacionForm(forms.ModelForm):
             "grupo_usuarios": "Grupo de usuarios a quienes enviar:"
         }
         widgets = {
-            # "codigo": forms.HiddenInput(),
-            # "estado": forms.HiddenInput(),
-            # "is_active": forms.HiddenInput(),
+            'body': forms.Textarea(attrs={'rows': 3}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.disable_csrf = True
+        self.fields['grupo_usuarios'].help_text = 'Use Ctrl para quitar o agregar grupos.'
+        self.fields['imagen'].help_text = 'Peso máximo de 300KB!'
         self.helper.form_tag = False
 
         # self.helper.layout = Layout(

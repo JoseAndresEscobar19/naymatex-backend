@@ -36,7 +36,13 @@
           <td>{{empleado.detalles.nombres}}</td>
           <td>{{empleado.detalles.apellidos}}</td>
           <td>{{empleado.usuario.username}}</td>
-          <td>{{empleado.rol}}</td>
+          <td>
+            {% if empleado.usuario.groups.all %}
+            {% for grupo in empleado.usuario.groups.all %}
+            {{grupo}}<br>
+            {% endfor %}
+            {% endif %}
+          </td>
           <td>
             {%if empleado.usuario.is_active %}
             <span class="text-success">Habilitado</span>
@@ -61,6 +67,8 @@
         {% endif %}
       </tbody>
     </table>
+    <div class="pagination text-center">
+    </div>
   </div>
 </div>
 {% endblock main %}
@@ -69,6 +77,6 @@
 <script src="{% static 'js/DTable.js' %}"></script>
 <script src="{% static 'js/utilsModal.js' %}"></script>
 <script>
-  $(document).ready(init_datatable("tabla-empleados"))
+  $(document).ready(init_pagination({{page_obj.paginator.num_pages}}, {{page_obj.number}}))
 </script>
 {% endblock %}

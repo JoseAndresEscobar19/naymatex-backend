@@ -96,6 +96,9 @@ class EmpleadoForm(forms.ModelForm):
     class Meta:
         model = Empleado
         exclude = ('usuario', 'detalles',)
+        labels = {
+            "imagen": "Foto de perfil"
+        }
         widgets = {
             "codigo": forms.HiddenInput(),
             "estado": forms.HiddenInput(),
@@ -112,8 +115,12 @@ class EmpleadoEditarForm(forms.ModelForm):
     class Meta:
         model = Empleado
         exclude = ('usuario', 'detalles',)
+        labels = {
+            "imagen": "Foto de perfil"
+        }
         widgets = {
             "codigo": forms.HiddenInput(),
+            "imagen": forms.ClearableFileInput(),
         }
 
     def __init__(self, *args, **kwargs):

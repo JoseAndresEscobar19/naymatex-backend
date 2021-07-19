@@ -11,7 +11,11 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+
 import environ
+import firebase_admin
+from firebase_admin import credentials
+
 
 # Load Env file for multiple envs
 env = environ.Env()
@@ -64,6 +68,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# Notificaciones Push FCM
+# cred = credentials.Certificate(Path.joinpath(BASE_DIR, "<keyfilename>.json"))
+# firebase_admin.initialize_app(cred)
+
 CORS_ALLOW_ALL_ORIGINS = True
 
 REST_FRAMEWORK = {
@@ -76,6 +84,7 @@ REST_FRAMEWORK = {
 
 REST_KNOX = {
     'USER_SERIALIZER': 'seguridad.serializers.UserSerializer',
+    'TOKEN_TTL': None
 }
 
 AUTHENTICATION_BACKENDS = [
@@ -145,7 +154,6 @@ AUTH_PASSWORD_VALIDATORS = [
     #     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     # },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/

@@ -6,14 +6,15 @@ from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, UpdateView
 from neymatex.models import *
-from seguridad.forms import UsuarioDetallesForm
 from seguridad.views import EmpleadoPermissionRequieredMixin
+from firebase_admin import messaging
 
 from .forms import NotificacionForm
 
 
 # Create your views here.
 class ListarNotificaciones(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, ListView):
+    paginate_by = 25
     model = Notificacion
     context_object_name = 'notificaciones'
     template_name = "lista_notificacion.html"
@@ -38,77 +39,67 @@ class CrearNotificacion(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, Cr
         context['title'] = self.title
         return context
 
-    # def post(self, request, *args, **kwargs):
-    #     self.object = None
-    #     cliente_form = self.form_class(request.POST)
-    #     usuario_detalles_form = self.user_details_form_class(request.POST)
-    #     if cliente_form.is_valid() and usuario_detalles_form.is_valid():
-    #         detalles = usuario_detalles_form.save()
-    #         cliente = cliente_form.save(commit=False)
-    #         try:
-    #             pre = str(int(self.model.objects.latest('pk').pk+1))
-    #             sec = '0'*(4-len(pre))+pre
-    #         except self.model.DoesNotExist:
-    #             sec = '0001'
-    #         cliente.codigo = sec
-    #         cliente.detalles = detalles
-    #         cliente.save()
-    #         messages.success(request, "Cliente creado con éxito.")
-    #         return HttpResponseRedirect(self.success_url)
-    #     else:
-    #         return self.render_to_response({"form": cliente_form, "user_details_form": usuario_detalles_form, "title": self.title})
+    def post(self, request, *args, **kwargs):
+        print(request.POST)
+        self.object = None
+        form = self.form_class(request.POST, request.FILES)
+        if form.is_valid():
+            notificacion = form.save()
+            for usuario in User.objects.filter(groups__in=notificacion.grupo_usuarios.all()):
+                notificacion.usuarios.add(usuario)
+            # TODO: Implementar funcion para el envio de notificaciones push
+            messages.success(request, "Notificación enviada con éxito.")
+            return HttpResponseRedirect(self.success_url)
+        else:
+            return self.render_to_response({"form": form, "title": self.title})
 
 
-# class EditarCliente(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, UpdateView):
-#     model = Cliente
-#     form_class = ClienteEditarForm
-#     user_details_form_class = UsuarioDetallesForm
-#     template_name = 'cliente_nuevo.html'
-#     title = "Editar Cliente"
-#     success_url = reverse_lazy('neymatex:cliente:listar')
-#     permission_required = 'neymatex.change_cliente'
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         if "user_details_form" not in context:
-#             context['user_details_form'] = self.user_details_form_class(
-#                 instance=self.object.detalles)
-#         context['title'] = self.title
-#         return context
-
-#     def post(self, request, *args, **kwargs):
-#         self.object = self.get_object()
-#         cliente_form = self.form_class(request.POST, instance=self.object)
-#         detalles_form = self.user_details_form_class(
-#             request.POST, instance=self.object.detalles)
-#         if cliente_form.is_valid() and detalles_form.is_valid():
-#             detalles = detalles_form.save()
-#             cliente = cliente_form.save(commit=False)
-#             cliente.detalles = detalles
-#             cliente.save()
-#             messages.success(request, "Cliente editado con éxito.")
-#             return HttpResponseRedirect(self.success_url)
-#         else:
-#             return self.render_to_response({"form": cliente_form, "user_details_form": detalles_form, "title": self.title})
-
-
-@login_required()
-def cliente_confirmar_eliminacion(request, pk):
-    cliente = Cliente.objects.get(id=pk)
+@ login_required()
+def notificacion_reenviar(request, pk):
+    notificacion = Notificacion.objects.get(id=pk)
     if request.POST:
-        cliente.is_active = False
-        cliente.save()
-        messages.success(request, "Cliente desactivado con éxito.")
-        return redirect('neymatex:cliente:listar')
-    return render(request, "ajax/cliente_confirmar_elminar.html", {"cliente": cliente})
+        # TODO: Implementar funcion para el envio de notificaciones push
+        messages.success(request, "Notificación reenviada con éxito.")
+        return redirect('neymatex:notificacion:listar')
+    return render(request, "ajax/notificacion_reenviar.html", {"notificacion": notificacion})
 
 
-@login_required()
-def cliente_confirmar_activar(request, pk):
-    cliente = Cliente.objects.get(id=pk)
-    if request.POST:
-        cliente.is_active = True
-        cliente.save()
-        messages.success(request, "Cliente activado con éxito.")
-        return redirect('neymatex:cliente:listar')
-    return render(request, "ajax/cliente_confirmar_activar.html", {"cliente": cliente})
+def enviar_push_notifications(tokens, title, body, image, data={}):
+    # 500 token per call, need to create diferrent batches
+    max_notification = 500
+    tokens_count = len(tokens)
+    enviados = 0
+    if tokens_count > max_notification:
+        counter = 0
+        last = 0
+        while tokens_count > 0:
+            last = counter
+            if tokens_count >= max_notification:
+                counter += max_notification
+            else:
+                counter += tokens_count
+            message = messaging.MulticastMessage(
+                notification=messaging.Notification(
+                    title=title,
+                    body=body,
+                    image=image
+                ),
+                data=data,
+                tokens=tokens[last:counter],
+            )
+            tokens_count -= max_notification
+            response = messaging.send_multicast(message)
+            enviados += response.success_count
+    else:
+        message = messaging.MulticastMessage(
+            notification=messaging.Notification(
+                title=title,
+                body=body,
+                image=image
+            ),
+            data=data,
+            tokens=tokens,
+        )
+        response = messaging.send_multicast(message)
+        enviados += response.success_count
+    return enviados

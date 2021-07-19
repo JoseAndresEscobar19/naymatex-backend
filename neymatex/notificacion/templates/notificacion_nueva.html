@@ -16,11 +16,18 @@
     <hr>
     <form method="POST" novalidate enctype="multipart/form-data">
       {% csrf_token %}
-      <hr>
       {% crispy form %}
+      <div class="d-none" id="img-cont">
+        <b>Preview de imagen</b>
+        <br>
+        <img id="img-id" src="#" alt="imagen cargada" class="img-thumbnail w-50" />
+      </div>
       <hr>
       <input type="submit" class="btn btn-primary" value="Enviar">
     </form>
   </div>
 </div>
 {% endblock main %}
+{% block specific_scripts %}
+<script type="text/javascript" src="{% static 'js/preview-image.js' %}"></script>
+{% endblock specific_scripts %}

@@ -96,3 +96,14 @@ input:focus {
 .btn-primary:hover {
   background-color: #6b0000 !important;
 }
+
+.page-item.active .page-link {
+  background-color: #920000;
+  border-color: #6b0000;
+}
+.page-link {
+  color: #000;
+}
+.page-link:hover {
+  color: #6b0000;
+}

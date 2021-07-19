@@ -83,5 +83,7 @@ class NotificacionView(viewsets.ReadOnlyModelViewSet):
     serializer_class = NotificacionSerializer
 
     def get_queryset(self):
-        queryset = Notificacion.objects.all()
-        return queryset
+        query_empleado = self.request.query_params.get('emp')
+        if query_empleado:
+            return Notificacion.objects.filter(usuarios__empleado=query_empleado)
+        return Notificacion.objects.none()

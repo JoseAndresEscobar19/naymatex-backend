@@ -20,3 +20,16 @@ function init_datatable(id) {
     },
   });
 }
+function init_pagination(num_pages, current_page) {
+  $(".pagination").twbsPagination({
+    totalPages: num_pages,
+    visiblePages: 10,
+    startPage: current_page,
+    href: true,
+    pageVariable: "page",
+    first: null,
+    last: null,
+    prev: "Anterior",
+    next: "Siguiente",
+  });
+}

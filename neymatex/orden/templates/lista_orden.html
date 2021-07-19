@@ -15,6 +15,7 @@
         <tr>
           <th scope="col">Código</th>
           <th scope="col">Cliente</th>
+          <th scope="col">Nombre referencial</th>
           <th scope="col">Empleado</th>
           <th scope="col">Fecha</th>
           <th scope="col">Subotal</th>
@@ -29,6 +30,7 @@
         <tr class="text-center">
           <td scope="row">{{orden.codigo}}</td>
           <td scope="row">{{orden.cliente}}</td>
+          <td scope="row">{{orden.cliente_referencial}}</td>
           <td scope="row">{{orden.empleado}}</td>
           <td scope="row">{{orden.fecha}}</td>
           <td scope="row">$ {{orden.subtotal}}</td>
@@ -56,6 +58,8 @@
         {% endif %}
       </tbody>
     </table>
+    <div class="pagination text-center">
+    </div>
   </div>
 </div>
 {% endblock main %}
@@ -64,6 +68,6 @@
 <script src="{% static 'js/DTable.js' %}"></script>
 <script src="{% static 'js/utilsModal.js' %}"></script>
 <script>
-  $(document).ready(init_datatable("tabla-orden"))
+  $(document).ready(init_pagination({{page_obj.paginator.num_pages}}, {{page_obj.number}}))
 </script>
 {% endblock %}

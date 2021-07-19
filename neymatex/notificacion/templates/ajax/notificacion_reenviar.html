@@ -1,58 +1,63 @@
 <div class="modal-header">
-  <h5 class="modal-title" id="ordenTitle">Desactivar cliente</h5>
+  <h5 class="modal-title" id="ordenTitle">Reenviar notificación</h5>
   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<form method="POST" action="{% url 'neymatex:cliente:eliminar' cliente.pk %}">
+<form method="POST" action="{% url 'neymatex:notificacion:reenviar' notificacion.pk %}">
   {% csrf_token %}
-
   <div class="modal-body">
-    ¿Desea desactivar el siguiente cliente?
+    ¿Desea reenviar la siguiente notificación?
     <div class="row">
       <div class="col-3">
-        Código
+        Título
       </div>
       <div class="col">
-        {{cliente.codigo}}
+        {{notificacion.title}}
       </div>
     </div>
     <div class="row">
       <div class="col-3">
-        Nombre
+        Mensaje
       </div>
       <div class="col">
-        {{cliente.detalles.nombres}}
+        {{notificacion.body}}
+      </div>
+    </div>
+    {% if notificacion.imagen %}
+    <div class="row">
+      <div class="col-3">
+        Imagen
+      </div>
+      <div class="col">
+        <img src="{{notificacion.imagen.url}}" alt="imagen-notificaion" width="240" height="120">
+      </div>
+    </div>
+    {% endif %}
+    <div class="row">
+      <div class="col-3">
+        Enviado a
+      </div>
+      <div class="col">
+        {% if notificacion.grupo_usuarios %}
+        {% for grupo in notificacion.grupo_usuarios.all %}
+        {{grupo}}<br>
+        {% endfor %}
+        {% endif %}
       </div>
     </div>
     <div class="row">
       <div class="col-3">
-        Apellidos
+        Fecha
       </div>
       <div class="col">
-        {{cliente.detalles.apellidos}}
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-3">
-        Estado
-      </div>
-      <div class="col">
-        {{cliente.get_estado_display}}
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-3">
-        Sexo
-      </div>
-      <div class="col">
-        {{cliente.detalles.get_sexo_display}}
+        {{notificacion.created_at}}
       </div>
     </div>
   </div>
   </div>
   <div class="modal-footer">
     <button class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-    <button id="anular" class="btn btn-danger mr-3" type="submit"> Desactivar </button>
+    <button id="anular" class="btn btn-danger mr-3" type="submit"> Reenviar </button>
   </div>
 </form>

@@ -17,6 +17,7 @@ from .forms import ProductoEditarForm, ProductoForm
 # PRODUCTO
 class ListarProductos(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, ListView):
     # required_permission = 'seguridad'
+    paginate_by = 25
     model = Producto
     context_object_name = 'productos'
     template_name = "lista_producto.html"
