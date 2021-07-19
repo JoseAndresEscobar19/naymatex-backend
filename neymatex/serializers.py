@@ -85,4 +85,4 @@ class OrdenSerializer(serializers.ModelSerializer):
 class NotificacionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notificacion
-        fields = ['id', 'title', 'body', 'imgen', 'created_at']
+        fields = ['id', 'title', 'body', 'imagen', 'created_at']
