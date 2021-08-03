@@ -31,17 +31,16 @@
           <td scope="row">{{forloop.counter}}</td>
           <td>{{notificacion.title}}</td>
           <td>
-            {% if notificacion.grupo_usuarios %}
+            {% if notificacion.grupo_usuarios.all %}
             {% for grupo in notificacion.grupo_usuarios.all %}
             {{grupo}}<br>
             {% endfor %}
-            {% endif %}
-
-            {% if notificacion.usuarios %}
+            {% elif notificacion.usuarios.all %}
             {% for grupo in notificacion.usuarios.all %}
             {{grupo}}<br>
             {% endfor %}
             {% endif %}
+
           </td>
           <td>{{notificacion.created_at}}</td>
           <td>
