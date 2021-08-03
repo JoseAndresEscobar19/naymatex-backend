@@ -36,6 +36,12 @@
             {{grupo}}<br>
             {% endfor %}
             {% endif %}
+
+            {% if notificacion.usuarios %}
+            {% for grupo in notificacion.usuarios.all %}
+            {{grupo}}<br>
+            {% endfor %}
+            {% endif %}
           </td>
           <td>{{notificacion.created_at}}</td>
           <td>

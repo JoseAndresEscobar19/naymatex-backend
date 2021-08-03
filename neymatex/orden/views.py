@@ -86,7 +86,12 @@ class EditarOrden(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, UpdateVi
             orden.calcular_todo()
             orden.save()
 
-            # @TODO Crear/enviar notificacion al vendedor de la orden que se esta modificando
+            # @TODO Crear/enviar notificacion al vendedor de la orden que se esta modificando: DONE
+            notificacion = Notificacion(title="Se ha actualizado uno de tus pedidos",
+                                        body="El pedido {} fue actualizado por {}. Motivo: {}".format(orden.codigo, self.request.user, orden.observaciones))
+            notificacion.save()
+            orden.empleado.usuario.notificaciones.add(notificacion)
+            print(orden.empleado.usuario.notificaciones.all())
             messages.success(
                 request, "Se ha editado el pedido con éxito. Notificación enviada al vendedor")
             return HttpResponseRedirect(self.get_success_url())
