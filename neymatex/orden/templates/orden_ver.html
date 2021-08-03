@@ -3,7 +3,7 @@
 
 {% block main %}
 <div class="row mt-4">
-  <div class="col-12 col-lg-8">
+  <div class="col-12 col-xl-8">
     <h2>
       <div class="row">
         <div class="col-12 col-lg-6">{{title|upper}}</div>
@@ -22,26 +22,35 @@
         Cliente: {{orden.cliente}}
       </div>
       <div class="col-6">
-        Empleado: {{orden.empleado}}
+        Vendedor: {{orden.empleado}}
       </div>
       <div class="col-6">
         Nombre referencial: {{orden.cliente_referencial}}
       </div>
     </div>
     {% if productos %}
-    <table class="table">
+    <table class="table table-responsive-md table-hover">
+      <thead>
+        <tr>
+          <th colspan="2">Producto</th>
+          <th>Cantidad Metros</th>
+          <th>Cantidad Rollos</th>
+          <th>Precio</th>
+        </tr>
+      </thead>
       <tbody>
         {%for detalle in productos%}
         <tr>
           <td>
             {% if detalle.producto.imagen %}
-            <img src="{{detalle.producto.imagen.url}}" alt="" width="80" height="80">
+            <img src="{{detalle.producto.imagen.url}}" alt="product-img" width="80" height="80">
             {% else %}
-            <img src="{% static 'images/default_product.png' %}" alt="" width="80" height="80">
+            <img src="{% static 'images/default_product.png' %}" alt="product-img" width="80" height="80">
             {% endif %}
           </td>
           <td>{{detalle.producto.nombre}}</td>
-          <td>{{detalle.cantidad}}</td>
+          <td>{{detalle.cantidad_metro}} m</td>
+          <td>{{detalle.cantidad_rollo}}</td>
           <td class="text-right">$ {{detalle.valor_total}}</td>
         </tr>
         {%endfor%}
@@ -49,42 +58,64 @@
     </table>
     {% endif %}
     <hr>
-    <div class="d-flex justify-content-end">
-      <div class="col-2">
-        Subtotal
+    <div class="row">
+      <div class="col-md-8 col-4"></div>
+      <div class="col-md-4 col">
+        <div class="d-flex justify-content-end">
+          <div class="col-6">
+            Subtotal
+          </div>
+          <div class="col-6 text-right">
+            $ {{orden.subtotal}}
+          </div>
+        </div>
+        <div class="d-flex justify-content-end">
+          <div class="col-6">
+            IVA (12%)
+          </div>
+          <div class="col-6 text-right">
+            $ {{orden.iva}}
+          </div>
+        </div>
+        <div class="d-flex justify-content-end border-bottom border-dark">
+          <div class="col-6">
+            Descuento
+          </div>
+          <div class="col-6 text-right">
+            - $ {{orden.descuento}}
+          </div>
+        </div>
+        <div class="d-flex justify-content-end">
+          <div class="col-6">
+            Total
+          </div>
+          <div class="col-6 text-right">
+            $ {{orden.valor_total}}
+          </div>
+        </div>
       </div>
-      <div class="col-2 text-right">
-        $ {{orden.subtotal}}
+      {% if orden.observaciones %}
+      <hr>
+      <div class="col-md-12">
+        <label for="observacion">Observaciones:</label>
+        <p>{{ orden.observaciones }}</p>
       </div>
+      <hr>
+      {% endif %}
+      {% if orden.estado == "NPG" %}
+      <div class="col-12">
+        <a class="btn btn-primary use-modal" data-toggle='modal' data-target="#mainModal"
+          data-url="{%url 'neymatex:orden:pagar' orden.pk%}" href="#">Realizar Pago</a>
+        <a class="btn btn-primary" href="{%url 'neymatex:orden:editar' orden.pk%}">Editar Pedido</a>
+        <a class="btn btn-primary use-modal" data-toggle="modal" data-target="#mainModal"
+          data-url="{%url 'neymatex:orden:observacion' orden.pk%}" href="#">Agregar observación</a>
+      </div>
+      {% endif %}
     </div>
-    <div class="d-flex justify-content-end">
-      <div class="col-2">
-        iva (12%)
-      </div>
-      <div class="col-2 text-right">
-        $ {{orden.iva}}
-      </div>
-    </div>
-    <div class="d-flex justify-content-end">
-      <div class="col-2">
-        Descuento
-      </div>
-      <div class="col-2 text-right">
-        - $ {{orden.descuento}}
-      </div>
-    </div>
-    <div class="d-flex justify-content-end">
-      <div class="col-2">
-        Total
-      </div>
-      <div class="col-2 text-right">
-        $ {{orden.valor_total}}
-      </div>
-    </div>
-    <hr>
   </div>
 </div>
 {{form.errors}}
 {% endblock main %}
 {% block specific_scripts %}
-{% endblock specific_scripts %}
+<script src="{% static 'js/utilsModal.js' %}"></script>
+{% endblock %}

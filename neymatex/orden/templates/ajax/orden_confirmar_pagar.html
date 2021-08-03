@@ -1,0 +1,48 @@
+<div class="modal-header">
+  <h5 class="modal-title" id="ordenTitle">Pagar pedido</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form method="POST" action="{% url 'neymatex:orden:pagar' orden.pk %}">
+  {% csrf_token %}
+  <div class="modal-body">
+    ¿Desea el pago del siguiente pedido?
+    <div class="row">
+      <div class="col-3">
+        Código
+      </div>
+      <div class="col">
+        {{orden.codigo}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-3">
+        Cliente
+      </div>
+      <div class="col">
+        {{orden.cliente}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-3">
+        Empleado
+      </div>
+      <div class="col">
+        {{orden.empleado}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-3">
+        Precio
+      </div>
+      <div class="col">
+        $ {{orden.valor_total}}
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-secondary" data-dismiss="modal">Regresar</button>
+    <button id="anular" class="btn btn-danger mr-3" type="submit"> Pagar </button>
+  </div>
+</form>

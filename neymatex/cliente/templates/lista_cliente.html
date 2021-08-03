@@ -1,6 +1,7 @@
 {% extends "main.html" %}
 {% load static %}
 {% block main %}
+{% load crispy_forms_tags %}
 
 <div class="row mt-4">
   <div class="col">
@@ -13,6 +14,9 @@
   <hr>
 </div>
 <div class="row mt-4">
+  <div class="col-12">
+    {% crispy filter.form %}
+  </div>
   <div class="col-12 table-container">
     <table class="table table-responsive-md table-hover text-center" id="tabla-clientes">
       <thead class="thead-light">
@@ -20,20 +24,23 @@
           <th scope="col">Código</th>
           <th scope="col">Nombres</th>
           <th scope="col">Apellidos</th>
+          <th scope="col">Sexo</th>
           <th scope="col">Monto crédito</th>
           <th scope="col">Estado</th>
           <th scope="col">Acciones</th>
         </tr>
       </thead>
       <tbody>
-        {% if clientes %}
-        {% for cliente in clientes %}
+        {% if filter.qs.count %}
+        {% for cliente in filter.qs %}
         <tr class="text-center">
           <td scope="row">{{cliente.codigo}}</td>
           <td>{{cliente.detalles.nombres}}</td>
           <td>{{cliente.detalles.apellidos}}</td>
+          <td>{{ cliente.detalles.get_sexo_display }}</td>
           <td>$ {{cliente.monto_credito|default_if_none:'0,00'}}</td>
           <td>
+            {{cliente.get_estado_display}} -
             {%if cliente.is_active %}
             <span class="text-success">Habilitado</span>
             {%else%}
@@ -54,6 +61,10 @@
           </td>
         </tr>
         {% endfor %}
+        {% else %}
+        <h4>
+          No se encontraron datos.
+        </h4>
         {% endif %}
       </tbody>
     </table>
@@ -64,7 +75,7 @@
 {% endblock main %}
 
 {% block specific_scripts %}
-<script src="{% static 'js/DTable.js' %}"></script>
+<script src="{% static 'js/utilsTable.js' %}"></script>
 <script src="{% static 'js/utilsModal.js' %}"></script>
 <script>
   $(document).ready(init_pagination({{page_obj.paginator.num_pages}}, {{page_obj.number}}))

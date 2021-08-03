@@ -1,9 +1,9 @@
-from django import forms
-from neymatex.models import *
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.forms import UserChangeForm
+from crispy_forms.bootstrap import StrictButton
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Div, Layout, Row, Column
+from crispy_forms.layout import Column, Div, Field, Layout, Row
+from django import forms
+from django.contrib.auth.forms import UserChangeForm, UserCreationForm
+from neymatex.models import *
 
 
 class UsuarioForm(UserCreationForm):
@@ -133,5 +133,42 @@ class EmpleadoEditarForm(forms.ModelForm):
                 'codigo',
                 Column('estado', css_class='col-4'),
                 Column('imagen', css_class='col-8'),
+            ),
+        )
+
+
+class EmpleadoFilterForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'get'
+        self.fields['orden_fechas'].label = "Fechas de ventas"
+        self.fields['orden_monto'].label = "Monto de ventas"
+        self.fields['detalles__sexo'].label = "Sexo del empleado"
+        self.fields['created_at'].label = "Fecha de ingreso"
+
+        self.helper.layout = Layout(
+            Row(
+                Column(
+                    Field('created_at', template="forms/fields/range-filter.html",
+                          css_class="form-control"), css_class='col-12 col-lg-6'
+                ),
+                Column('detalles__sexo', css_class='col-6 col-lg-3'),
+                Column('estado', css_class='col-6 col-lg-3'),
+                Column(
+                    Field('orden_fechas',
+                          template="forms/fields/range-filter.html", css_class="form-control"),
+                    css_class='col-12 col-lg-6'
+                ),
+                Column(
+                    Field('orden_monto',
+                          template="forms/fields/range-filter.html", css_class="form-control", placeholder="$"),
+                    css_class='col-12 col-lg-6'
+                ),
+                Column(
+                    StrictButton("Buscar", type='submit',
+                                 css_class='btn btn-primary mt-1'),
+                    css_class='col-12'
+                )
             ),
         )

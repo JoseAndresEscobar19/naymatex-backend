@@ -1,3 +1,4 @@
+from seguridad.filters import EmpleadoFilter
 from urllib.parse import urlparse
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -11,6 +12,7 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect, render, resolve_url
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, UpdateView
+from django_filters.views import FilterView
 from neymatex.models import Empleado
 
 from seguridad.forms import (EmpleadoEditarForm, EmpleadoForm,
@@ -79,12 +81,13 @@ class EmpleadoPermissionRequieredMixin(PermissionRequiredMixin, AccessMixin):
         )
 
 
-class ListarEmpleados(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, ListView):
+class ListarEmpleados(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, FilterView):
     paginate_by = 25
     model = Empleado
     context_object_name = 'empleados'
     template_name = "lista_empleado.html"
     permission_required = 'neymatex.view_empleado'
+    filterset_class = EmpleadoFilter
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -5,8 +5,11 @@ from .apps import OrdenConfig
 app_name = OrdenConfig.name
 urlpatterns = [
     path('', ListarOrdenes.as_view(), name='listar'),
-    # path('agregar/', CrearOrden.as_view(), name='agregar'),
     path('ver/<pk>/', VerOrden.as_view(), name='ver'),
+    path('editar/<pk>/', EditarOrden.as_view(), name='editar'),
     path('eliminar/<pk>/', orden_confirmar_eliminacion,
-         name='eliminar')
+         name='eliminar'),
+    path('pagar/<pk>/', orden_confirmar_pagar,
+         name='pagar'),
+    path('observacion/<pk>/', orden_observacion, name='observacion'),
 ]

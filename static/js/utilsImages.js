@@ -11,8 +11,16 @@ function upload_img(input) {
   }
 }
 
+function updateImageOnChange(e) {
+  console.log(e.currentTarget.value);
+  console.log(e.currentTarget.parentElement);
+  console.log(e.currentTarget.parentNode);
+}
+
 $(document).ready(function (e) {
   $("input[type=file]").change(function () {
     upload_img(this);
   });
 });
+
+$(document).on("change", ".update-image", updateImageOnChange);

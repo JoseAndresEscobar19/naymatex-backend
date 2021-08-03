@@ -4,7 +4,7 @@
 
 <div class="row mt-4">
   <div class="col">
-    <h2 class="text-left">Notificaciones</h2>
+    <h2 class="text-left">NOTIFICACIONES</h2>
   </div>
   <div class="col">
     <a href="{% url 'neymatex:notificacion:agregar' %}" class="btn btn-primary float-right">Enviar nueva <i
@@ -55,7 +55,7 @@
 {% endblock main %}
 
 {% block specific_scripts %}
-<script src="{% static 'js/DTable.js' %}"></script>
+<script src="{% static 'js/utilsTable.js' %}"></script>
 <script src="{% static 'js/utilsModal.js' %}"></script>
 <script>
   $(document).ready(init_pagination({{page_obj.paginator.num_pages}}, {{page_obj.number}}))

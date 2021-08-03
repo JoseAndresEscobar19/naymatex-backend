@@ -1,0 +1,38 @@
+{% load crispy_forms_tags %}
+
+<div class="modal-header">
+  <h5 class="modal-title" id="ordenTitle">Agregar observaciones al pedido</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form method="POST" id="observacion-form" action="{% url 'neymatex:orden:observacion' orden.pk %}">
+  {% csrf_token %}
+  <div class="modal-body">
+    Ingrese su comentario acontinuación:
+    {% crispy form %}
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+    <button id="anular" class="btn btn-danger mr-3" type="submit"> Agregar </button>
+  </div>
+</form>
+
+<!-- <script>
+  $(document).on('submit', "#observacion-form", function (e) {
+    // Stop form from submitting normally
+    e.preventDefault();
+    var myform = $(this);
+    var url = myform.attr("action");
+    $.ajax({
+      type: 'POST',
+      url: url,
+      data: myform.serialize(),
+    }).fail(function (response) {
+      $('#mainModal .modal-content').html(response.responseText)
+    })
+    //   .done(
+    //     $('#mainModal').modal('toggle');
+    // );
+  })
+</script> -->

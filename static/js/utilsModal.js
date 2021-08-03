@@ -10,8 +10,6 @@ function openModelWithContext(event) {
       success: success,
     },
     success: function (data) {
-      console.log(data);
-      console.log(target + ".modal-content");
       $(target + " .modal-content").html(data);
     },
   });

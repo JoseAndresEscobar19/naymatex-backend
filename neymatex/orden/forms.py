@@ -1,29 +1,77 @@
+from crispy_forms.bootstrap import PrependedText
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Column, Div, Field, Layout, Row
 from django import forms
 from django.db.models import fields
+from django.db.models.expressions import Col
+from django.forms import widgets
+from django.forms.models import modelformset_factory
 from neymatex.models import *
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Row, Column, Div
-from crispy_forms.bootstrap import PrependedText
 
 
-class OrdenForm(forms.ModelForm):
+class OrdenEditarForm(forms.ModelForm):
     class Meta:
         model = Orden
-        fields = "__all__"
+        exclude = ('subtotal', 'iva', 'descuento', 'valor_total')
         labels = {
             "codigo": "Código",
             "estado": 'Estado del Pedido',
+            "cliente_referencial": "Nombre referencial de la orden",
+            "empleado": "Vendedor"
         }
         widgets = {
             "codigo": forms.HiddenInput(),
-            # "fecha": forms.TextInput(),
-            # "cliente": forms.Select(),
-            # "empleado": forms.Select(),
-            # "subtotal": forms.HiddenInput(),
-            # "iva": forms.HiddenInput(),
-            # "descuento": forms.HiddenInput(),
-            # "valor_total": forms.HiddenInput(),
-            "estado": forms.Select(),
+            "estado": forms.HiddenInput(),
+            "observaciones": forms.widgets.Textarea(attrs={"rows": "3"}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.disable_csrf = True
+        self.helper.form_tag = False
+        self.fields['observaciones'].label = "Motivos de cambio"
+        self.fields['observaciones'].required = True
+        self.fields['observaciones'].help_text = "Especifique las razones de la modificación."
+        self.helper.layout = Layout(
+            'codigo',
+            'estado',
+            Column('cliente_referencial', css_class='col-12 col-lg-6'),
+            Column(Field('cliente', css_class="select2"),
+                   css_class='col-12 col-lg-6'),
+            Column(Field('empleado', css_class="select2"),
+                   css_class='col-12 col-lg-6'),
+            Column('observaciones'),
+        )
+
+
+class OrdenObservacionForm(forms.ModelForm):
+    class Meta:
+        model = Orden
+        fields = {'observaciones'}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.disable_csrf = True
+        self.helper.form_tag = False
+        self.fields['observaciones'].label = ''
+        self.fields['observaciones'].required = True
+        self.helper.layout = Layout(
+            Row(
+                Column(Field('observaciones', css_class=""),
+                       css_class='col-12'),
+            )
+        )
+
+
+class DetalleOrdenForm(forms.ModelForm):
+    class Meta:
+        model = DetalleOrden
+        fields = '__all__'
+        widgets = {
+            'orden': forms.HiddenInput(),
+            'valor_total': forms.HiddenInput(),
         }
 
     def __init__(self, *args, **kwargs):
@@ -32,22 +80,15 @@ class OrdenForm(forms.ModelForm):
         self.helper.disable_csrf = True
         self.helper.form_tag = False
         self.helper.layout = Layout(
-            Row(
-                'codigo',
-                'estado',
-                Column('cliente', css_class='col-12 col-lg-4'),
-                Column('empleado', css_class='col-12 col-lg-4'),
-                Column('fecha', css_class='col-12 col-lg-4'),
-                Column('subtotal', css_class='col-12 col-lg-4'),
-                Column('iva', css_class='col-12 col-lg-4'),
-                Column('descuento', css_class='col-12 col-lg-4'),
-                Column('valor_total', css_class='col-12 col-lg-4'),
-            ),
-            # Row(
-            #     Column('unidad', css_class='col-12 col-lg-4'),
-            #     Column('cantidad', css_class='col-12 col-lg-4'),
-            #     Column(PrependedText('precio', '$'),
-            #            css_class='col-12 col-lg-4'),
-            #     Column('imagen', css_class='col-12 col-lg-8'),
-            # ),
+            'id',
+            'orden',
+            'valor_total',
+            Column(Field('producto', css_class="select2 update-image"),
+                   css_class="col-12 col-md-6"),
+            Column('cantidad_metro', css_class="col-lg col-md-3 col-6"),
+            Column('cantidad_rollo', css_class="col-lg col-md-3 col-6"),
         )
+
+
+DetallesOrdenFormset = modelformset_factory(
+    model=DetalleOrden, extra=0, form=DetalleOrdenForm,)

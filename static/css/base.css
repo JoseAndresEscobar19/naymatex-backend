@@ -107,3 +107,10 @@ input:focus {
 .page-link:hover {
   color: #6b0000;
 }
+.dollar-value {
+  white-space: nowrap;
+}
+
+/* .select2-container {
+  width: 100% !important;
+} */

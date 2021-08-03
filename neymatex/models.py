@@ -40,12 +40,17 @@ class Empleado(models.Model):
     estado = models.CharField(max_length=4,
                               choices=Status.choices, default=Status.REGULAR)
     imagen = models.ImageField(upload_to='empeleado/', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.detalles.nombres + ' ' + self.detalles.apellidos
 
 
 class Cliente(models.Model):
+    class Meta:
+        ordering = ['-codigo']
+
     class Status(models.TextChoices):
         EXCELLENT = 'EX', 'Excelente'
         GOOD = 'GD', 'Bueno'
@@ -59,6 +64,8 @@ class Cliente(models.Model):
     monto_credito = models.DecimalField(
         max_digits=6, decimal_places=2, blank=True, null=True, default=0)
     is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.detalles.nombres + ' ' + self.detalles.apellidos
@@ -83,6 +90,9 @@ class Categoria(models.Model):
 
 
 class Producto(models.Model):
+    class Meta:
+        ordering = ['-id']
+
     class Status(models.TextChoices):
         INSTOCK = 'ISK', 'En Stock'
         OUTSTOCK = 'OSK', 'Sin Stock'
@@ -115,6 +125,8 @@ class Producto(models.Model):
     unidad = models.CharField(
         max_length=4, choices=Unidad.choices, default=Unidad.UNIDAD)
     imagen = models.ImageField(upload_to='producto/', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.codigo + " - " + self.nombre
@@ -130,10 +142,11 @@ class Orden(models.Model):
         PAID = 'PAG', 'Pagada'
 
     codigo = models.CharField(max_length=64, blank=True)
-    cliente = models.ForeignKey(Cliente, on_delete=models.SET_NULL, null=True)
+    cliente = models.ForeignKey(
+        Cliente, related_name="ordenes", on_delete=models.SET_NULL, null=True)
     cliente_referencial = models.CharField(max_length=255, blank=True)
     empleado = models.ForeignKey(
-        Empleado, on_delete=models.SET_NULL, null=True)
+        Empleado, related_name="ordenes", on_delete=models.SET_NULL, null=True)
     fecha = models.DateTimeField(auto_now_add=True)
     subtotal = models.DecimalField(max_digits=5, decimal_places=2)
     iva = models.DecimalField(max_digits=5, decimal_places=2, default=0)
@@ -142,6 +155,7 @@ class Orden(models.Model):
         max_digits=5, decimal_places=2, default=0)
     estado = models.CharField(
         max_length=4, choices=Status.choices, default=Status.NOPAG)
+    observaciones = models.TextField(blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -181,9 +195,25 @@ class DetalleOrden(models.Model):
     cantidad_rollo = models.PositiveIntegerField()
     valor_total = models.DecimalField(
         max_digits=5, decimal_places=2, default=0)
+    precioMetroEspecial = models.BooleanField(default=False)
+    precioRolloEspecial = models.BooleanField(default=False)
 
     def __str__(self):
         return self.orden.codigo + " - " + str(self.valor_total)
+
+    def calcular_valor_total_detalle(self):
+        if self.cantidad_metro:
+            valor = self.producto.precioMetro*self.cantidad_metro
+        if self.cantidad_rollo:
+            valor = self.producto.precioRollo*self.cantidad_rollo
+        return valor
+
+    def calcular_valor_total_detalle_especial(self):
+        if self.cantidad_metro:
+            valor = self.producto.precioMetroEspecial*self.cantidad_metro
+        if self.cantidad_rollo:
+            valor = self.producto.precioRolloEspecial*self.cantidad_rollo
+        return valor
 
 
 class Notificacion(models.Model):

@@ -35,7 +35,7 @@
         {% for tipo in tipos_categoria%}
         <div class="col-12 col-md-6 col-xl-4">
           <label for="categoria">{{ tipo.nombre_tipo|capfirst }}</label>
-          <select class="categoria-options form-control {% if form.categoria.errors %}is-invalid {% endif %}">
+          <select class="categoria-options form-control select2 {% if form.categoria.errors %}is-invalid {% endif %}">
             <option value="">-----------</option>
             {% for categoria in tipo.categorias %}
             <option value="{{categoria.id}}">{{categoria.nombre}}</option>
@@ -51,12 +51,12 @@
 </div>
 {% endblock main %}
 {% block specific_scripts %}
-<script type="text/javascript" src="{% static 'js/preview-image.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/utilsImages.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/utilsSelect2.js' %}"></script>
 <script>
   var categoriaValues = []
   $(document).ready(function (e) {
     categoriaValues = $('select#id_categoria').val();
-    console.log(categoriaValues);
     if (categoriaValues.length > 0) {
       $.each(categoriaValues, function (index, val) {
         $('select.categoria-options').each(function () {
@@ -77,7 +77,6 @@
       categoriaValues.push($(this).val());
     })
     $('select#id_categoria').val(categoriaValues);
-    console.log(categoriaValues);
     $('form').submit();
   })
 </script>

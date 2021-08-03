@@ -40,7 +40,6 @@ class CrearNotificacion(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, Cr
         return context
 
     def post(self, request, *args, **kwargs):
-        print(request.POST)
         self.object = None
         form = self.form_class(request.POST, request.FILES)
         if form.is_valid():

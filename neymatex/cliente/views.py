@@ -5,20 +5,24 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, UpdateView
+from django_filters.views import FilterView
 from neymatex.models import *
 from seguridad.forms import UsuarioDetallesForm
 from seguridad.views import EmpleadoPermissionRequieredMixin
 
+from .filters import ClienteFilter
 from .forms import ClienteEditarForm, ClienteForm
 
-
 # Create your views here.
-class ListarClientes(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, ListView):
+
+
+class ListarClientes(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, FilterView):
     paginate_by = 25
     model = Cliente
     context_object_name = 'clientes'
     template_name = "lista_cliente.html"
     permission_required = 'neymatex.view_cliente'
+    filterset_class = ClienteFilter
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
