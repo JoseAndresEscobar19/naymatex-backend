@@ -63,7 +63,10 @@ class OrdenView(viewsets.ModelViewSet):
         query_empleado = self.request.query_params.get('emp')
         query_cliente = self.request.query_params.get('cli')
         query_pag = self.request.query_params.get('estado')
+        query_last = self.request.query_params.get('last')
         queryset = Orden.objects.all()
+        if query_last:
+            queryset = [queryset.latest('pk')]
         if query_pag:
             if query_pag == '0':
                 queryset = queryset.filter(estado=Orden.Status.NOPAG)
