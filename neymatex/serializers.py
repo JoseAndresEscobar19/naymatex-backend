@@ -63,7 +63,8 @@ class DetalleOrdenSerializer(serializers.ModelSerializer):
 
 class OrdenSerializer(serializers.ModelSerializer):
     detalles = DetalleOrdenSerializer(many=True)
-    estado_display = serializers.CharField(source='get_estado_display')
+    estado_display = serializers.CharField(
+        source='get_estado_display', required=False)
 
     class Meta:
         model = Orden
