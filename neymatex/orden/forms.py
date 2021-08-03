@@ -69,6 +69,10 @@ class DetalleOrdenForm(forms.ModelForm):
     class Meta:
         model = DetalleOrden
         fields = '__all__'
+        labels = {
+            'precioMetroEspecial': '¿Usar precio especial para metro?',
+            'precioRolloEspecial': '¿Usar precio especial para rollo?',
+        }
         widgets = {
             'orden': forms.HiddenInput(),
             'valor_total': forms.HiddenInput(),
@@ -87,6 +91,8 @@ class DetalleOrdenForm(forms.ModelForm):
                    css_class="col-12 col-md-6"),
             Column('cantidad_metro', css_class="col-lg col-md-3 col-6"),
             Column('cantidad_rollo', css_class="col-lg col-md-3 col-6"),
+            Column('precioMetroEspecial', css_class="col-auto"),
+            Column('precioRolloEspecial', css_class="col-auto"),
         )
 
 

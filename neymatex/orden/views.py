@@ -78,9 +78,14 @@ class EditarOrden(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, UpdateVi
         detalles_form = self.formset_class(
             request.POST, queryset=self.object.detalles.all())
         if orden_form.is_valid() and detalles_form.is_valid():
-            orden_form.save()
-            detalles_form.save()
-            # @TODO Calcular totales usando valores especiales o normales
+            for d_form in detalles_form:
+                detalle = d_form.save(commit=False)
+                detalle.calcular_valor_total_detalle()
+                detalle.save()
+            orden = orden_form.save(commit=False)
+            orden.calcular_todo()
+            orden.save()
+
             # @TODO Crear/enviar notificacion al vendedor de la orden que se esta modificando
             messages.success(
                 request, "Se ha editado el pedido con éxito. Notificación enviada al vendedor")

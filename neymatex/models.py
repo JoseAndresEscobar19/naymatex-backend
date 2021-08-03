@@ -117,6 +117,8 @@ class Producto(models.Model):
     precioRolloEspecial = models.DecimalField(
         max_digits=6, decimal_places=2, default=0)
     cantidad_metro = models.PositiveIntegerField()
+    cantidad_metro_inicial = models.PositiveIntegerField(
+        default=0, null=True, blank=True)
     cantidad_rollo = models.PositiveIntegerField()
     is_active = models.BooleanField(default=True)
     estado = models.CharField(max_length=4, blank=True,
@@ -176,10 +178,14 @@ class Orden(models.Model):
         self.valor_total = total
         return total
 
-    def save(self, *args, **kwargs):
-        # self.calcular_subtotales()
+    def calcular_todo(self):
+        self.calcular_subtotales()
         self.calcular_iva()
-        # self.calcular_total()
+        self.calcular_total()
+        return self.valor_total
+
+    def save(self, *args, **kwargs):
+        self.calcular_iva()
         return super().save(*args, **kwargs)
 
     def __str__(self):
@@ -201,19 +207,21 @@ class DetalleOrden(models.Model):
     def __str__(self):
         return self.orden.codigo + " - " + str(self.valor_total)
 
-    def calcular_valor_total_detalle(self):
-        if self.cantidad_metro:
-            valor = self.producto.precioMetro*self.cantidad_metro
-        if self.cantidad_rollo:
-            valor = self.producto.precioRollo*self.cantidad_rollo
-        return valor
+    def reducir_stock(self):
+        pass
 
-    def calcular_valor_total_detalle_especial(self):
-        if self.cantidad_metro:
-            valor = self.producto.precioMetroEspecial*self.cantidad_metro
-        if self.cantidad_rollo:
-            valor = self.producto.precioRolloEspecial*self.cantidad_rollo
-        return valor
+    def calcular_valor_total_detalle(self):
+        valor_rollo = valor_metro = 0
+        if self.precioMetroEspecial:
+            valor_metro = self.producto.precioMetroEspecial*self.cantidad_metro
+        else:
+            valor_metro = self.producto.precioMetro*self.cantidad_metro
+        if self.precioRolloEspecial:
+            valor_rollo = self.producto.precioRolloEspecial*self.cantidad_rollo
+        else:
+            valor_rollo = self.producto.precioRollo*self.cantidad_rollo
+        self.valor_total = valor_rollo+valor_metro
+        return self.valor_total
 
 
 class Notificacion(models.Model):
