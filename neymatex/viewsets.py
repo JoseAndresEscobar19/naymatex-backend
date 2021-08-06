@@ -1,5 +1,6 @@
 from django.db.models import Q
 from django.db.models.base import Model
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -58,6 +59,8 @@ class ProductoView(viewsets.ModelViewSet):
 class OrdenView(viewsets.ModelViewSet):
     permission_classes = (permissions.AllowAny,)
     serializer_class = OrdenSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = {'fecha': ['date__range']}
 
     def get_queryset(self):
         query_empleado = self.request.query_params.get('emp')
@@ -72,6 +75,8 @@ class OrdenView(viewsets.ModelViewSet):
                 queryset = queryset.filter(estado=Orden.Status.NOPAG)
             elif query_pag == '1':
                 queryset = queryset.filter(estado=Orden.Status.PAID)
+            elif query_pag == '2':
+                queryset = queryset.filter(estado=Orden.Status.DES)
             elif query_pag == '9':
                 queryset = queryset.filter(estado=Orden.Status.CANCEL)
         if query_cliente:

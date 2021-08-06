@@ -1,10 +1,6 @@
-import json
-from neymatex.producto.filters import OrdenFilter
-
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import request
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
@@ -13,9 +9,7 @@ from django.views.generic import CreateView, ListView, UpdateView
 from django.views.generic.detail import DetailView
 from django_filters.views import FilterView
 from neymatex.models import *
-from neymatex.serializers import TipoCategoriaSerializer
-from neymatex.viewsets import TipoCategoriaView
-from rest_framework.response import Response
+from neymatex.orden.filters import OrdenFilter
 from seguridad.views import EmpleadoPermissionRequieredMixin
 
 from .forms import DetallesOrdenFormset, OrdenEditarForm, OrdenObservacionForm
@@ -118,24 +112,14 @@ def orden_confirmar_pagar(request, pk):
     orden = Orden.objects.get(id=pk)
     if request.POST:
         if orden.validar_stock_orden():
-            # for detalle in orden.detalles.all():
-            #     if detalle.reducir_stock():
-            #         pedido_completado = False
-            #         messages.error(request, "No existe stock para {}. Verifique el pedido e intente nuevamente.".format(
-            #             detalle.producto.nombre))
-            # if not pedido_completado:
-            #     return redirect('neymatex:orden:ver', pk)
-
             orden.estado = Orden.Status.PAID
             orden.reducir_stock_orden()
-            # orden.save()
+            orden.save()
             messages.success(request, "¡¡Pedido Pagado!!")
             return redirect('neymatex:orden:listar')
         else:
             for detalle in orden.detalles.all():
-                print(detalle, "UWU")
                 if not detalle.validar_stock_items():
-                    print(detalle.producto.nombre)
                     messages.error(request, "No existe stock para {}. Verifique el pedido e intente nuevamente.".format(
                         detalle.producto.nombre))
             return redirect('neymatex:orden:ver', pk)

@@ -167,9 +167,9 @@ class Orden(models.Model):
     empleado = models.ForeignKey(
         Empleado, related_name="ordenes", on_delete=models.SET_NULL, null=True)
     cajero = models.ForeignKey(
-        Empleado, related_name="ordenes_pagadas", on_delete=models.SET_NULL, null=True)
+        Empleado, related_name="ordenes_pagadas", on_delete=models.SET_NULL, null=True, blank=True)
     despachador = models.ForeignKey(
-        Empleado, related_name="ordenes_despachadas", on_delete=models.SET_NULL, null=True)
+        Empleado, related_name="ordenes_despachadas", on_delete=models.SET_NULL, null=True, blank=True)
     fecha = models.DateTimeField(auto_now_add=True)
     subtotal = models.DecimalField(max_digits=5, decimal_places=2)
     iva = models.DecimalField(max_digits=5, decimal_places=2, default=0)
