@@ -62,7 +62,7 @@
         $('select.categoria-options').each(function () {
           var found = $('option', this).filter(function () {return this.value == val}).length;
           if (found) {
-            $(this).val(val);
+            $(this).val(val).trigger('change.select2');
             return false;
           }
         })

@@ -2,7 +2,7 @@ from django import forms
 from django.db.models import fields
 from neymatex.models import *
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Row, Column, Div
+from crispy_forms.layout import Field, Layout, Row, Column, Div
 from crispy_forms.bootstrap import AppendedText, PrependedText
 
 
@@ -28,6 +28,7 @@ class ProductoForm(forms.ModelForm):
         widgets = {
             "estado": forms.HiddenInput(),
             "is_active": forms.HiddenInput(),
+            "total_metros": forms.HiddenInput(),
             'descripcion': forms.Textarea(attrs={'rows': 3}),
             'uso': forms.Textarea(attrs={'rows': 2}),
             "categoria": forms.SelectMultiple(),
@@ -43,6 +44,7 @@ class ProductoForm(forms.ModelForm):
             Row(
                 'is_active',
                 'estado',
+                'total_metros',
                 Column('categoria', css_class='col-12 d-none'),
                 Column('codigo', css_class='col-12 col-lg-4'),
                 Column('nombre', css_class='col-12 col-lg-8'),
@@ -87,6 +89,7 @@ class ProductoEditarForm(forms.ModelForm):
             "precioMetroEspecial": 'Precio por metro Especial',
             "precioRollo": 'Precio por rollo',
             "precioRolloEspecial": 'Precio por rollo Especial',
+            "total_metros": "Metros restantes",
         }
         widgets = {
             "estado": forms.Select(attrs={"disabled": True}),
@@ -99,6 +102,7 @@ class ProductoEditarForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields["total_metros"].help_text = "Se actualiza automáticamente"
         self.helper = FormHelper()
         self.helper.disable_csrf = True
         self.helper.form_tag = False
@@ -120,6 +124,9 @@ class ProductoEditarForm(forms.ModelForm):
                 Column(AppendedText('cantidad_metro', 'm'),
                        css_class='col-12 col-lg-6'),
                 Column('cantidad_rollo', css_class='col-12 col-lg-6'),
+                Column(Field('total_metros', readonly=True), css_class='col-6'),
+            ),
+            Row(
                 Column(PrependedText('precioMetro', '$'),
                        css_class='col-12 col-lg-6'),
                 Column(PrependedText('precioMetroEspecial', '$'),

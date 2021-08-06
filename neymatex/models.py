@@ -117,9 +117,9 @@ class Producto(models.Model):
     precioRolloEspecial = models.DecimalField(
         max_digits=6, decimal_places=2, default=0)
     cantidad_metro = models.PositiveIntegerField()
-    cantidad_metro_inicial = models.PositiveIntegerField(
-        default=0, null=True, blank=True)
     cantidad_rollo = models.PositiveIntegerField()
+    total_metros = models.DecimalField(
+        max_digits=6, decimal_places=2, default=0)
     is_active = models.BooleanField(default=True)
     estado = models.CharField(max_length=4, blank=True,
                               choices=Status.choices, default=Status.INSTOCK)
@@ -129,6 +129,22 @@ class Producto(models.Model):
     imagen = models.ImageField(upload_to='producto/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def reducir_stock(self, cant_metro, cant_rollo, commit=True):
+        metro_reducir = cant_metro + (cant_rollo*self.cantidad_metro)
+        self.total_metros -= metro_reducir
+        if commit:
+            self.save()
+        return self.total_metros
+
+    def validar_stock(self, cant_metro, cant_rollo):
+        metro_reducir = cant_metro + (cant_rollo*self.cantidad_metro)
+        if self.total_metros > metro_reducir:
+            print("Si hay stock suficiente")
+            return True
+        else:
+            print("No hay stock suficiente")
+            return False
 
     def __str__(self):
         return self.codigo + " - " + self.nombre
@@ -142,6 +158,7 @@ class Orden(models.Model):
         NOPAG = 'NPG', 'Pendiente de Pago'
         CANCEL = 'CNC', 'Anulada'
         PAID = 'PAG', 'Pagada'
+        DES = 'DES', 'Despachada'
 
     codigo = models.CharField(max_length=64, blank=True)
     cliente = models.ForeignKey(
@@ -149,6 +166,10 @@ class Orden(models.Model):
     cliente_referencial = models.CharField(max_length=255, blank=True)
     empleado = models.ForeignKey(
         Empleado, related_name="ordenes", on_delete=models.SET_NULL, null=True)
+    cajero = models.ForeignKey(
+        Empleado, related_name="ordenes_pagadas", on_delete=models.SET_NULL, null=True)
+    despachador = models.ForeignKey(
+        Empleado, related_name="ordenes_despachadas", on_delete=models.SET_NULL, null=True)
     fecha = models.DateTimeField(auto_now_add=True)
     subtotal = models.DecimalField(max_digits=5, decimal_places=2)
     iva = models.DecimalField(max_digits=5, decimal_places=2, default=0)
@@ -184,6 +205,17 @@ class Orden(models.Model):
         self.calcular_total()
         return self.valor_total
 
+    def validar_stock_orden(self):
+        valido = True
+        for detalle in self.detalles.all():
+            valido = valido and detalle.validar_stock_items()
+        return valido
+
+    def reducir_stock_orden(self):
+        for detalle in self.detalles.all():
+            detalle.reducir_stock_items()
+        return True
+
     def save(self, *args, **kwargs):
         self.calcular_iva()
         return super().save(*args, **kwargs)
@@ -207,8 +239,11 @@ class DetalleOrden(models.Model):
     def __str__(self):
         return self.orden.codigo + " - " + str(self.valor_total)
 
-    def reducir_stock(self):
-        pass
+    def validar_stock_items(self):
+        return self.producto.validar_stock(self.cantidad_metro, self.cantidad_rollo)
+
+    def reducir_stock_items(self):
+        return self.producto.reducir_stock(self.cantidad_metro, self.cantidad_rollo)
 
     def calcular_valor_total_detalle(self):
         valor_rollo = valor_metro = 0
@@ -240,3 +275,5 @@ class Notificacion(models.Model):
 
     def __str__(self):
         return self.title
+
+    # @TODO Enviar notificaciones a las personas asignadas

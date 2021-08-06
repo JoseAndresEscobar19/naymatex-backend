@@ -30,15 +30,6 @@
       {% for detalle, detalle_form in detalles %}
       <hr>
       <div class="form-row">
-        <div class="col-12 col-lg-auto">
-          {% if detalle.producto.imagen %}
-          <img src="{{detalle.producto.imagen.url}}" alt="product-img" id="producto_{{detalle.producto.id}}" width="80"
-            height="80">
-          {% else %}
-          <img src="{% static 'images/default_product.png' %}" id="producto_{{detalle.producto.id}}" alt="product-img"
-            width="80" height="80">
-          {% endif %}
-        </div>
         {% crispy detalle_form %}
       </div>
       {% endfor %}

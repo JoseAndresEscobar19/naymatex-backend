@@ -1,4 +1,4 @@
-from crispy_forms.bootstrap import PrependedText
+from crispy_forms.bootstrap import PrependedText, StrictButton
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Column, Div, Field, Layout, Row
 from django import forms
@@ -89,8 +89,8 @@ class DetalleOrdenForm(forms.ModelForm):
             'valor_total',
             Column(Field('producto', css_class="select2 update-image"),
                    css_class="col-12 col-md-6"),
-            Column('cantidad_metro', css_class="col-lg col-md-3 col-6"),
-            Column('cantidad_rollo', css_class="col-lg col-md-3 col-6"),
+            Column('cantidad_metro', css_class="col-xl col-md-3 col-6"),
+            Column('cantidad_rollo', css_class="col-xl col-md-3 col-6"),
             Column('precioMetroEspecial', css_class="col-auto"),
             Column('precioRolloEspecial', css_class="col-auto"),
         )
@@ -98,3 +98,46 @@ class DetalleOrdenForm(forms.ModelForm):
 
 DetallesOrdenFormset = modelformset_factory(
     model=DetalleOrden, extra=0, form=DetalleOrdenForm,)
+
+
+class OrdenFilterForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'get'
+        self.fields['created_at'].label = "Fecha de creación"
+
+        self.helper.layout = Layout(
+            Row(
+                Column(
+                    Field('created_at', template="forms/fields/range-filter.html",
+                          css_class="form-control"), css_class='col-12 col-lg-6'
+                ),
+                Column('estado', css_class='col-6 col-lg-3'),
+                # Column(
+                #     Field('orden_fechas',
+                #           template="forms/fields/range-filter.html", css_class="form-control"),
+                #     css_class='col-12 col-lg-6'
+                # ),
+                # Column(
+                #     Field('orden_monto',
+                #           template="forms/fields/range-filter.html", css_class="form-control", placeholder="$"),
+                #     css_class='col-12 col-lg-6'
+                # ),
+                # Column(
+                #     Field('orden_cantidad',
+                #           template="forms/fields/range-filter.html", css_class="form-control"),
+                #     css_class='col-12 col-lg-3'
+                # ),
+                # Column(
+                #     Field('monto_credito', template="forms/fields/range-filter.html",
+                #           css_class="form-control", placeholder="$"),
+                #     css_class='col-lg-3 col-6'
+                # ),
+                Column(
+                    StrictButton("Buscar", type='submit',
+                                 css_class='btn btn-primary mt-1'),
+                    css_class='col-12'
+                )
+            ),
+        )

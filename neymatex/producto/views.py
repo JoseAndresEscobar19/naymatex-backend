@@ -3,6 +3,7 @@ import json
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, UpdateView
@@ -47,6 +48,20 @@ class CrearProducto(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, Create
         context['tipos_categoria'] = tipo_categoria
         return context
 
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        producto_form = self.form_class(request.POST)
+        if producto_form.is_valid():
+            producto = producto_form.save(commit=False)
+            producto.total_metros = producto.cantidad_metro*producto.cantidad_rollo
+            producto.save()
+            messages.success(request, "Producto creado con éxito.")
+            return HttpResponseRedirect(self.success_url)
+        else:
+            context = self.get_context_data()
+            context["form"] = producto_form
+            return self.render_to_response(context)
+
 
 class EditarProducto(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, UpdateView):
     model = Producto
@@ -65,6 +80,24 @@ class EditarProducto(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, Updat
                 json.dumps(TipoCategoriaSerializer(tipo).data)))
         context['tipos_categoria'] = tipo_categoria
         return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        actualizar_stock = not(int(request.POST.get('cantidad_metro')) == self.object.cantidad_metro
+                               and int(request.POST.get('cantidad_rollo')) == self.object.cantidad_rollo)
+        producto_form = self.form_class(request.POST, instance=self.object)
+        if producto_form.is_valid():
+            producto = producto_form.save(commit=False)
+            if actualizar_stock:
+                producto.total_metros = producto.cantidad_metro * \
+                    (producto.cantidad_rollo or 1)
+            producto.save()
+            messages.success(request, "Producto editado con éxito.")
+            return HttpResponseRedirect(self.success_url)
+        else:
+            context = self.get_context_data()
+            context["form"] = producto_form
+            return self.render_to_response(context)
 
 
 @login_required()

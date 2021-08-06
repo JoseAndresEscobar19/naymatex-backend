@@ -39,8 +39,12 @@
         Enviado a
       </div>
       <div class="col">
-        {% if notificacion.grupo_usuarios %}
+        {% if notificacion.grupo_usuarios.all %}
         {% for grupo in notificacion.grupo_usuarios.all %}
+        {{grupo}}<br>
+        {% endfor %}
+        {% elif notificacion.usuarios.all %}
+        {% for grupo in notificacion.usuarios.all %}
         {{grupo}}<br>
         {% endfor %}
         {% endif %}

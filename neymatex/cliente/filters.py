@@ -20,7 +20,6 @@ class ClienteFilter(django_filters.FilterSet):
 
     class Meta:
         model = Cliente
-
         fields = ["detalles__sexo",
                   "estado",
                   "monto_credito",

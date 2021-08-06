@@ -1,6 +1,7 @@
 {% extends "main.html" %}
 {% load static %}
 {% block main %}
+{% load crispy_forms_tags %}
 
 <div class="row mt-4">
   <div class="col">
@@ -9,6 +10,9 @@
   <hr>
 </div>
 <div class="row mt-4">
+  <div class="col-12">
+    {% crispy filter.form %}
+  </div>
   <div class="col-12 table-container">
     <table class="table table-responsive-md table-hover text-center" id="tabla-orden">
       <thead class="thead-light">
@@ -25,8 +29,8 @@
         </tr>
       </thead>
       <tbody>
-        {% if ordenes %}
-        {% for orden in ordenes %}
+        {% if filter.qs.count %}
+        {% for orden in filter.qs %}
         <tr class="text-center">
           <td scope="row">{{orden.codigo}}</td>
           <td scope="row">{{orden.cliente}}</td>

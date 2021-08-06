@@ -111,6 +111,12 @@ input:focus {
   white-space: nowrap;
 }
 
+.alert-error {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+}
+
 /* .select2-container {
   width: 100% !important;
 } */
