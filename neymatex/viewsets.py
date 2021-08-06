@@ -69,7 +69,7 @@ class OrdenView(viewsets.ModelViewSet):
         query_last = self.request.query_params.get('last')
         queryset = Orden.objects.all()
         if query_last:
-            queryset = [queryset.latest('pk')]
+            queryset = queryset[:1]
         if query_pag:
             if query_pag == '0':
                 queryset = queryset.filter(estado=Orden.Status.NOPAG)
