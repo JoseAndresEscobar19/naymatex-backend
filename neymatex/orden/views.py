@@ -1,7 +1,11 @@
+import datetime
+import io
+
+import xlsxwriter
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http.response import HttpResponseRedirect
+from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.urls.base import reverse
@@ -29,6 +33,45 @@ class ListarOrdenes(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, Filter
         context = super().get_context_data(**kwargs)
         context['title'] = "Orden"
         return context
+
+    def get(self, request, *args, **kwargs):
+        if request.GET.get("export"):
+            output = io.BytesIO()
+            workbook = xlsxwriter.Workbook(output)
+            worksheet = workbook.add_worksheet('Data')
+            row_num = 0
+            columns = [
+                'codigo',
+                'cliente',
+                'cliente_referencial',
+                'empleado',
+                'cajero',
+                'despachador',
+                'fecha',
+                'subtotal',
+                'iva',
+                'descuento',
+                'valor_total',
+                'estado',
+                'observaciones',
+                'created_at',
+                'updated_at',
+            ]
+            for col_num in range(len(columns)):
+                worksheet.write(row_num, col_num, columns[col_num])
+            # for row in queryset:
+            #     row_num += 1
+            #     worksheet.write_row(row=row_num, col=0, data=row)
+            workbook.close()
+            output.seek(0)
+            response = HttpResponse(
+                output,
+                content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            )
+            response['Content-Disposition'] = 'attachament; filename=' + \
+                'report-'+str(datetime.datetime.now())+'.xlsx'
+            return response
+        return super().get(request, *args, **kwargs)
 
 
 class VerOrden(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, DetailView):

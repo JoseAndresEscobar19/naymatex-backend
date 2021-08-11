@@ -28,6 +28,8 @@
         Nombre referencial: {{orden.cliente_referencial}}
       </div>
     </div>
+  </div>
+  <div class="col-12">
     {% if productos %}
     <table class="table table-responsive-md table-hover">
       <thead>
@@ -35,6 +37,8 @@
           <th colspan="2">Producto</th>
           <th>Cantidad Metros</th>
           <th>Cantidad Rollos</th>
+          <th>Precio Metro</th>
+          <th>Precio Rollo</th>
           <th>Precio</th>
         </tr>
       </thead>
@@ -51,6 +55,8 @@
           <td>{{detalle.producto.nombre}}</td>
           <td>{{detalle.cantidad_metro}} m</td>
           <td>{{detalle.cantidad_rollo}}</td>
+          <td>$ {{detalle.valor_metro}}</td>
+          <td>$ {{detalle.valor_rollo}}</td>
           <td class="text-right">$ {{detalle.valor_total}}</td>
         </tr>
         {%endfor%}

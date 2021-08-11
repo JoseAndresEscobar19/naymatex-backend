@@ -231,10 +231,12 @@ class DetalleOrden(models.Model):
         Producto, on_delete=models.SET_NULL, null=True)
     cantidad_metro = models.PositiveIntegerField()
     cantidad_rollo = models.PositiveIntegerField()
+    valor_metro = models.DecimalField(
+        max_digits=5, decimal_places=2, default=0)
+    valor_rollo = models.DecimalField(
+        max_digits=5, decimal_places=2, default=0)
     valor_total = models.DecimalField(
         max_digits=5, decimal_places=2, default=0)
-    precioMetroEspecial = models.BooleanField(default=False)
-    precioRolloEspecial = models.BooleanField(default=False)
 
     def __str__(self):
         return self.orden.codigo + " - " + str(self.valor_total)
@@ -246,17 +248,14 @@ class DetalleOrden(models.Model):
         return self.producto.reducir_stock(self.cantidad_metro, self.cantidad_rollo)
 
     def calcular_valor_total_detalle(self):
-        valor_rollo = valor_metro = 0
-        if self.precioMetroEspecial:
-            valor_metro = self.producto.precioMetroEspecial*self.cantidad_metro
-        else:
-            valor_metro = self.producto.precioMetro*self.cantidad_metro
-        if self.precioRolloEspecial:
-            valor_rollo = self.producto.precioRolloEspecial*self.cantidad_rollo
-        else:
-            valor_rollo = self.producto.precioRollo*self.cantidad_rollo
+        valor_metro = self.valor_metro*self.cantidad_metro
+        valor_rollo = self.valor_rollo*self.cantidad_rollo
         self.valor_total = valor_rollo+valor_metro
         return self.valor_total
+
+    def save(self, *args, **kwargs):
+        # self.calcular_valor_total_detalle()
+        return super().save(*args, **kwargs)
 
 
 class Notificacion(models.Model):

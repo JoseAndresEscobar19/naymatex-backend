@@ -13,6 +13,10 @@
   <div class="col-12">
     {% crispy filter.form %}
   </div>
+  <form action="" method="export">
+    <input type="hidden" name="export" value="1">
+    <input type="submit" value="test">
+  </form>
   <div class="col-12 table-container">
     <table class="table table-responsive-md table-hover text-center" id="tabla-orden">
       <thead class="thead-light">
@@ -20,7 +24,7 @@
           <th scope="col">Código</th>
           <th scope="col">Cliente</th>
           <th scope="col">Nombre referencial</th>
-          <th scope="col">Empleado</th>
+          <th scope="col">Vendedor</th>
           <th scope="col">Fecha</th>
           <th scope="col">Subotal</th>
           <th scope="col">Total</th>

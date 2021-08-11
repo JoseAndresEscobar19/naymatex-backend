@@ -20,10 +20,10 @@ class ProductoForm(forms.ModelForm):
             "categoria": 'Categorías',
             "imagen": 'Imagen',
             "composicion": 'Composición',
-            "precioMetro": 'Precio por metro',
-            "precioMetroEspecial": 'Precio por metro Especial',
-            "precioRollo": 'Precio por rollo',
-            "precioRolloEspecial": 'Precio por rollo Especial',
+            "precioMetro": 'Precio por metro Min',
+            "precioMetroEspecial": 'Precio por metro Máx',
+            "precioRollo": 'Precio por rollo Min',
+            "precioRolloEspecial": 'Precio por rollo Máx',
         }
         widgets = {
             "estado": forms.HiddenInput(),
@@ -85,10 +85,10 @@ class ProductoEditarForm(forms.ModelForm):
             "cantidad_rollo": 'Cantidad de rollos',
             "categoria": 'Categorías',
             "composicion": 'Composición',
-            "precioMetro": 'Precio por metro',
-            "precioMetroEspecial": 'Precio por metro Especial',
-            "precioRollo": 'Precio por rollo',
-            "precioRolloEspecial": 'Precio por rollo Especial',
+            "precioMetro": 'Precio por metro Min',
+            "precioMetroEspecial": 'Precio por metro Máx',
+            "precioRollo": 'Precio por rollo Min',
+            "precioRolloEspecial": 'Precio por rollo Máx',
             "total_metros": "Metros restantes",
         }
         widgets = {

@@ -1,10 +1,7 @@
-from crispy_forms.bootstrap import PrependedText, StrictButton
+from crispy_forms.bootstrap import AppendedText, PrependedText, StrictButton
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Column, Div, Field, Layout, Row
+from crispy_forms.layout import Column, Field, Layout, Row
 from django import forms
-from django.db.models import fields
-from django.db.models.expressions import Col
-from django.forms import widgets
 from django.forms.models import modelformset_factory
 from neymatex.models import *
 
@@ -70,8 +67,8 @@ class DetalleOrdenForm(forms.ModelForm):
         model = DetalleOrden
         fields = '__all__'
         labels = {
-            'precioMetroEspecial': '¿Usar precio especial para metro?',
-            'precioRolloEspecial': '¿Usar precio especial para rollo?',
+            'valor_metro': 'Precio del metro',
+            'valor_rollo': 'Precio del rollo',
         }
         widgets = {
             'orden': forms.HiddenInput(),
@@ -89,8 +86,13 @@ class DetalleOrdenForm(forms.ModelForm):
             'valor_total',
             Column(Field('producto', css_class="select2 update-image"),
                    css_class="col-12 col-md-6"),
-            Column('cantidad_metro', css_class="col-xl col-md-3 col-6"),
-            Column('cantidad_rollo', css_class="col-xl col-md-3 col-6"),
+            Column(AppendedText('cantidad_metro', 'm'),
+                   css_class="col-xl-3 col-md-3 col-6"),
+            Column('cantidad_rollo', css_class="col-xl-3 col-md-3 col-6"),
+            Column(PrependedText('valor_metro', '$'),
+                   css_class="col-xl-3 col-md-3 col-6"),
+            Column(PrependedText('valor_rollo', '$'),
+                   css_class="col-xl-3 col-md-3 col-6"),
             Column('precioMetroEspecial', css_class="col-auto"),
             Column('precioRolloEspecial', css_class="col-auto"),
         )
@@ -106,6 +108,7 @@ class OrdenFilterForm(forms.Form):
         self.helper = FormHelper()
         self.helper.form_method = 'get'
         self.fields['created_at'].label = "Fecha de creación"
+        self.fields['empleado'].label = "Vendedor"
 
         self.helper.layout = Layout(
             Row(
@@ -114,6 +117,11 @@ class OrdenFilterForm(forms.Form):
                           css_class="form-control"), css_class='col-12 col-lg-6'
                 ),
                 Column('estado', css_class='col-6 col-lg-3'),
+            ),
+            Row(
+                Column('empleado', css_class='col-6 col-lg-3'),
+                Column('cajero', css_class='col-6 col-lg-3'),
+                Column('despachador', css_class='col-6 col-lg-3'),
                 # Column(
                 #     Field('orden_fechas',
                 #           template="forms/fields/range-filter.html", css_class="form-control"),
