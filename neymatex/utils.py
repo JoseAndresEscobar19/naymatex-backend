@@ -12,6 +12,7 @@ def export_excel(columns, queryset, model_name):
     workbook = xlsxwriter.Workbook(output, {'remove_timezone': True})
     worksheet = workbook.add_worksheet('Data')
     row_num = 0
+    columns = list(columns.keys())
     for col_num in range(len(columns)):
         worksheet.write(row_num, col_num, columns[col_num])
     for row in queryset:
