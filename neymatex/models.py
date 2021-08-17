@@ -105,6 +105,7 @@ class Producto(models.Model):
         UNIDAD = 'UND', 'Unidad'
     codigo = models.CharField(max_length=64)
     nombre = models.CharField(max_length=255)
+    alias = models.CharField(max_length=255, default='', blank=True)
     descripcion = models.TextField(blank=True)
     uso = models.TextField(blank=True, default='')
     composicion = models.CharField(max_length=255, default='')

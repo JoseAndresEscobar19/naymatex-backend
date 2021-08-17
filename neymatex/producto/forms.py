@@ -13,6 +13,7 @@ class ProductoForm(forms.ModelForm):
         labels = {
             "codigo": "Código",
             "nombre": 'Nombre',
+            "alias": 'Alias',
             "descripcion": 'Descripción',
             "precio": 'Precio',
             "cantidad_metro": 'Cantidad metros por rollo',
@@ -48,6 +49,7 @@ class ProductoForm(forms.ModelForm):
                 Column('categoria', css_class='col-12 d-none'),
                 Column('codigo', css_class='col-12 col-lg-4'),
                 Column('nombre', css_class='col-12 col-lg-8'),
+                Column('alias', css_class='col-12'),
                 Column('descripcion', css_class='col-12 col-lg-12'),
                 Column('uso', css_class='col-12 col-lg-12'),
                 Column('composicion', css_class='col-12 col-lg-12'),
@@ -79,6 +81,7 @@ class ProductoEditarForm(forms.ModelForm):
         labels = {
             "codigo": "Código",
             "nombre": 'Nombre',
+            "alias": 'Alias',
             "descripcion": 'Descripción',
             "precio": 'Precio',
             "cantidad_metro": 'Cantidad metros por rollo',
@@ -113,6 +116,7 @@ class ProductoEditarForm(forms.ModelForm):
                 Column('estado', css_class='col-12 col-lg-3'),
                 Column('codigo', css_class='col-12 col-lg-3'),
                 Column('nombre', css_class='col-12 col-lg-6'),
+                Column('alias', css_class='col-12'),
                 Column('descripcion', css_class='col-12 col-lg-12'),
                 Column('uso', css_class='col-12 col-lg-12'),
                 Column('composicion', css_class='col-12 col-lg-12'),
