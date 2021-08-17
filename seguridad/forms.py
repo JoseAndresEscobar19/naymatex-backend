@@ -141,12 +141,13 @@ class EmpleadoFilterForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.form_method = 'get'
+        self.helper.form_tag = False
+        self.helper.disable_csrf = True
         self.fields['orden_fechas'].label = "Fechas de ventas"
         self.fields['orden_monto'].label = "Monto de ventas"
         self.fields['detalles__sexo'].label = "Sexo del empleado"
         self.fields['created_at'].label = "Fecha de ingreso"
-
+        self.fields['rol'].label = "Rol del empleado"
         self.helper.layout = Layout(
             Row(
                 Column(
@@ -163,8 +164,9 @@ class EmpleadoFilterForm(forms.Form):
                 Column(
                     Field('orden_monto',
                           template="forms/fields/range-filter.html", css_class="form-control", placeholder="$"),
-                    css_class='col-12 col-lg-6'
+                    css_class='col-12 col-lg-3'
                 ),
+                Column('rol', css_class="'col-6 col-lg-3"),
                 Column(
                     StrictButton("Buscar", type='submit',
                                  css_class='btn btn-primary mt-1'),

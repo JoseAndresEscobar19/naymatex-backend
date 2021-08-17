@@ -1,5 +1,5 @@
-from seguridad.filters import EmpleadoFilter
 from urllib.parse import urlparse
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
@@ -14,7 +14,10 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, UpdateView
 from django_filters.views import FilterView
 from neymatex.models import Empleado
+from neymatex.utils import export_excel, export_pdf
+from reportlab.pdfgen import canvas
 
+from seguridad.filters import EmpleadoFilter
 from seguridad.forms import (EmpleadoEditarForm, EmpleadoForm,
                              UsuarioDetallesForm, UsuarioEditarForm,
                              UsuarioForm)
@@ -93,6 +96,45 @@ class ListarEmpleados(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, Filt
         context = super().get_context_data(**kwargs)
         context['title'] = "Empleados"
         return context
+
+    def get(self, request, *args, **kwargs):
+        if request.GET.get("export"):
+            queryset = self.filterset_class(request.GET,
+                                            queryset=self.model.objects.all()).qs
+            tipo = request.GET.get("export")
+            columns = {
+                'Código': '5%',
+                'Usuario': '7%',
+                'Correo': 'auto',
+                'Cédula': '7%',
+                'Nombres': 'auto',
+                'Apellidos': 'auto',
+                'Teléfono': '7%',
+                'Teléfono 2': '7%',
+                'Direccion': 'auto',
+                'Sexo': '3%',
+                'Estado': '4%',
+                'Fecha de registro': '10%',
+            }
+            fields = [
+                'codigo',
+                'usuario__username',
+                'usuario__email',
+                'detalles__cedula',
+                'detalles__nombres',
+                'detalles__apellidos',
+                'detalles__telefono',
+                'detalles__telefono2',
+                'detalles__direccion',
+                'detalles__sexo',
+                'estado',
+                'created_at',
+            ]
+            if tipo == "pdf":
+                return export_pdf(columns, queryset.values_list(*fields), 'empleados')
+            elif tipo == "xlsx":
+                return export_excel(columns, queryset.values_list(*fields), 'empleados')
+        return super().get(request, *args, **kwargs)
 
 
 class CrearEmpleado(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, CreateView):

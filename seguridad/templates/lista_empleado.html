@@ -15,7 +15,10 @@
 </div>
 <div class="row mt-4">
   <div class="col-12">
-    {% crispy filter.form %}
+    <form method="get">
+      {% crispy filter.form %}
+      {% include "export_records.html" %}
+    </form>
   </div>
   <div class="col-12 table-container">
     <table class="table table-responsive-lg table-hover text-center" id="tabla-empleados">
@@ -85,6 +88,13 @@
 <script src="{% static 'js/utilsTable.js' %}"></script>
 <script src="{% static 'js/utilsModal.js' %}"></script>
 <script>
+  $(".export").click(function () {
+    $("#export").val($(this).data('value'));
+    $('form').submit()
+  });
+  $('button[type="submit"]').click(function (e) {
+    $("#export").val('');
+  })
   $(document).ready(init_pagination({{page_obj.paginator.num_pages}}, {{page_obj.number}}))
 </script>
 {% endblock %}

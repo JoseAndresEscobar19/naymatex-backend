@@ -1,3 +1,4 @@
+from django.contrib.auth.models import Group
 import django_filters
 from django.db.models import Q
 from django.db.models.aggregates import Sum
@@ -14,12 +15,15 @@ class EmpleadoFilter(django_filters.FilterSet):
         method="ordenes_fechas", widget=RangeWidget(attrs={"type": "date"}))
     created_at = django_filters.DateFromToRangeFilter(
         widget=RangeWidget(attrs={"type": "date"}))
+    rol = django_filters.ModelChoiceFilter(
+        queryset=Group.objects.all(), field_name='usuario__groups')
 
     class Meta:
         model = Empleado
         fields = ["detalles__sexo",
                   "estado",
                   "orden_monto",
+                  "rol",
                   "orden_fechas",
                   "created_at",
                   ]

@@ -77,7 +77,8 @@ class ClienteFilterForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.form_method = 'get'
+        self.helper.form_tag = False
+        self.helper.disable_csrf = True
         self.fields['orden_cantidad'].label = "Cantidad de órdenes"
         self.fields['orden_fechas'].label = "Fechas de compra"
         self.fields['orden_monto'].label = "Monto de compra"

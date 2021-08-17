@@ -35,7 +35,8 @@ class Empleado(models.Model):
         NORMAL = 'NR', 'Normal'
         BAD = 'BD', 'Malo'
     codigo = models.CharField(max_length=255, blank=True)
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="empleado")
     detalles = models.ForeignKey(UserDetails, on_delete=models.CASCADE)
     estado = models.CharField(max_length=4,
                               choices=Status.choices, default=Status.REGULAR)

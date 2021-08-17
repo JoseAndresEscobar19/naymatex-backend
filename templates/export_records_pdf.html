@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    @page {
+      size: A4 landscape;
+      margin: 2.5cm 1.5cm 3.5cm 1.5cm;
+    }
+
+    td {
+      padding-top: 2px;
+      border: 1px solid #808080
+    }
+
+  </style>
+</head>
+
+<body>
+  <h1>Reporte {{model_name}}</h1>
+  <table>
+    <tr>
+      {%for header, c_style in columns.items%}
+      <td style="width:{{c_style}};">
+        {{header}}
+      </td>
+      {%endfor%}
+    </tr>
+    {%for row in qs%}
+    <tr>
+      {%for data in row%}
+      <td>{{data}}</td>
+      {%endfor%}
+    </tr>
+    {%endfor%}
+  </table>
+</body>
+
+</html>

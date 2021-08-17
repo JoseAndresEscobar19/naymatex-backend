@@ -93,8 +93,6 @@ class DetalleOrdenForm(forms.ModelForm):
                    css_class="col-xl-3 col-md-3 col-6"),
             Column(PrependedText('valor_rollo', '$'),
                    css_class="col-xl-3 col-md-3 col-6"),
-            Column('precioMetroEspecial', css_class="col-auto"),
-            Column('precioRolloEspecial', css_class="col-auto"),
         )
 
 

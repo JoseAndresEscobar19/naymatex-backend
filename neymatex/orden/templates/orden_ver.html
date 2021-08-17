@@ -13,7 +13,16 @@
     <hr>
     <div class="row mb-3">
       <div class="col-6">
-        Estado: {{orden.get_estado_display}}
+        Estado:
+        {% if orden.estado == "NPG" %}
+        <span class="text-warning font-weight-bold">{{orden.get_estado_display}}</span>
+        {% elif orden.estado == "CNC" %}
+        <span class="text-danger font-weight-bold">{{orden.get_estado_display}}</span>
+        {% elif orden.estado == "PAG" %}
+        <span class="text-success font-weight-bold">{{orden.get_estado_display}}</span>
+        {% elif orden.estado == "DES" %}
+        <span class="text-info font-weight-bold">{{orden.get_estado_display}}</span>
+        {% endif %}
       </div>
       <div class="col-6">
         Fecha: {{orden.fecha}}
@@ -24,6 +33,16 @@
       <div class="col-6">
         Vendedor: {{orden.empleado}}
       </div>
+      {% if orden.cajero %}
+      <div class="col-6">
+        Cajero: {{orden.cajero}}
+      </div>
+      {% endif%}
+      {% if orden.despachador %}
+      <div class="col-6">
+        Despachador: {{orden.despachador}}
+      </div>
+      {% endif %}
       <div class="col-6">
         Nombre referencial: {{orden.cliente_referencial}}
       </div>
@@ -39,7 +58,7 @@
           <th>Cantidad Rollos</th>
           <th>Precio Metro</th>
           <th>Precio Rollo</th>
-          <th>Precio</th>
+          <th class="text-right">Total</th>
         </tr>
       </thead>
       <tbody>
@@ -108,15 +127,22 @@
       </div>
       <hr>
       {% endif %}
-      {% if orden.estado == "NPG" %}
       <div class="col-12">
+        {% if orden.estado != "DES"%}
+        {% if orden.estado == "NPG" %}
         <a class="btn btn-primary use-modal" data-toggle='modal' data-target="#mainModal"
           data-url="{%url 'neymatex:orden:pagar' orden.pk%}" href="#">Realizar Pago</a>
         <a class="btn btn-primary" href="{%url 'neymatex:orden:editar' orden.pk%}">Editar Pedido</a>
+        {% elif orden.estado == "PAG"%}
+        <a class="btn btn-primary use-modal" data-toggle='modal' data-target="#mainModal"
+          data-url="{%url 'neymatex:orden:despachar' orden.pk%}" href="#">Despachar</a>
+        {% endif %}
+        {% if orden.estado != "CNC" %}
         <a class="btn btn-primary use-modal" data-toggle="modal" data-target="#mainModal"
           data-url="{%url 'neymatex:orden:observacion' orden.pk%}" href="#">Agregar observación</a>
+        {% endif %}
+        {% endif %}
       </div>
-      {% endif %}
     </div>
   </div>
 </div>

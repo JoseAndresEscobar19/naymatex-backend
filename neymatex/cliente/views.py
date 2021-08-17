@@ -1,3 +1,4 @@
+from neymatex.utils import export_excel, export_pdf
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -28,6 +29,43 @@ class ListarClientes(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, Filte
         context = super().get_context_data(**kwargs)
         context['title'] = "Clientes"
         return context
+
+    def get(self, request, *args, **kwargs):
+        if request.GET.get("export"):
+            queryset = self.filterset_class(request.GET,
+                                            queryset=self.model.objects.all()).qs
+            tipo = request.GET.get("export")
+            columns = {
+                'Código': '5%',
+                'Cédula': '7%',
+                'Nombres': 'auto',
+                'Apellidos': 'auto',
+                'Teléfono': '7%',
+                'Teléfono 2': '7%',
+                'Direccion': 'auto',
+                'Sexo': '3%',
+                'Estado': '4%',
+                'Monto crédito': '7%',
+                'Fecha de registro': '10%',
+            }
+            fields = [
+                'codigo',
+                'detalles__cedula',
+                'detalles__nombres',
+                'detalles__apellidos',
+                'detalles__telefono',
+                'detalles__telefono2',
+                'detalles__direccion',
+                'detalles__sexo',
+                'estado',
+                'monto_credito',
+                'created_at',
+            ]
+            if tipo == "pdf":
+                return export_pdf(columns, queryset.values_list(*fields), 'clientes')
+            elif tipo == "xlsx":
+                return export_excel(columns, queryset.values_list(*fields), 'clientes')
+        return super().get(request, *args, **kwargs)
 
 
 class CrearCliente(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, CreateView):

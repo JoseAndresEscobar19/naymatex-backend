@@ -34,45 +34,6 @@ class ListarOrdenes(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, Filter
         context['title'] = "Orden"
         return context
 
-    def get(self, request, *args, **kwargs):
-        if request.GET.get("export"):
-            output = io.BytesIO()
-            workbook = xlsxwriter.Workbook(output)
-            worksheet = workbook.add_worksheet('Data')
-            row_num = 0
-            columns = [
-                'codigo',
-                'cliente',
-                'cliente_referencial',
-                'empleado',
-                'cajero',
-                'despachador',
-                'fecha',
-                'subtotal',
-                'iva',
-                'descuento',
-                'valor_total',
-                'estado',
-                'observaciones',
-                'created_at',
-                'updated_at',
-            ]
-            for col_num in range(len(columns)):
-                worksheet.write(row_num, col_num, columns[col_num])
-            # for row in queryset:
-            #     row_num += 1
-            #     worksheet.write_row(row=row_num, col=0, data=row)
-            workbook.close()
-            output.seek(0)
-            response = HttpResponse(
-                output,
-                content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-            )
-            response['Content-Disposition'] = 'attachament; filename=' + \
-                'report-'+str(datetime.datetime.now())+'.xlsx'
-            return response
-        return super().get(request, *args, **kwargs)
-
 
 class VerOrden(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, DetailView):
     model = Orden
@@ -154,19 +115,39 @@ def orden_confirmar_eliminacion(request, pk):
 def orden_confirmar_pagar(request, pk):
     orden = Orden.objects.get(id=pk)
     if request.POST:
-        if orden.validar_stock_orden():
+        if orden.validar_stock_orden() and request.user.empleado.all().count():
             orden.estado = Orden.Status.PAID
+            orden.cajero = request.user.empleado.all()[0]
             orden.reducir_stock_orden()
             orden.save()
             messages.success(request, "¡¡Pedido Pagado!!")
             return redirect('neymatex:orden:listar')
         else:
+            messages.error(
+                request, "Ha ocurrido un error en la transacción. Verifique su usuario")
             for detalle in orden.detalles.all():
                 if not detalle.validar_stock_items():
                     messages.error(request, "No existe stock para {}. Verifique el pedido e intente nuevamente.".format(
                         detalle.producto.nombre))
             return redirect('neymatex:orden:ver', pk)
     return render(request, "ajax/orden_confirmar_pagar.html", {"orden": orden})
+
+
+@login_required()
+def orden_confirmar_despachar(request, pk):
+    orden = Orden.objects.get(id=pk)
+    if request.POST:
+        if request.user.empleado.all().count():
+            orden.estado = Orden.Status.DES
+            orden.despachador = request.user.empleado.all()[0]
+            orden.save()
+            messages.success(request, "¡¡Pedido Despachado!!")
+            return redirect('neymatex:orden:listar')
+        else:
+            messages.error(
+                request, "Ha ocurrido un error en la transacción. Verifique su usuario")
+            return redirect('neymatex:orden:ver', pk)
+    return render(request, "ajax/orden_confirmar_despachar.html", {"orden": orden})
 
 
 @ login_required()

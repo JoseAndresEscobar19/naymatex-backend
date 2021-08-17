@@ -11,5 +11,7 @@ urlpatterns = [
          name='eliminar'),
     path('pagar/<pk>/', orden_confirmar_pagar,
          name='pagar'),
+    path('despachar/<pk>/', orden_confirmar_despachar,
+         name='despachar'),
     path('observacion/<pk>/', orden_observacion, name='observacion'),
 ]

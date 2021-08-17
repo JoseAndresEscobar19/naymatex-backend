@@ -13,10 +13,6 @@
   <div class="col-12">
     {% crispy filter.form %}
   </div>
-  <form action="" method="export">
-    <input type="hidden" name="export" value="1">
-    <input type="submit" value="test">
-  </form>
   <div class="col-12 table-container">
     <table class="table table-responsive-md table-hover text-center" id="tabla-orden">
       <thead class="thead-light">
@@ -48,8 +44,10 @@
             <span class="text-warning font-weight-bold">{{orden.get_estado_display}}</span>
             {% elif orden.estado == "CNC" %}
             <span class="text-danger font-weight-bold">{{orden.get_estado_display}}</span>
-            {% else %}
+            {% elif orden.estado == "PAG" %}
             <span class="text-success font-weight-bold">{{orden.get_estado_display}}</span>
+            {% elif orden.estado == "DES" %}
+            <span class="text-info font-weight-bold">{{orden.get_estado_display}}</span>
             {% endif %}
           </td>
           <td>
