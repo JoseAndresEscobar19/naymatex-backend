@@ -65,11 +65,13 @@ class OrdenSerializer(serializers.ModelSerializer):
     detalles = DetalleOrdenSerializer(many=True)
     estado_display = serializers.CharField(
         source='get_estado_display', required=False)
+    fecha_pagado = serializers.DateTimeField(required=False)
+    fecha_despachado = serializers.DateTimeField(required=False)
 
     class Meta:
         model = Orden
-        fields = ["id", "codigo", "fecha", "estado", "estado_display", "cliente", "cliente_referencial", "empleado",
-                  "subtotal", "iva", "descuento", "valor_total",  "detalles"]
+        fields = ["id", "codigo", "created_at", "fecha_pagado", "fecha_despachado", "estado", "estado_display", "cliente",
+                  "cliente_referencial", "empleado", "subtotal", "iva", "descuento", "valor_total",  "detalles"]
 
     def create(self, validated_data):
         detalles_data = validated_data.pop('detalles')

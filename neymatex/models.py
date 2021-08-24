@@ -154,7 +154,7 @@ class Producto(models.Model):
 
 class Orden(models.Model):
     class Meta:
-        ordering = ['-fecha']
+        ordering = ['-created_at']
 
     class Status(models.TextChoices):
         NOPAG = 'NPG', 'Pendiente de Pago'
@@ -172,7 +172,8 @@ class Orden(models.Model):
         Empleado, related_name="ordenes_pagadas", on_delete=models.SET_NULL, null=True, blank=True)
     despachador = models.ForeignKey(
         Empleado, related_name="ordenes_despachadas", on_delete=models.SET_NULL, null=True, blank=True)
-    fecha = models.DateTimeField(auto_now_add=True)
+    fecha_pagado = models.DateTimeField(null=True, blank=True)
+    fecha_despachado = models.DateTimeField(null=True, blank=True)
     subtotal = models.DecimalField(max_digits=5, decimal_places=2)
     iva = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     descuento = models.DecimalField(max_digits=5, decimal_places=2, default=0)

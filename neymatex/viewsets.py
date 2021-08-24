@@ -60,7 +60,7 @@ class OrdenView(viewsets.ModelViewSet):
     permission_classes = (permissions.AllowAny,)
     serializer_class = OrdenSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = {'fecha': ['date__range']}
+    filterset_fields = {'created_at': ['date__range']}
 
     def get_queryset(self):
         query_empleado = self.request.query_params.get('emp')

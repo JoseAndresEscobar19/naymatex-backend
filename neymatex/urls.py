@@ -6,6 +6,9 @@ app_name = NeymatexConfig.name
 
 urlpatterns = [
     path('', home, name="principal"),
+    path('ajax-filtro-ventas', dashboard_filter_ventas, name='dashboard_ventas'),
+    path('ajax-filtro-recaudacion', dashboard_filter_recaudacion,
+         name='dashboard_recaudacion'),
     # Clientes
     path('clientes/', include('neymatex.cliente.urls', namespace="cliente")),
     # Producto

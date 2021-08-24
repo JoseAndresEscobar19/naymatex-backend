@@ -1,4 +1,4 @@
-import datetime
+from django.utils import timezone
 import io
 
 import xlsxwriter
@@ -118,6 +118,7 @@ def orden_confirmar_pagar(request, pk):
         if orden.validar_stock_orden() and request.user.empleado.all().count():
             orden.estado = Orden.Status.PAID
             orden.cajero = request.user.empleado.all()[0]
+            orden.fecha_pagado = timezone.now().astimezone()
             orden.reducir_stock_orden()
             orden.save()
             messages.success(request, "¡¡Pedido Pagado!!")
@@ -140,6 +141,7 @@ def orden_confirmar_despachar(request, pk):
         if request.user.empleado.all().count():
             orden.estado = Orden.Status.DES
             orden.despachador = request.user.empleado.all()[0]
+            orden.fecha_despachado = timezone.now().astimezone()
             orden.save()
             messages.success(request, "¡¡Pedido Despachado!!")
             return redirect('neymatex:orden:listar')

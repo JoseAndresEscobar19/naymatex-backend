@@ -1,3 +1,53 @@
 {% extends "main.html" %}
+{% load static %}
+{% block specific_head %}
+<link rel="stylesheet" href="{% static 'css/daterangepicker.css' %}">
+{% endblock specific_head %}
 {% block main %}
+<div class="row mt-4">
+  <div class="col-12">
+    <div class="row">
+    </div>
+    <div class="row">
+      <div class="col-12 col-lg">
+        <h2>Cantidad de ventas</h2>
+        <div class="row">
+          <div class="col-lg-8 col-12">
+            <input type="text" name="fecha_ventas" id="id_fecha_ventas" data-url="{% url 'neymatex:dashboard_ventas' %}"
+              class="daterange form-control" placeholder="Hoy">
+          </div>
+          <div class="col col-lg border border-dark text-center">
+            <h4 class=" m-0" id="cantidad_ventas"></h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-lg-8">
+        <canvas id="ventas-semana" width="100%" height="40px"></canvas>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-12 col-lg-8">
+        <canvas id="dinero-semana" width="100%" height="40px"></canvas>
+      </div>
+      <div class="col-12 col-lg">
+        <h2>Dinero recaudado</h2>
+        <div class="row">
+          <div class="col-lg-8 col-12">
+            <input type="text" name="fecha_ventas" id="id_fecha_dinero"
+              data-url="{% url 'neymatex:dashboard_recaudacion' %}" class="daterange form-control" placeholder="Hoy">
+          </div>
+          <div class="col col-lg border border-dark text-center">
+            <h5 class=" m-0" id="cantidad_dinero"></h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock main %}
+{% block specific_scripts %}
+<script src="{% static 'js/chart.min.js' %}"></script>
+<script src="{% static 'js/moment.min.js' %}"></script>
+<script src="{% static 'js/daterangepicker.min.js' %}"></script>
+<script src="{% static 'js/utilsCharts.js' %}"></script>
+{% endblock specific_scripts %}

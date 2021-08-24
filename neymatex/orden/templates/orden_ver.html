@@ -25,22 +25,28 @@
         {% endif %}
       </div>
       <div class="col-6">
-        Fecha: {{orden.fecha}}
-      </div>
-      <div class="col-6">
         Cliente: {{orden.cliente}}
       </div>
       <div class="col-6">
         Vendedor: {{orden.empleado}}
       </div>
+      <div class="col-6">
+        Fecha pedido: {{orden.created_at}}
+      </div>
       {% if orden.cajero %}
       <div class="col-6">
         Cajero: {{orden.cajero}}
+      </div>
+      <div class="col-6">
+        Fecha pagado: {{orden.fecha_pagado}}
       </div>
       {% endif%}
       {% if orden.despachador %}
       <div class="col-6">
         Despachador: {{orden.despachador}}
+      </div>
+      <div class="col-6">
+        Fecha despachado: {{orden.fecha_despachado}}
       </div>
       {% endif %}
       <div class="col-6">

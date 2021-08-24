@@ -1,4 +1,5 @@
-import datetime
+from django.utils import timezone
+
 import io
 
 import xlsxwriter
@@ -24,7 +25,7 @@ def export_excel(columns, queryset, model_name):
     workbook.close()
     output.seek(0)
     filename = 'reporte-{}-{}.{}'.format(model_name,
-                                         str(datetime.datetime.now()), 'xlsx')
+                                         str(timezone.now().astimezone()), 'xlsx')
     response = FileResponse(
         output,
         as_attachment=True,
@@ -36,7 +37,7 @@ def export_excel(columns, queryset, model_name):
 def export_pdf(columns, queryset, model_name):
     output = io.BytesIO()
     filename = 'reporte-{}-{}.{}'.format(model_name,
-                                         str(datetime.datetime.now()), 'pdf')
+                                         str(timezone.now().astimezone()), 'pdf')
     context = {'columns': columns, 'qs': queryset, 'model_name': model_name}
     template = get_template('export_records_pdf.html')
     html = template.render(context)
