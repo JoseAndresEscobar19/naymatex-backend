@@ -37,6 +37,15 @@ function create_chart(id_canvas) {
       ],
     },
     options: {
+      plugins: {
+        legend: {
+          position: "top",
+        },
+        title: {
+          display: true,
+          text: "Chart",
+        },
+      },
       scales: {
         y: {
           beginAtZero: true,
@@ -78,7 +87,10 @@ function filtro_ventas(start, end) {
   }).always(function (res) {
     if (res.status == 200) {
       $("#cantidad_ventas").text(res.data.ventas_rango);
+      $("#metros_ventas").text(res.data.ventas_metros);
+      $("#rollos_ventas").text(res.data.ventas_rollos);
       chart_ventas.data = res.data.data_chart;
+      chart_ventas.options.plugins.title.text = res.data.chart_title;
       chart_ventas.update();
     } else {
       console.error(res.data);
@@ -97,6 +109,7 @@ function filtro_dinero(start, end) {
     if (res.status == 200) {
       $("#cantidad_dinero").text(res.data.dinero_rango);
       chart_dinero.data = res.data.data_chart;
+      chart_dinero.options.plugins.title.text = res.data.chart_title;
       chart_dinero.update();
     } else {
       console.error(res.data);

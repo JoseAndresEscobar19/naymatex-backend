@@ -20,7 +20,7 @@
         <div class="col-12 col-lg-6">
           <div class="form-group">
             <label for="my-select">Fecha</label>
-            <input class="form-control" readonly value="{{ orden.fecha }}">
+            <input class="form-control" readonly value="{{ orden.created_at }}">
           </div>
         </div>
         {% crispy form %}

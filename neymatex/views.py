@@ -41,60 +41,8 @@ class PersonalPermissionRequieredMixin(PermissionRequiredMixin, AccessMixin):
 
 @login_required
 def home(request):
-    current_week = datetime.date.today().isocalendar()[1]
-    domingo = Orden.objects.filter(
-        estado=Orden.Status.PAID, fecha_pagado__week=current_week, fecha_pagado__week_day=1).count()
-    lunes = Orden.objects.filter(
-        estado=Orden.Status.PAID, fecha_pagado__week=current_week, fecha_pagado__week_day=2).count()
-    martes = Orden.objects.filter(
-        estado=Orden.Status.PAID, fecha_pagado__week=current_week, fecha_pagado__week_day=3).count()
-    miercoles = Orden.objects.filter(
-        estado=Orden.Status.PAID, fecha_pagado__week=current_week, fecha_pagado__week_day=4).count()
-    jueves = Orden.objects.filter(
-        estado=Orden.Status.PAID, fecha_pagado__week=current_week, fecha_pagado__week_day=5).count()
-    viernes = Orden.objects.filter(
-        estado=Orden.Status.PAID, fecha_pagado__week=current_week, fecha_pagado__week_day=6).count()
-    sabado = Orden.objects.filter(
-        estado=Orden.Status.PAID, fecha_pagado__week=current_week, fecha_pagado__week_day=7).count()
-
-    domingo_dinero = Orden.objects.filter(
-        estado=Orden.Status.PAID, fecha_pagado__week=current_week, fecha_pagado__week_day=1).annotate(total_dinero=Sum('valor_total'))
-    lunes_dinero = Orden.objects.filter(
-        estado=Orden.Status.PAID, fecha_pagado__week=current_week, fecha_pagado__week_day=2).annotate(total_dinero=Sum('valor_total'))
-    martes_dinero = Orden.objects.filter(
-        estado=Orden.Status.PAID, fecha_pagado__week=current_week, fecha_pagado__week_day=3).annotate(total_dinero=Sum('valor_total'))
-    miercoles_dinero = Orden.objects.filter(
-        estado=Orden.Status.PAID, fecha_pagado__week=current_week, fecha_pagado__week_day=4).annotate(total_dinero=Sum('valor_total'))
-    jueves_dinero = Orden.objects.filter(
-        estado=Orden.Status.PAID, fecha_pagado__week=current_week, fecha_pagado__week_day=5).annotate(total_dinero=Sum('valor_total'))
-    viernes_dinero = Orden.objects.filter(
-        estado=Orden.Status.PAID, fecha_pagado__week=current_week, fecha_pagado__week_day=6).annotate(total_dinero=Sum('valor_total'))
-    sabado_dinero = Orden.objects.filter(
-        estado=Orden.Status.PAID, fecha_pagado__week=current_week, fecha_pagado__week_day=7).annotate(total_dinero=Sum('valor_total'))
-
     context = {
         'title': 'Principal',
-        'hoy': Orden.objects.filter(estado=Orden.Status.PAID,
-                                    fecha_pagado__date=timezone.now().astimezone().date()).count(),
-        'semana': [
-            lunes,
-            martes,
-            miercoles,
-            jueves,
-            viernes,
-            sabado,
-            domingo,
-        ],
-        'hoy_dinero': Orden.objects.filter(estado=Orden.Status.PAID, fecha_pagado__date=timezone.now().astimezone().date()).aggregate(total_dinero=Sum('valor_total')),
-        'semana_dinero': [
-            lunes_dinero,
-            martes_dinero,
-            miercoles_dinero,
-            jueves_dinero,
-            viernes_dinero,
-            sabado_dinero,
-            domingo_dinero,
-        ],
     }
     return render(request, 'principal.html', context)
 
@@ -149,13 +97,20 @@ def dashboard_filter_ventas(request):
 
         ventas_rango = Orden.objects.filter(estado__in=[Orden.Status.PAID, Orden.Status.DES],
                                             fecha_pagado__date__gte=fecha_inicio, fecha_pagado__date__lte=fecha_fin).count()
+        ventas_metros_rollos_rango = Orden.objects.filter(estado__in=[Orden.Status.PAID, Orden.Status.DES],
+                                                          fecha_pagado__date__gte=fecha_inicio, fecha_pagado__date__lte=fecha_fin).aggregate(total_metros=Sum('detalles__cantidad_metro'), total_rollos=Sum('detalles__cantidad_rollo'))
+        venta_metros, venta_rollos = ventas_metros_rollos_rango[
+            'total_metros'], ventas_metros_rollos_rango['total_rollos']
         return JsonResponse({
             'data': {
+                'ventas_metros': venta_metros,
+                'ventas_rollos': venta_rollos,
                 'ventas_rango': ventas_rango,
+                'chart_title': titulo,
                 'data_chart': {
                     'labels': labels,
                     'datasets': [{
-                        'label': titulo,
+                        'label': '# Ventas',
                         'data': dataset,
                         'backgroundColor': ["rgba(255, 99, 132, 0.2)"],
                         'borderColor': ["rgba(255, 99, 132, 1)"],
@@ -184,7 +139,7 @@ def dashboard_filter_recaudacion(request):
             fecha_fin = datetime.datetime.strptime(fecha_fin, '%Y-%m-%d')
             labels = []
             dataset = []
-            titulo = '# Recaudación entre {} - {}'.format(
+            titulo = '$ Recaudado entre {} - {}'.format(
                 str(fecha_inicio.date().strftime('%d/%m/%Y')), str(fecha_fin.date().strftime('%d/%m/%Y')))
             for fecha in daterange(fecha_inicio, fecha_fin):
                 labels.append("{}/{}".format(fecha.day, fecha.month))
@@ -208,21 +163,21 @@ def dashboard_filter_recaudacion(request):
                 estado=Orden.Status.PAID, fecha_pagado__week=current_week, fecha_pagado__week_day=6).aggregate(total_dinero=Sum('valor_total'))['total_dinero'] or 0
             sabado = Orden.objects.filter(
                 estado=Orden.Status.PAID, fecha_pagado__week=current_week, fecha_pagado__week_day=7).aggregate(total_dinero=Sum('valor_total'))['total_dinero'] or 0
-            titulo = '# Recaudación esta semana'
+            titulo = '$ Recaudado esta semana'
             labels = ['Lunes', 'Martes', 'Miércoles',
                       'Jueves', 'Viernes', 'Sábado', 'Domingo']
             dataset = [lunes, martes, miercoles,
                        jueves, viernes, sabado, domingo]
-            print(dataset)
         dinero_rango = Orden.objects.filter(estado__in=[Orden.Status.PAID, Orden.Status.DES],
                                             fecha_pagado__date__gte=fecha_inicio, fecha_pagado__date__lte=fecha_fin).aggregate(total_dinero=Sum('valor_total'))['total_dinero'] or 0
         return JsonResponse({
             'data': {
                 'dinero_rango': "${}".format(dinero_rango),
+                'chart_title': titulo,
                 'data_chart': {
                     'labels': labels,
                     'datasets': [{
-                        'label': titulo,
+                        'label': '$ Recaudado',
                         'data': dataset,
                         'backgroundColor': ["rgba(0, 153, 51, 0.2)"],
                         'borderColor': ["rgba(0, 153, 51, 1)"],
