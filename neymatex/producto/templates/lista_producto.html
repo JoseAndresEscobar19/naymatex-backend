@@ -1,7 +1,8 @@
 {% extends "main.html" %}
 {% load static %}
-{% block main %}
+{% load crispy_forms_tags %}
 
+{% block main %}
 <div class="row mt-4">
   <div class="col">
     <h2 class="text-left">PRODUCTOS</h2>
@@ -14,30 +15,39 @@
   <hr>
 </div>
 <div class="row mt-4">
+  <div class="col-12">
+    <form method="get">
+      {% crispy filter.form %}
+    </form>
+  </div>
   <div class="col-12 table-container">
     <table class="table table-responsive-md table-hover text-center" id="tabla-producto">
       <thead class="thead-light">
         <tr>
           <th scope="col">Código</th>
           <th scope="col">Nombre</th>
+          <th scope="col">Alias</th>
           <th scope="col">Precio Metro</th>
           <th scope="col">Precio Rollo</th>
           <th scope="col">Cantidad metros</th>
           <th scope="col">Cantidad rollos</th>
+          <th scope="col">Metros restantes</th>
           <th scope="col">Estado</th>
           <th scope="col">Acciones</th>
         </tr>
       </thead>
       <tbody>
-        {% if productos %}
-        {% for producto in productos %}
+        {% if page_obj %}
+        {% for producto in page_obj %}
         <tr class="text-center">
           <td scope="row">{{producto.codigo}}</td>
           <td scope="row">{{producto.nombre}}</td>
+          <td scope="row">{{producto.alias}}</td>
           <td scope="row">$ {{producto.precioMetro}} - {{producto.precioMetroEspecial}}</td>
           <td scope="row">$ {{producto.precioRollo}} - {{producto.precioRolloEspecial}}</td>
           <td scope="row">{{producto.cantidad_metro}}</td>
           <td scope="row">{{producto.cantidad_rollo}}</td>
+          <td scope="row">{{producto.total_metros}}m</td>
           <td scope="row">
             {% if producto.estado == "ISK" %}
             <span class="text-success font-weight-bold">{{producto.get_estado_display}}</span>
@@ -59,19 +69,19 @@
           </td>
         </tr>
         {% endfor %}
+        {% else %}
+        <h4>
+          No se encontraron datos.
+        </h4>
         {% endif %}
       </tbody>
     </table>
-    <div class="pagination text-center">
-    </div>
+    {% include "pagination.html" %}
   </div>
 </div>
 {% endblock main %}
 
 {% block specific_scripts %}
-<script src="{% static 'js/utilsTable.js' %}"></script>
 <script src="{% static 'js/utilsModal.js' %}"></script>
-<script>
-  $(document).ready(init_pagination({{page_obj.paginator.num_pages}}, {{page_obj.number}}))
 </script>
 {% endblock %}

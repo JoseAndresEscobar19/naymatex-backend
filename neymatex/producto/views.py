@@ -7,7 +7,9 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, UpdateView
+from django_filters.views import FilterView
 from neymatex.models import *
+from neymatex.producto.filter import ProductoFilter
 from neymatex.serializers import TipoCategoriaSerializer
 from seguridad.views import EmpleadoPermissionRequieredMixin
 
@@ -16,13 +18,13 @@ from .forms import ProductoEditarForm, ProductoForm
 
 # Create your views here.
 # PRODUCTO
-class ListarProductos(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, ListView):
-    # required_permission = 'seguridad'
-    paginate_by = 25
+class ListarProductos(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, FilterView):
+    paginate_by = 20
     model = Producto
     context_object_name = 'productos'
     template_name = "lista_producto.html"
     permission_required = 'neymatex.view_producto'
+    filterset_class = ProductoFilter
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

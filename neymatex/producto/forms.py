@@ -1,9 +1,9 @@
+from crispy_forms.bootstrap import AppendedText, PrependedText, StrictButton
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Column, Div, Field, Layout, Row
 from django import forms
 from django.db.models import fields
 from neymatex.models import *
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Field, Layout, Row, Column, Div
-from crispy_forms.bootstrap import AppendedText, PrependedText
 
 
 class ProductoForm(forms.ModelForm):
@@ -140,5 +140,25 @@ class ProductoEditarForm(forms.ModelForm):
                 Column(PrependedText('precioRolloEspecial', '$'),
                        css_class='col-12 col-lg-6'),
                 Column('imagen', css_class='col-12'),
+            ),
+        )
+
+
+class ProductoFilterForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'get'
+        self.fields['nombre__icontains'].label = "Nombre Producto"
+        self.fields['alias__icontains'].label = "Alias del producto"
+        self.helper.layout = Layout(
+            Row(
+                Column('nombre__icontains', css_class='col-6 col-lg-3'),
+                Column('alias__icontains', css_class='col-6 col-lg-3'),
+                Column(
+                    StrictButton("Buscar", type='submit',
+                                 css_class='btn btn-primary mt-1'),
+                    css_class='col-12'
+                )
             ),
         )

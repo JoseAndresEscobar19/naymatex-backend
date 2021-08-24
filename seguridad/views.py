@@ -85,7 +85,7 @@ class EmpleadoPermissionRequieredMixin(PermissionRequiredMixin, AccessMixin):
 
 
 class ListarEmpleados(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, FilterView):
-    paginate_by = 25
+    paginate_by = 20
     model = Empleado
     context_object_name = 'empleados'
     template_name = "lista_empleado.html"

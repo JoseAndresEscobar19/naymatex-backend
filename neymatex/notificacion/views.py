@@ -14,7 +14,7 @@ from .forms import NotificacionForm
 
 # Create your views here.
 class ListarNotificaciones(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, ListView):
-    paginate_by = 25
+    paginate_by = 20
     model = Notificacion
     context_object_name = 'notificaciones'
     template_name = "lista_notificacion.html"

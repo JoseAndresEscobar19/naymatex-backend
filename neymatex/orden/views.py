@@ -1,14 +1,15 @@
-from django.utils import timezone
 import io
 
 import xlsxwriter
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import Paginator
 from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.urls.base import reverse
+from django.utils import timezone
 from django.views.generic import CreateView, ListView, UpdateView
 from django.views.generic.detail import DetailView
 from django_filters.views import FilterView
@@ -22,7 +23,7 @@ from .forms import DetallesOrdenFormset, OrdenEditarForm, OrdenObservacionForm
 # Create your views here.
 # PEDIDOS
 class ListarOrdenes(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, FilterView):
-    paginate_by = 25
+    paginate_by = 20
     model = Orden
     context_object_name = 'ordenes'
     template_name = "lista_orden.html"

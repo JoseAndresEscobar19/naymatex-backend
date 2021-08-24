@@ -18,7 +18,7 @@ from .forms import ClienteEditarForm, ClienteForm
 
 
 class ListarClientes(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, FilterView):
-    paginate_by = 25
+    paginate_by = 20
     model = Cliente
     context_object_name = 'clientes'
     template_name = "lista_cliente.html"

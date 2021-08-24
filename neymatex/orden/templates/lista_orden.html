@@ -29,8 +29,8 @@
         </tr>
       </thead>
       <tbody>
-        {% if filter.qs.count %}
-        {% for orden in filter.qs %}
+        {% if page_obj %}
+        {% for orden in page_obj %}
         <tr class="text-center">
           <td scope="row">{{orden.codigo}}</td>
           <td scope="row">{{orden.cliente}}</td>
@@ -61,19 +61,18 @@
           </td>
         </tr>
         {% endfor %}
+        {% else %}
+        <h4>
+          No se encontraron datos.
+        </h4>
         {% endif %}
       </tbody>
     </table>
-    <div class="pagination text-center">
-    </div>
+    {% include "pagination.html" %}
   </div>
 </div>
 {% endblock main %}
 
 {% block specific_scripts %}
-<script src="{% static 'js/utilsTable.js' %}"></script>
 <script src="{% static 'js/utilsModal.js' %}"></script>
-<script>
-  $(document).ready(init_pagination({{page_obj.paginator.num_pages}}, {{page_obj.number}}))
-</script>
 {% endblock %}

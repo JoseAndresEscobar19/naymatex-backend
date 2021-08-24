@@ -35,8 +35,8 @@
         </tr>
       </thead>
       <tbody>
-        {% if filter.qs.count %}
-        {% for empleado in filter.qs %}
+        {% if page_obj %}
+        {% for empleado in page_obj %}
         <tr class="text-center">
           <td scope="row">{{empleado.codigo}}</td>
           <td>{{empleado.usuario.username}}</td>
@@ -78,14 +78,12 @@
         {% endif %}
       </tbody>
     </table>
-    <div class="pagination text-center">
-    </div>
+    {% include "pagination.html" %}
   </div>
 </div>
 {% endblock main %}
 
 {% block specific_scripts %}
-<script src="{% static 'js/utilsTable.js' %}"></script>
 <script src="{% static 'js/utilsModal.js' %}"></script>
 <script>
   $(".export").click(function () {
@@ -95,6 +93,5 @@
   $('button[type="submit"]').click(function (e) {
     $("#export").val('');
   })
-  $(document).ready(init_pagination({{page_obj.paginator.num_pages}}, {{page_obj.number}}))
 </script>
 {% endblock %}

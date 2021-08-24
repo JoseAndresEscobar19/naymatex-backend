@@ -63,7 +63,7 @@ class Cliente(models.Model):
     estado = models.CharField(max_length=4, blank=True,
                               choices=Status.choices, default=Status.REGULAR)
     monto_credito = models.DecimalField(
-        max_digits=6, decimal_places=2, blank=True, null=True, default=0)
+        max_digits=7, decimal_places=2, blank=True, null=True, default=0)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -111,17 +111,17 @@ class Producto(models.Model):
     composicion = models.CharField(max_length=255, default='')
     ancho = models.FloatField(default=0.0)
     precioMetro = models.DecimalField(
-        max_digits=6, decimal_places=2, default=0)
+        max_digits=7, decimal_places=2, default=0)
     precioMetroEspecial = models.DecimalField(
-        max_digits=6, decimal_places=2, default=0)
+        max_digits=7, decimal_places=2, default=0)
     precioRollo = models.DecimalField(
-        max_digits=6, decimal_places=2, default=0)
+        max_digits=7, decimal_places=2, default=0)
     precioRolloEspecial = models.DecimalField(
-        max_digits=6, decimal_places=2, default=0)
+        max_digits=7, decimal_places=2, default=0)
     cantidad_metro = models.PositiveIntegerField()
     cantidad_rollo = models.PositiveIntegerField()
     total_metros = models.DecimalField(
-        max_digits=6, decimal_places=2, default=0)
+        max_digits=7, decimal_places=2, default=0)
     is_active = models.BooleanField(default=True)
     estado = models.CharField(max_length=4, blank=True,
                               choices=Status.choices, default=Status.INSTOCK)
@@ -174,11 +174,11 @@ class Orden(models.Model):
         Empleado, related_name="ordenes_despachadas", on_delete=models.SET_NULL, null=True, blank=True)
     fecha_pagado = models.DateTimeField(null=True, blank=True)
     fecha_despachado = models.DateTimeField(null=True, blank=True)
-    subtotal = models.DecimalField(max_digits=5, decimal_places=2)
-    iva = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-    descuento = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    subtotal = models.DecimalField(max_digits=7, decimal_places=2)
+    iva = models.DecimalField(max_digits=7, decimal_places=2, default=0)
+    descuento = models.DecimalField(max_digits=7, decimal_places=2, default=0)
     valor_total = models.DecimalField(
-        max_digits=5, decimal_places=2, default=0)
+        max_digits=7, decimal_places=2, default=0)
     estado = models.CharField(
         max_length=4, choices=Status.choices, default=Status.NOPAG)
     observaciones = models.TextField(blank=True, default='')
@@ -235,11 +235,11 @@ class DetalleOrden(models.Model):
     cantidad_metro = models.PositiveIntegerField()
     cantidad_rollo = models.PositiveIntegerField()
     valor_metro = models.DecimalField(
-        max_digits=5, decimal_places=2, default=0)
+        max_digits=7, decimal_places=2, default=0)
     valor_rollo = models.DecimalField(
-        max_digits=5, decimal_places=2, default=0)
+        max_digits=7, decimal_places=2, default=0)
     valor_total = models.DecimalField(
-        max_digits=5, decimal_places=2, default=0)
+        max_digits=7, decimal_places=2, default=0)
 
     def __str__(self):
         return self.orden.codigo + " - " + str(self.valor_total)
