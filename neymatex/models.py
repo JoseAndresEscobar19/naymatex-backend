@@ -154,7 +154,7 @@ class Producto(models.Model):
 
 class Orden(models.Model):
     class Meta:
-        ordering = ['-created_at']
+        ordering = ['-created_at', '-id']
 
     class Status(models.TextChoices):
         NOPAG = 'NPG', 'Pendiente de Pago'
