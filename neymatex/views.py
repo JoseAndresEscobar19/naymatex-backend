@@ -100,7 +100,7 @@ def dashboard_filter_ventas(request):
         ventas_metros_rollos_rango = Orden.objects.filter(estado__in=[Orden.Status.PAID, Orden.Status.DES],
                                                           fecha_pagado__date__gte=fecha_inicio, fecha_pagado__date__lte=fecha_fin).aggregate(total_metros=Sum('detalles__cantidad_metro'), total_rollos=Sum('detalles__cantidad_rollo'))
         venta_metros, venta_rollos = ventas_metros_rollos_rango[
-            'total_metros'], ventas_metros_rollos_rango['total_rollos']
+            'total_metros'] or 0, ventas_metros_rollos_rango['total_rollos'] or 0
         return JsonResponse({
             'data': {
                 'ventas_metros': venta_metros,
