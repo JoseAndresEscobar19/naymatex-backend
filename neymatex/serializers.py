@@ -57,8 +57,7 @@ class ProductoSerializer(serializers.ModelSerializer):
 class DetalleOrdenSerializer(serializers.ModelSerializer):
     class Meta:
         model = DetalleOrden
-        fields = ["producto", "cantidad_metro",
-                  "cantidad_rollo", "valor_metro", "valor_rollo", "valor_total", ]
+        fields = ["producto", "cantidad_metro", "valor_metro", "valor_total"]
 
 
 class OrdenSerializer(serializers.ModelSerializer):
@@ -79,9 +78,10 @@ class OrdenSerializer(serializers.ModelSerializer):
         pre = str(orden.pk)
         sec = '0'*(9-len(pre))+pre
         orden.codigo = sec
-        orden.save()
         for producto in detalles_data:
             DetalleOrden.objects.create(orden=orden, **producto)
+            # detalle.save()
+        orden.save()
         return orden
 
 

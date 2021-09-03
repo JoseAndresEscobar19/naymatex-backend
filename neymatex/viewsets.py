@@ -47,7 +47,7 @@ class ProductoView(viewsets.ModelViewSet):
         queryset = Producto.objects.all()
         if query:
             queryset = queryset.filter(
-                Q(nombre__icontains=query) | Q(codigo__icontains=query))
+                Q(nombre__icontains=query) | Q(codigo__icontains=query) | Q(alias__icontains=query))
         if query_cat:
             query_cat = query_cat.split(',')
             for cat in query_cat:

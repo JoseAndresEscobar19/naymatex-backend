@@ -61,9 +61,7 @@
         <tr>
           <th colspan="2">Producto</th>
           <th>Cantidad Metros</th>
-          <th>Cantidad Rollos</th>
-          <th>Precio Metro</th>
-          <th>Precio Rollo</th>
+          <th>Precio</th>
           <th class="text-right">Total</th>
         </tr>
       </thead>
@@ -79,9 +77,7 @@
           </td>
           <td>{{detalle.producto.nombre}}</td>
           <td>{{detalle.cantidad_metro}} m</td>
-          <td>{{detalle.cantidad_rollo}}</td>
           <td>$ {{detalle.valor_metro}}</td>
-          <td>$ {{detalle.valor_rollo}}</td>
           <td class="text-right">$ {{detalle.valor_total}}</td>
         </tr>
         {%endfor%}

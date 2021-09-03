@@ -106,22 +106,17 @@ class Producto(models.Model):
     codigo = models.CharField(max_length=64)
     nombre = models.CharField(max_length=255)
     alias = models.CharField(max_length=255, default='', blank=True)
-    descripcion = models.TextField(blank=True)
     uso = models.TextField(blank=True, default='')
-    composicion = models.CharField(max_length=255, default='')
-    ancho = models.FloatField(default=0.0)
+    composicion = models.CharField(max_length=255, default='', blank=True)
+    ancho = models.FloatField(default=0.0, blank=True)
     precioMetro = models.DecimalField(
         max_digits=7, decimal_places=2, default=0)
     precioMetroEspecial = models.DecimalField(
         max_digits=7, decimal_places=2, default=0)
-    precioRollo = models.DecimalField(
-        max_digits=7, decimal_places=2, default=0)
-    precioRolloEspecial = models.DecimalField(
-        max_digits=7, decimal_places=2, default=0)
     cantidad_metro = models.PositiveIntegerField()
-    cantidad_rollo = models.PositiveIntegerField()
+    cantidad_rollo = models.PositiveIntegerField(default=100000)
     total_metros = models.DecimalField(
-        max_digits=7, decimal_places=2, default=0)
+        max_digits=12, decimal_places=2, default=0)
     is_active = models.BooleanField(default=True)
     estado = models.CharField(max_length=4, blank=True,
                               choices=Status.choices, default=Status.INSTOCK)
@@ -132,16 +127,14 @@ class Producto(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def reducir_stock(self, cant_metro, cant_rollo, commit=True):
-        metro_reducir = cant_metro + (cant_rollo*self.cantidad_metro)
-        self.total_metros -= metro_reducir
+    def reducir_stock(self, cant_metro, commit=True):
+        self.total_metros -= cant_metro
         if commit:
             self.save()
         return self.total_metros
 
-    def validar_stock(self, cant_metro, cant_rollo):
-        metro_reducir = cant_metro + (cant_rollo*self.cantidad_metro)
-        if self.total_metros > metro_reducir:
+    def validar_stock(self, cant_metro):
+        if self.total_metros > cant_metro:
             print("Si hay stock suficiente")
             return True
         else:
@@ -174,7 +167,7 @@ class Orden(models.Model):
         Empleado, related_name="ordenes_despachadas", on_delete=models.SET_NULL, null=True, blank=True)
     fecha_pagado = models.DateTimeField(null=True, blank=True)
     fecha_despachado = models.DateTimeField(null=True, blank=True)
-    subtotal = models.DecimalField(max_digits=7, decimal_places=2)
+    subtotal = models.DecimalField(max_digits=7, decimal_places=2, default=0)
     iva = models.DecimalField(max_digits=7, decimal_places=2, default=0)
     descuento = models.DecimalField(max_digits=7, decimal_places=2, default=0)
     valor_total = models.DecimalField(
@@ -189,17 +182,17 @@ class Orden(models.Model):
         subtotal = 0
         for item in self.detalles.all():
             subtotal += item.valor_total
-        self.subtotal = subtotal
+        self.valor_total = subtotal
         return subtotal
 
     def calcular_iva(self):
-        iva = self.subtotal * decimal.Decimal(0.12)
+        iva = self.valor_total * decimal.Decimal(0.12)
         self.iva = iva
         return iva
 
     def calcular_total(self):
-        total = self.subtotal + self.iva - self.descuento
-        self.valor_total = total
+        total = self.valor_total - self.iva
+        self.subtotal = total
         return total
 
     def calcular_todo(self):
@@ -220,7 +213,7 @@ class Orden(models.Model):
         return True
 
     def save(self, *args, **kwargs):
-        self.calcular_iva()
+        self.calcular_todo()
         return super().save(*args, **kwargs)
 
     def __str__(self):
@@ -233,10 +226,7 @@ class DetalleOrden(models.Model):
     producto = models.ForeignKey(
         Producto, on_delete=models.SET_NULL, null=True)
     cantidad_metro = models.PositiveIntegerField()
-    cantidad_rollo = models.PositiveIntegerField()
     valor_metro = models.DecimalField(
-        max_digits=7, decimal_places=2, default=0)
-    valor_rollo = models.DecimalField(
         max_digits=7, decimal_places=2, default=0)
     valor_total = models.DecimalField(
         max_digits=7, decimal_places=2, default=0)
@@ -245,19 +235,18 @@ class DetalleOrden(models.Model):
         return self.orden.codigo + " - " + str(self.valor_total)
 
     def validar_stock_items(self):
-        return self.producto.validar_stock(self.cantidad_metro, self.cantidad_rollo)
+        return self.producto.validar_stock(self.cantidad_metro)
 
     def reducir_stock_items(self):
-        return self.producto.reducir_stock(self.cantidad_metro, self.cantidad_rollo)
+        return self.producto.reducir_stock(self.cantidad_metro)
 
     def calcular_valor_total_detalle(self):
         valor_metro = self.valor_metro*self.cantidad_metro
-        valor_rollo = self.valor_rollo*self.cantidad_rollo
-        self.valor_total = valor_rollo+valor_metro
+        self.valor_total = valor_metro
         return self.valor_total
 
     def save(self, *args, **kwargs):
-        # self.calcular_valor_total_detalle()
+        self.calcular_valor_total_detalle()
         return super().save(*args, **kwargs)
 
 

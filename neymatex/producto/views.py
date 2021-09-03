@@ -57,6 +57,7 @@ class CrearProducto(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, Create
             producto = producto_form.save(commit=False)
             producto.total_metros = producto.cantidad_metro*producto.cantidad_rollo
             producto.save()
+            producto_form.save_m2m()
             messages.success(request, "Producto creado con éxito.")
             return HttpResponseRedirect(self.success_url)
         else:
@@ -94,6 +95,7 @@ class EditarProducto(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, Updat
                 producto.total_metros = producto.cantidad_metro * \
                     (producto.cantidad_rollo or 1)
             producto.save()
+            producto_form.save_m2m()
             messages.success(request, "Producto editado con éxito.")
             return HttpResponseRedirect(self.success_url)
         else:

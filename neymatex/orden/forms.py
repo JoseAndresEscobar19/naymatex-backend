@@ -88,10 +88,7 @@ class DetalleOrdenForm(forms.ModelForm):
                    css_class="col-12 col-md-6"),
             Column(AppendedText('cantidad_metro', 'm'),
                    css_class="col-xl-3 col-md-3 col-6"),
-            Column('cantidad_rollo', css_class="col-xl-3 col-md-3 col-6"),
             Column(PrependedText('valor_metro', '$'),
-                   css_class="col-xl-3 col-md-3 col-6"),
-            Column(PrependedText('valor_rollo', '$'),
                    css_class="col-xl-3 col-md-3 col-6"),
         )
 
@@ -120,26 +117,6 @@ class OrdenFilterForm(forms.Form):
                 Column('empleado', css_class='col-6 col-lg-3'),
                 Column('cajero', css_class='col-6 col-lg-3'),
                 Column('despachador', css_class='col-6 col-lg-3'),
-                # Column(
-                #     Field('orden_fechas',
-                #           template="forms/fields/range-filter.html", css_class="form-control"),
-                #     css_class='col-12 col-lg-6'
-                # ),
-                # Column(
-                #     Field('orden_monto',
-                #           template="forms/fields/range-filter.html", css_class="form-control", placeholder="$"),
-                #     css_class='col-12 col-lg-6'
-                # ),
-                # Column(
-                #     Field('orden_cantidad',
-                #           template="forms/fields/range-filter.html", css_class="form-control"),
-                #     css_class='col-12 col-lg-3'
-                # ),
-                # Column(
-                #     Field('monto_credito', template="forms/fields/range-filter.html",
-                #           css_class="form-control", placeholder="$"),
-                #     css_class='col-lg-3 col-6'
-                # ),
                 Column(
                     StrictButton("Buscar", type='submit',
                                  css_class='btn btn-primary mt-1'),

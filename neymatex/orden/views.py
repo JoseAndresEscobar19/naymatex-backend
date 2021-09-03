@@ -1,16 +1,16 @@
 import io
+from django.http import request
 
 import xlsxwriter
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.paginator import Paginator
-from django.http.response import HttpResponse, HttpResponseRedirect
+from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.urls.base import reverse
 from django.utils import timezone
-from django.views.generic import CreateView, ListView, UpdateView
+from django.views.generic import UpdateView
 from django.views.generic.detail import DetailView
 from django_filters.views import FilterView
 from neymatex.models import *
@@ -34,6 +34,19 @@ class ListarOrdenes(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, Filter
         context = super().get_context_data(**kwargs)
         context['title'] = "Orden"
         return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset
+        # groups = self.request.user.groups.all().values_list('name', flat=True)
+        # if "Gerente" in groups or self.request.user.is_superuser:
+        #     return queryset
+
+        # if "Caja" in groups:
+        #     estado = Orden.Status.NOPAG
+        # elif "Despacho" in groups:
+        #     estado = Orden.Status.PAID
+        # return queryset.filter(estado=estado)
 
 
 class VerOrden(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, DetailView):
@@ -116,7 +129,7 @@ def orden_confirmar_eliminacion(request, pk):
 def orden_confirmar_pagar(request, pk):
     orden = Orden.objects.get(id=pk)
     if request.POST:
-        if orden.validar_stock_orden() and request.user.empleado.all().count():
+        if orden.validar_stock_orden() and request.user.empleado.all().count() and request.user.groups.filter(name="Caja").exists():
             orden.estado = Orden.Status.PAID
             orden.cajero = request.user.empleado.all()[0]
             orden.fecha_pagado = timezone.now().astimezone()
@@ -139,7 +152,7 @@ def orden_confirmar_pagar(request, pk):
 def orden_confirmar_despachar(request, pk):
     orden = Orden.objects.get(id=pk)
     if request.POST:
-        if request.user.empleado.all().count():
+        if request.user.empleado.all().count() and request.user.groups.filter(name="Despacho").exists():
             orden.estado = Orden.Status.DES
             orden.despachador = request.user.empleado.all()[0]
             orden.fecha_despachado = timezone.now().astimezone()

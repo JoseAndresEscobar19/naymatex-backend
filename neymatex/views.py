@@ -98,13 +98,11 @@ def dashboard_filter_ventas(request):
         ventas_rango = Orden.objects.filter(estado__in=[Orden.Status.PAID, Orden.Status.DES],
                                             fecha_pagado__date__gte=fecha_inicio, fecha_pagado__date__lte=fecha_fin).count()
         ventas_metros_rollos_rango = Orden.objects.filter(estado__in=[Orden.Status.PAID, Orden.Status.DES],
-                                                          fecha_pagado__date__gte=fecha_inicio, fecha_pagado__date__lte=fecha_fin).aggregate(total_metros=Sum('detalles__cantidad_metro'), total_rollos=Sum('detalles__cantidad_rollo'))
-        venta_metros, venta_rollos = ventas_metros_rollos_rango[
-            'total_metros'] or 0, ventas_metros_rollos_rango['total_rollos'] or 0
+                                                          fecha_pagado__date__gte=fecha_inicio, fecha_pagado__date__lte=fecha_fin).aggregate(total_metros=Sum('detalles__cantidad_metro'))
+        venta_metros = ventas_metros_rollos_rango['total_metros'] or 0
         return JsonResponse({
             'data': {
                 'ventas_metros': venta_metros,
-                'ventas_rollos': venta_rollos,
                 'ventas_rango': ventas_rango,
                 'chart_title': titulo,
                 'data_chart': {
@@ -172,7 +170,7 @@ def dashboard_filter_recaudacion(request):
                                             fecha_pagado__date__gte=fecha_inicio, fecha_pagado__date__lte=fecha_fin).aggregate(total_dinero=Sum('valor_total'))['total_dinero'] or 0
         return JsonResponse({
             'data': {
-                'dinero_rango': "${}".format(dinero_rango),
+                'dinero_rango': "${:.2f}".format(dinero_rango),
                 'chart_title': titulo,
                 'data_chart': {
                     'labels': labels,

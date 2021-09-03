@@ -174,6 +174,7 @@ class CrearEmpleado(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, Create
             empleado.usuario = user
             empleado.detalles = detalles
             empleado.save()
+            print(usuario_form)
             messages.success(request, "Empleado creado con éxito.")
             return HttpResponseRedirect(self.success_url)
         else:
@@ -193,8 +194,6 @@ class EditarEmpleado(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, Updat
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        pk = self.kwargs.get('pk', None)
-        print(self.object, pk)
         if "user_form" not in context:
             context['user_form'] = self.user_form_class(
                 instance=self.object.usuario)
@@ -219,6 +218,7 @@ class EditarEmpleado(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, Updat
             empleado.usuario = user
             empleado.detalles = detalles
             empleado.save()
+            print(user.groups.all())
             messages.success(request, "Empleado editado con éxito.")
             return HttpResponseRedirect(self.success_url)
         else:

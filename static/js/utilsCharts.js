@@ -58,7 +58,6 @@ function create_chart(id_canvas) {
 
 function _init_daterange() {
   $("#id_fecha_ventas").daterangepicker(config, function (start, end, label) {
-    console.log(start, end);
     filtro_ventas(start.format("YYYY-MM-DD"), end.format("YYYY-MM-DD"));
   });
 
