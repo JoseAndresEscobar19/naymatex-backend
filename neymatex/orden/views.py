@@ -1,4 +1,5 @@
 import io
+from neymatex.utils import calculate_pages_to_render
 from django.http import request
 
 import xlsxwriter
@@ -24,6 +25,7 @@ from .forms import DetallesOrdenFormset, OrdenEditarForm, OrdenObservacionForm
 # PEDIDOS
 class ListarOrdenes(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, FilterView):
     paginate_by = 20
+    max_pages_render = 10
     model = Orden
     context_object_name = 'ordenes'
     template_name = "lista_orden.html"
@@ -33,6 +35,8 @@ class ListarOrdenes(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, Filter
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = "Orden"
+        page_obj = context["page_obj"]
+        context['num_pages'] = calculate_pages_to_render(self, page_obj)
         return context
 
     def get_queryset(self):

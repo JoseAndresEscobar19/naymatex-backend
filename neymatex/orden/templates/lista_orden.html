@@ -56,6 +56,9 @@
               data-url="{%url 'neymatex:orden:eliminar' orden.pk%}" href="#">
               <i class="fas fa-times"></i></a>
             {% endif %}
+            {% if orden.archivo %}
+            <a href="{{orden.archivo}}" target="_blank" class="btn btn-sm btn-primary"><i class="fas fa-print"></i></a>
+            {% endif %}
           </td>
         </tr>
         {% endfor %}

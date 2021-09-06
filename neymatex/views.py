@@ -6,6 +6,7 @@ from django.contrib.auth.mixins import AccessMixin, PermissionRequiredMixin
 from django.contrib.auth.views import redirect_to_login
 from django.core.exceptions import PermissionDenied
 from django.db.models import Sum
+from django.db.models.aggregates import Count
 from django.http.response import JsonResponse
 from django.shortcuts import render, resolve_url
 from django.utils import timezone
@@ -58,7 +59,6 @@ def dashboard_filter_ventas(request):
             'fecha_inicio', None)
         fecha_fin = request.GET.get(
             'fecha_fin', None)
-
         if fecha_fin and fecha_inicio:
             # Obtenemos data segun el rango de fechas
             fecha_inicio = datetime.datetime.strptime(fecha_inicio, '%Y-%m-%d')
@@ -168,6 +168,10 @@ def dashboard_filter_recaudacion(request):
                        jueves, viernes, sabado, domingo]
         dinero_rango = Orden.objects.filter(estado__in=[Orden.Status.PAID, Orden.Status.DES],
                                             fecha_pagado__date__gte=fecha_inicio, fecha_pagado__date__lte=fecha_fin).aggregate(total_dinero=Sum('valor_total'))['total_dinero'] or 0
+        print(Producto.objects.annotate(num_ventas=Count(
+            'detalles')).order_by('-num_ventas')[:5])
+        print(Producto.objects.annotate(dinero_ventas=Count(
+            'detalles__valor_total')).order_by('-dinero_ventas')[:5])
         return JsonResponse({
             'data': {
                 'dinero_rango': "${:.2f}".format(dinero_rango),
@@ -184,6 +188,21 @@ def dashboard_filter_recaudacion(request):
                 }
             },
             'status': 200
+        })
+    else:
+        return JsonResponse({
+            'data': 'No es un método válido.',
+            'status': 400
+        })
+
+
+def dashboard_productos_mas_vendidor(request):
+    if request.GET:
+        return JsonResponse({
+            'data': {
+                'mas_ventas': "",
+                "mas_dinero": ""
+            }
         })
     else:
         return JsonResponse({

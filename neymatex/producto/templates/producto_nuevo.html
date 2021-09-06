@@ -23,6 +23,7 @@
         <img id="img-id" src="#" alt="imagen cargada" class="img-thumbnail w-50" />
       </div>
       <hr>
+      {% comment %}
       <div class="form-row">
         <h4 for="categoria" class="col-12">Categorías</h4>
         <div class="col-12">
@@ -45,6 +46,7 @@
         {% endfor %}
       </div>
       <hr>
+      {% endcomment %}
       <input type="submit" id="send" class="btn btn-primary" value="Guardar">
     </form>
   </div>
@@ -54,30 +56,30 @@
 <script type="text/javascript" src="{% static 'js/utilsImages.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/utilsSelect2.js' %}"></script>
 <script>
-  var categoriaValues = []
-  $(document).ready(function (e) {
-    categoriaValues = $('select#id_categoria').val();
-    if (categoriaValues.length > 0) {
-      $.each(categoriaValues, function (index, val) {
-        $('select.categoria-options').each(function () {
-          var found = $('option', this).filter(function () {return this.value == val}).length;
-          if (found) {
-            $(this).val(val).trigger('change.select2');
-            return false;
-          }
-        })
-      })
-    }
-  });
+  // var categoriaValues = []
+  // $(document).ready(function (e) {
+  //   categoriaValues = $('select#id_categoria').val();
+  //   if (categoriaValues.length > 0) {
+  //     $.each(categoriaValues, function (index, val) {
+  //       $('select.categoria-options').each(function () {
+  //         var found = $('option', this).filter(function () {return this.value == val}).length;
+  //         if (found) {
+  //           $(this).val(val).trigger('change.select2');
+  //           return false;
+  //         }
+  //       })
+  //     })
+  //   }
+  // });
 
-  $('#send').click(function (e) {
-    e.preventDefault();
-    categoriaValues = []
-    $('select.categoria-options').each(function () {
-      categoriaValues.push($(this).val());
-    })
-    $('select#id_categoria').val(categoriaValues);
-    $('form').submit();
-  })
+  // $('#send').click(function (e) {
+  //   e.preventDefault();
+  //   categoriaValues = []
+  //   $('select.categoria-options').each(function () {
+  //     categoriaValues.push($(this).val());
+  //   })
+  //   $('select#id_categoria').val(categoriaValues);
+  //   $('form').submit();
+  // })
 </script>
 {% endblock specific_scripts %}

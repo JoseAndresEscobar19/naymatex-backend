@@ -14,7 +14,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, UpdateView
 from django_filters.views import FilterView
 from neymatex.models import Empleado
-from neymatex.utils import export_excel, export_pdf
+from neymatex.utils import calculate_pages_to_render, export_excel, export_pdf
 from reportlab.pdfgen import canvas
 
 from seguridad.filters import EmpleadoFilter
@@ -86,6 +86,7 @@ class EmpleadoPermissionRequieredMixin(PermissionRequiredMixin, AccessMixin):
 
 class ListarEmpleados(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, FilterView):
     paginate_by = 20
+    max_pages_render = 10
     model = Empleado
     context_object_name = 'empleados'
     template_name = "lista_empleado.html"
@@ -95,6 +96,8 @@ class ListarEmpleados(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, Filt
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = "Empleados"
+        page_obj = context["page_obj"]
+        context['num_pages'] = calculate_pages_to_render(self, page_obj)
         return context
 
     def get(self, request, *args, **kwargs):

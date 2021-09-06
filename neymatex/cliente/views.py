@@ -1,4 +1,4 @@
-from neymatex.utils import export_excel, export_pdf
+from neymatex.utils import calculate_pages_to_render, export_excel, export_pdf
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -19,6 +19,7 @@ from .forms import ClienteEditarForm, ClienteForm
 
 class ListarClientes(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, FilterView):
     paginate_by = 20
+    max_pages_render = 10
     model = Cliente
     context_object_name = 'clientes'
     template_name = "lista_cliente.html"
@@ -28,6 +29,8 @@ class ListarClientes(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, Filte
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = "Clientes"
+        page_obj = context["page_obj"]
+        context['num_pages'] = calculate_pages_to_render(self, page_obj)
         return context
 
     def get(self, request, *args, **kwargs):

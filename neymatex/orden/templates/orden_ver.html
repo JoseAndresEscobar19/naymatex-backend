@@ -60,6 +60,7 @@
       <thead>
         <tr>
           <th colspan="2">Producto</th>
+          <th>Estilo</th>
           <th>Cantidad Metros</th>
           <th>Precio</th>
           <th class="text-right">Total</th>
@@ -75,7 +76,13 @@
             <img src="{% static 'images/default_product.png' %}" alt="product-img" width="80" height="80">
             {% endif %}
           </td>
-          <td>{{detalle.producto.nombre}}</td>
+          <td>{{detalle.producto.nombre}}
+          </td>
+          <td>
+            {% for cat in detalle.producto.categoria.all %}
+            {{cat}}
+            {% endfor %}
+          </td>
           <td>{{detalle.cantidad_metro}} m</td>
           <td>$ {{detalle.valor_metro}}</td>
           <td class="text-right">$ {{detalle.valor_total}}</td>
@@ -130,6 +137,9 @@
       <hr>
       {% endif %}
       <div class="col-12">
+        {% if orden.archivo %}
+        <a href="{{orden.archivo}}" target="_blank" class="btn btn-primary">Imprimir <i class="fas fa-print"></i></a>
+        {% endif %}
         {% if orden.estado != "DES"%}
         {% if orden.estado == "NPG" %}
         <a class="btn btn-primary use-modal" data-toggle='modal' data-target="#mainModal"

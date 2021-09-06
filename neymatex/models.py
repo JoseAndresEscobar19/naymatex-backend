@@ -40,7 +40,7 @@ class Empleado(models.Model):
     detalles = models.ForeignKey(UserDetails, on_delete=models.CASCADE)
     estado = models.CharField(max_length=4,
                               choices=Status.choices, default=Status.REGULAR)
-    imagen = models.ImageField(upload_to='empeleado/', null=True, blank=True)
+    imagen = models.ImageField(upload_to='empleado/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -177,6 +177,8 @@ class Orden(models.Model):
     observaciones = models.TextField(blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    archivo = models.CharField(max_length=500, blank=True)
+    archivo_root = models.CharField(max_length=500, blank=True)
 
     def calcular_subtotales(self):
         subtotal = 0
@@ -224,7 +226,7 @@ class DetalleOrden(models.Model):
     orden = models.ForeignKey(
         Orden, related_name="detalles", on_delete=models.CASCADE)
     producto = models.ForeignKey(
-        Producto, on_delete=models.SET_NULL, null=True)
+        Producto, related_name="detalles", on_delete=models.SET_NULL, null=True)
     cantidad_metro = models.PositiveIntegerField()
     valor_metro = models.DecimalField(
         max_digits=7, decimal_places=2, default=0)

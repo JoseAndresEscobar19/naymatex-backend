@@ -27,8 +27,10 @@
           <th scope="col">Código</th>
           <th scope="col">Nombre</th>
           <th scope="col">Alias</th>
+          <th scope="col">Unidad</th>
           <th scope="col">Rango de precios</th>
           <th scope="col">Metros por rollo</th>
+          <th scope="col">Estilo</th>
           <th scope="col">Estado</th>
           <th scope="col">Acciones</th>
         </tr>
@@ -40,8 +42,14 @@
           <td scope="row">{{producto.codigo}}</td>
           <td scope="row">{{producto.nombre}}</td>
           <td scope="row">{{producto.alias}}</td>
+          <td scope="row">{{producto.get_unidad_display}}</td>
           <td scope="row">$ {{producto.precioMetroEspecial}} - {{producto.precioMetro}}</td>
           <td scope="row">{{producto.cantidad_metro}}m</td>
+          <td scope="row">
+            {% for cat in producto.categoria.all %}
+            {{cat}}<br>
+            {% endfor %}
+          </td>
           <td scope="row">
             {% if producto.estado == "ISK" %}
             <span class="text-success font-weight-bold">{{producto.get_estado_display}}</span>

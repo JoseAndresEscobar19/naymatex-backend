@@ -17,7 +17,6 @@
     <table class="table table-responsive-md table-hover text-center" id="tabla-clientes">
       <thead class="thead-light">
         <tr>
-          <th scope="col">#</th>
           <th scope="col">Título</th>
           <th scope="col">Enviado a</th>
           <th scope="col">Fecha de envío</th>
@@ -28,7 +27,6 @@
         {% if notificaciones %}
         {% for notificacion in notificaciones %}
         <tr class="text-center">
-          <td scope="row">{{forloop.counter}}</td>
           <td>{{notificacion.title}}</td>
           <td>
             {% if notificacion.grupo_usuarios.all %}
@@ -52,8 +50,7 @@
         {% endif %}
       </tbody>
     </table>
-    <div class="pagination text-center">
-    </div>
+    {% include "pagination.html" %}
   </div>
 </div>
 {% endblock main %}
@@ -61,7 +58,4 @@
 {% block specific_scripts %}
 <script src="{% static 'js/utilsTable.js' %}"></script>
 <script src="{% static 'js/utilsModal.js' %}"></script>
-<script>
-  $(document).ready(init_pagination({{page_obj.paginator.num_pages}}, {{page_obj.number}}))
-</script>
 {% endblock %}

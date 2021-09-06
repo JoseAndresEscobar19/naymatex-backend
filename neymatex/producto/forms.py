@@ -18,7 +18,7 @@ class ProductoForm(forms.ModelForm):
             "precio": 'Precio',
             "cantidad_metro": 'Cantidad metros por rollo',
             "cantidad_rollo": 'Cantidad de rollos',
-            "categoria": 'Categorías',
+            "categoria": 'Estilos',
             "imagen": 'Imagen',
             "composicion": 'Composición',
             "precioMetro": 'Precio por metro Máx',
@@ -43,10 +43,11 @@ class ProductoForm(forms.ModelForm):
                 'is_active',
                 'estado',
                 'total_metros',
-                Column('categoria', css_class='col-12 d-none'),
                 Column('codigo', css_class='col-12 col-lg-4'),
                 Column('nombre', css_class='col-12 col-lg-8'),
                 Column('alias', css_class='col-12'),
+                Column(Field('categoria', multiple="true",
+                             css_class="select2"), css_class='col-12'),
                 Column('uso', css_class='col-12 col-lg-12'),
                 Column('composicion', css_class='col-12 col-lg-12'),
             ),
@@ -63,7 +64,7 @@ class ProductoForm(forms.ModelForm):
                 Column(PrependedText('precioMetro', '$'),
                        css_class='col-12 col-lg-6'),
 
-                Column('imagen', css_class='col-12 col-lg-6'),
+                Column('imagen', css_class='col-12'),
             ),
         )
 
@@ -80,7 +81,7 @@ class ProductoEditarForm(forms.ModelForm):
             "precio": 'Precio',
             "cantidad_metro": 'Cantidad metros por rollo',
             "cantidad_rollo": 'Cantidad de rollos',
-            "categoria": 'Categorías',
+            "categoria": 'Estilos',
             "composicion": 'Composición',
             "precioMetro": 'Precio por metro Máx',
             "precioMetroEspecial": 'Precio por metro Min',
@@ -103,11 +104,12 @@ class ProductoEditarForm(forms.ModelForm):
         self.helper.layout = Layout(
             Row(
                 'is_active',
-                Column('categoria', css_class='col-12 d-none'),
                 Column('estado', css_class='col-12 col-lg-3'),
                 Column('codigo', css_class='col-12 col-lg-3'),
                 Column('nombre', css_class='col-12 col-lg-6'),
                 Column('alias', css_class='col-12'),
+                Column(Field('categoria', multiple="true",
+                             css_class="select2"), css_class='col-12'),
                 Column('uso', css_class='col-12 col-lg-12'),
                 Column('composicion', css_class='col-12 col-lg-12'),
             ),

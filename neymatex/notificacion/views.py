@@ -1,3 +1,4 @@
+from neymatex.utils import calculate_pages_to_render
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -15,6 +16,7 @@ from .forms import NotificacionForm
 # Create your views here.
 class ListarNotificaciones(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, ListView):
     paginate_by = 20
+    max_pages_render = 10
     model = Notificacion
     context_object_name = 'notificaciones'
     template_name = "lista_notificacion.html"
@@ -23,6 +25,8 @@ class ListarNotificaciones(LoginRequiredMixin, EmpleadoPermissionRequieredMixin,
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = "Notificaciones"
+        page_obj = context["page_obj"]
+        context['num_pages'] = calculate_pages_to_render(self, page_obj)
         return context
 
 

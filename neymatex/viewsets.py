@@ -1,5 +1,9 @@
+import datetime
+
 from django.db.models import Q
+from django.db.models.aggregates import Count, Sum
 from django.db.models.base import Model
+from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions, viewsets
 from rest_framework.response import Response
@@ -44,15 +48,28 @@ class ProductoView(viewsets.ModelViewSet):
     def get_queryset(self):
         query = self.request.query_params.get('q')
         query_cat = self.request.query_params.get('cat')
+        query_top = self.request.query_params.get('top')
+        query_top_ventas = self.request.query_params.get('top_ventas')
+        query_top_recaudacion = self.request.query_params.get('top_dinero')
+
         queryset = Producto.objects.all()
+        if query_top:
+            return queryset.order_by("nombre")[:int(query_top)]
+        if query_top_ventas:
+            current_month = timezone.now().astimezone().month
+            return queryset.filter(detalles__orden__created_at__month=current_month,
+                                   detalles__orden__estado__in=[Orden.Status.PAID, Orden.Status.DES]).annotate(num_ventas=Count(
+                                       'detalles')).order_by('-num_ventas', 'nombre')[:int(query_top_ventas)]
+        elif query_top_recaudacion:
+            current_month = timezone.now().astimezone().month
+            return queryset.filter(detalles__orden__created_at__month=current_month,
+                                   detalles__orden__estado__in=[Orden.Status.PAID, Orden.Status.DES]).annotate(dinero_ventas=Sum(
+                                       'detalles__valor_total')).order_by('-dinero_ventas', 'nombre')[:int(query_top_recaudacion)]
         if query:
             queryset = queryset.filter(
                 Q(nombre__icontains=query) | Q(codigo__icontains=query) | Q(alias__icontains=query))
         if query_cat:
-            query_cat = query_cat.split(',')
-            for cat in query_cat:
-                if cat:
-                    queryset = queryset.filter(categoria=cat)
+            queryset = queryset.filter(categoria__nombre__icontains=query_cat)
         return queryset
 
 

@@ -1,5 +1,7 @@
+from neymatex.utils import pdf_orden, print_file
 from rest_framework import serializers
 from .models import *
+from backend.settings import env
 
 
 class DetalleSerializer(serializers.ModelSerializer):
@@ -48,6 +50,14 @@ class TipoCategoriaSerializer(serializers.ModelSerializer):
 class ProductoSerializer(serializers.ModelSerializer):
     unidad = serializers.CharField(source='get_unidad_display')
     estado = serializers.CharField(source='get_estado_display')
+    num_ventas = serializers.IntegerField(default=0)
+    dinero_ventas = serializers.DecimalField(
+        max_digits=12, decimal_places=2, default=0.00)
+    categoria = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='nombre'
+    )
 
     class Meta:
         model = Producto
@@ -80,8 +90,10 @@ class OrdenSerializer(serializers.ModelSerializer):
         orden.codigo = sec
         for producto in detalles_data:
             DetalleOrden.objects.create(orden=orden, **producto)
-            # detalle.save()
         orden.save()
+        if env('USE_SQLITE') != "True":
+            rutas = pdf_orden(orden)
+            print_file(rutas[0])
         return orden
 
 

@@ -1,11 +1,12 @@
-from django.utils import timezone
-
 import io
+import os
 
 import xlsxwriter
+from backend.settings import MEDIA_ROOT, MEDIA_URL
 from django.http.response import FileResponse
 from django.template.loader import get_template, render_to_string
-from xhtml2pdf import pisa
+from django.utils import timezone
+from xhtml2pdf import context, pisa
 
 
 def export_excel(columns, queryset, model_name):
@@ -41,7 +42,7 @@ def export_pdf(columns, queryset, model_name):
     context = {'columns': columns, 'qs': queryset, 'model_name': model_name}
     template = get_template('export_records_pdf.html')
     html = template.render(context)
-    p = pisa.CreatePDF(html, output)
+    pisa.CreatePDF(html, output)
     output.seek(0)
     response = FileResponse(
         output,
@@ -49,3 +50,42 @@ def export_pdf(columns, queryset, model_name):
         filename=filename
     )
     return response
+
+
+def pdf_orden(orden):
+    sufix = str(timezone.now().astimezone().strftime('%d_%m_%Y_%H_%M_%S'))
+    ruta = "{}/{}/{}_{}.pdf".format(MEDIA_ROOT, "ordenes",
+                                    orden.codigo, sufix)
+    ruta_media = "{}{}/{}_{}.pdf".format(MEDIA_URL,
+                                         "ordenes", orden.codigo, sufix)
+    result_file = open(ruta, "w+b")
+    context = {'orden': orden}
+    template = get_template('print_orders.html')
+    html = template.render(context)
+    pisa.CreatePDF(html, dest=result_file)
+    result_file.close()
+    orden.archivo_root = ruta
+    orden.archivo = ruta_media
+    orden.save()
+    return ruta, ruta_media
+
+
+def print_file(file_path):
+    os.startfile(file_path, 'print')
+
+
+def calculate_pages_to_render(context, page_obj):
+    start_page = 1
+    stop_page = context.max_pages_render
+    half_pages = context.max_pages_render // 2
+    if (page_obj.number - half_pages) > 0:
+        start_page = page_obj.number - half_pages
+    else:
+        start_page = 1
+        stop_page = context.max_pages_render + 1
+
+    if (page_obj.number + half_pages) <= page_obj.paginator.num_pages:
+        stop_page = page_obj.number + half_pages + 1
+    else:
+        stop_page = page_obj.paginator.num_pages + 1
+    return [n for n in range(start_page, stop_page)]

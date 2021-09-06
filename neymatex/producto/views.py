@@ -1,4 +1,5 @@
 import json
+from neymatex.utils import calculate_pages_to_render
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -20,6 +21,7 @@ from .forms import ProductoEditarForm, ProductoForm
 # PRODUCTO
 class ListarProductos(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, FilterView):
     paginate_by = 20
+    max_pages_render = 10
     model = Producto
     context_object_name = 'productos'
     template_name = "lista_producto.html"
@@ -29,6 +31,8 @@ class ListarProductos(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, Filt
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = "Producto"
+        page_obj = context["page_obj"]
+        context['num_pages'] = calculate_pages_to_render(self, page_obj)
         return context
 
 
@@ -104,7 +108,7 @@ class EditarProducto(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, Updat
             return self.render_to_response(context)
 
 
-@login_required()
+@ login_required()
 def producto_confirmar_eliminacion(request, pk):
     producto = Producto.objects.get(id=pk)
     if request.POST:
@@ -116,7 +120,7 @@ def producto_confirmar_eliminacion(request, pk):
     return render(request, "ajax/producto_confirmar_elminar.html", {"producto": producto})
 
 
-@login_required()
+@ login_required()
 def producto_confirmar_activar(request, pk):
     producto = Producto.objects.get(id=pk)
     if request.POST:
