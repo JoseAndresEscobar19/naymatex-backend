@@ -85,8 +85,7 @@ class OrdenView(viewsets.ModelViewSet):
         query_pag = self.request.query_params.get('estado')
         query_last = self.request.query_params.get('last')
         queryset = Orden.objects.all()
-        if query_last:
-            queryset = queryset[:1]
+
         if query_pag:
             if query_pag == '0':
                 queryset = queryset.filter(estado=Orden.Status.NOPAG)
@@ -98,8 +97,13 @@ class OrdenView(viewsets.ModelViewSet):
                 queryset = queryset.filter(estado=Orden.Status.CANCEL)
         if query_cliente:
             queryset = queryset.filter(cliente_referencial=query_cliente)
-        if query_empleado:
+        if query_empleado and query_last:
+            queryset = queryset.filter(
+                empleado=query_empleado, created_at__date=timezone.now().astimezone().date())
+        elif query_empleado:
             queryset = queryset.filter(empleado=query_empleado)
+        if query_last:
+            queryset = queryset[:1]
         return queryset
 
 

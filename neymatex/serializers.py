@@ -74,13 +74,14 @@ class OrdenSerializer(serializers.ModelSerializer):
     detalles = DetalleOrdenSerializer(many=True)
     estado_display = serializers.CharField(
         source='get_estado_display', required=False)
-    fecha_pagado = serializers.DateTimeField(required=False)
-    fecha_despachado = serializers.DateTimeField(required=False)
+    fecha_pagado = serializers.DateTimeField(required=False, allow_null=True)
+    fecha_despachado = serializers.DateTimeField(
+        required=False, allow_null=True)
 
     class Meta:
         model = Orden
         fields = ["id", "codigo", "created_at", "fecha_pagado", "fecha_despachado", "estado", "estado_display", "cliente",
-                  "cliente_referencial", "empleado", "subtotal", "iva", "descuento", "valor_total",  "detalles"]
+                  "cliente_referencial", "empleado", "subtotal", "iva", "descuento", "valor_total",  "detalles", "observaciones"]
 
     def create(self, validated_data):
         detalles_data = validated_data.pop('detalles')
@@ -95,6 +96,20 @@ class OrdenSerializer(serializers.ModelSerializer):
             rutas = pdf_orden(orden)
             print_file(rutas[0])
         return orden
+
+    def update(self, instance, validated_data):
+        detalles_data = validated_data.pop('detalles')
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        # Eliminar todo los detalles de la orden, y los creamos nuevamente para evitar posibles conflictos
+        instance.detalles.all().delete()
+        for producto in detalles_data:
+            DetalleOrden.objects.create(orden=instance, **producto)
+        instance.save()
+        if env('USE_SQLITE') != "True":
+            rutas = pdf_orden(instance)
+            print_file(rutas[0])
+        return instance
 
 
 class NotificacionSerializer(serializers.ModelSerializer):
