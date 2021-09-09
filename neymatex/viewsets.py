@@ -98,7 +98,7 @@ class OrdenView(viewsets.ModelViewSet):
         if query_cliente:
             queryset = queryset.filter(cliente_referencial=query_cliente)
         if query_empleado and query_last:
-            queryset = queryset.filter(
+            return queryset.filter(
                 empleado=query_empleado, created_at__date=timezone.now().astimezone().date())
         elif query_empleado:
             queryset = queryset.filter(empleado=query_empleado)
