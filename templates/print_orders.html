@@ -6,8 +6,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{orden.codigo}}</title>
   <style>
+    @page {
+      size: 80mm 100mm;
+      margin: 2mm;
+    }
+
     body {
-      font-size: 24px;
+      font-size: 9px;
+    }
+
+    p {
+      font-size: 12px;
+      margin: 0;
+      font-weight: bold;
     }
 
     p,
@@ -23,6 +34,7 @@
   <p>FECHA {{orden.created_at}}</p>
   <p>EMPLEADO: {{orden.empleado|upper}}</p>
   <p>CLIENTE: {{orden.cliente_referencial|upper}}</p>
+  <br>
   <table>
     <tbody>
       <tr>
@@ -38,16 +50,14 @@
           {% endfor %}
         </td>
         <td>{{detalle.cantidad_metro}}{{detalle.producto.get_unidad_display}}/
-          $ {{detalle.valor_metro}}
+          ${{detalle.valor_metro}}
         </td>
-        <td>$ {{detalle.valor_total}}</td>
+        <td>${{detalle.valor_total}}</td>
       </tr>
       {%endfor%}
     </tbody>
   </table>
-  <br>
-  <br>
-  <table>
+  <table style="text-align: right;">
     <tbody>
       <tr>
         <td></td>
