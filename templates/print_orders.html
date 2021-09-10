@@ -6,17 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{orden.codigo}}</title>
   <style>
-    p {
+    body {
       font-size: 20px;
     }
 
     p,
     table {
       text-align: left;
-    }
-
-    table {
-      font-size: 15px;
     }
 
   </style>
@@ -31,20 +27,19 @@
     <tbody>
       <tr>
         <td>PRODUCTO</td>
-        <td>ESTILO</td>
-        <td style="width: 10%;">METROS</td>
-        <td style="width: 10%;">PVP</td>
+        <td style="width: 20%;">CANT/PVP</td>
         <td style="width: 10%;">TOTAL</td>
       </tr>
       {%for detalle in orden.detalles.all %}
       <tr>
-        <td>{{detalle.producto.nombre}}</td>
-        <td>
+        <td>{{detalle.producto.nombre}} |<br>
           {% for cat in detalle.producto.categoria.all %}
           {{cat}}
           {% endfor %}
         </td>
-        <td>$ {{detalle.valor_metro}}</td>
+        <td>{{detalle.cantidad_metro}}{{detalle.producto.get_unidad_display}}/
+          $ {{detalle.valor_metro}}
+        </td>
         <td>$ {{detalle.valor_total}}</td>
       </tr>
       {%endfor%}
