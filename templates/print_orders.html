@@ -27,12 +27,12 @@
     <tbody>
       <tr>
         <td>PRODUCTO</td>
-        <td style="width: 20%;">CANT/PVP</td>
+        <td style="width: 22%;">CANT/PVP</td>
         <td style="width: 10%;">TOTAL</td>
       </tr>
       {%for detalle in orden.detalles.all %}
       <tr>
-        <td>{{detalle.producto.nombre}} |<br>
+        <td>{{detalle.producto.nombre}} |
           {% for cat in detalle.producto.categoria.all %}
           {{cat}}
           {% endfor %}

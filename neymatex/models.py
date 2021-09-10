@@ -100,9 +100,9 @@ class Producto(models.Model):
         DISABLED = 'DIS', 'Deshabilitado'
 
     class Unidad(models.TextChoices):
-        KILOS = 'KLS', 'Kilos'
-        METROS = 'MTS', 'Metros'
-        UNIDAD = 'UND', 'Unidad'
+        KILOS = 'KLS', 'K'
+        METROS = 'MTS', 'M'
+        UNIDAD = 'UND', 'U'
     codigo = models.CharField(max_length=64)
     nombre = models.CharField(max_length=255)
     alias = models.CharField(max_length=255, default='', blank=True)
