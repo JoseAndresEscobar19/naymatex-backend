@@ -1,5 +1,6 @@
 var chart_ventas = create_chart("ventas-semana");
 var chart_dinero = create_chart("dinero-semana");
+// var chart_productos = create_chart("productos-semana");
 
 var config = {
   autoUpdateInput: false,
@@ -65,9 +66,13 @@ function _init_daterange() {
     filtro_dinero(start.format("YYYY-MM-DD"), end.format("YYYY-MM-DD"));
   });
 
+  // $("#id_fecha_productos").daterangepicker(config, function (start, end, label) {
+  // filtro_dinero(start.format("YYYY-MM-DD"), end.format("YYYY-MM-DD"));
+  // });
+
   $(".daterange").on("apply.daterangepicker", function (ev, picker) {
     if (picker) {
-      $(this).val(picker.startDate.format("DD/MM/YYY") + " - " + picker.endDate.format("DD/MM/YYYY"));
+      $(this).val(picker.startDate.format("DD/MM/YYYY") + " - " + picker.endDate.format("DD/MM/YYYY"));
     }
   });
 
@@ -116,10 +121,30 @@ function filtro_dinero(start, end) {
   });
 }
 
+// function filtro_productos(start, end) {
+//   $.ajax({
+//     url: $("#id_fecha_productos").data("url"),
+//     data: {
+//       fecha_inicio: start,
+//       fecha_fin: end,
+//     },
+//   }).always(function (res) {
+//     if (res.status == 200) {
+//       // $("#cantidad_productos").text(res.data.dinero_rango);
+//       chart_dinero.data = res.data.data_chart;
+//       chart_dinero.options.plugins.title.text = res.data.chart_title;
+//       chart_dinero.update();
+//     } else {
+//       console.error(res.data);
+//     }
+//   });
+// }
+
 function _init_() {
   _init_daterange();
   filtro_ventas("", "");
   filtro_dinero("", "");
+  // filtro_productos("", "");
 }
 
 $(document).ready(_init_);

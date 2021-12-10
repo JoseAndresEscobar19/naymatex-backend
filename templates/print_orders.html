@@ -48,6 +48,10 @@
           {% for cat in detalle.producto.categoria.all %}
           {{cat}}
           {% endfor %}
+          <br>
+          {% if detalle.cortes %}
+          CORTES: {{detalle.cortes}}
+          {%endif%}
         </td>
         <td>{{detalle.cantidad_metro}}{{detalle.producto.get_unidad_display}}/
           ${{detalle.valor_metro}}

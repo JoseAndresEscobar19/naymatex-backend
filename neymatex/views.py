@@ -4,6 +4,7 @@ from urllib.parse import urlparse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import AccessMixin, PermissionRequiredMixin
 from django.contrib.auth.views import redirect_to_login
+from django.core import serializers
 from django.core.exceptions import PermissionDenied
 from django.db.models import Sum
 from django.db.models.aggregates import Count
@@ -168,10 +169,6 @@ def dashboard_filter_recaudacion(request):
                        jueves, viernes, sabado, domingo]
         dinero_rango = Orden.objects.filter(estado__in=[Orden.Status.PAID, Orden.Status.DES],
                                             fecha_pagado__date__gte=fecha_inicio, fecha_pagado__date__lte=fecha_fin).aggregate(total_dinero=Sum('valor_total'))['total_dinero'] or 0
-        print(Producto.objects.annotate(num_ventas=Count(
-            'detalles')).order_by('-num_ventas')[:5])
-        print(Producto.objects.annotate(dinero_ventas=Count(
-            'detalles__valor_total')).order_by('-dinero_ventas')[:5])
         return JsonResponse({
             'data': {
                 'dinero_rango': "${:.2f}".format(dinero_rango),
@@ -196,13 +193,48 @@ def dashboard_filter_recaudacion(request):
         })
 
 
-def dashboard_productos_mas_vendidor(request):
+def dashboard_productos_mas_vendidos(request):
     if request.GET:
+        fecha_inicio = request.GET.get(
+            'fecha_inicio', None)
+        fecha_fin = request.GET.get(
+            'fecha_fin', None)
+        queryset = Producto.objects.all()
+        labels = []
+        dataset = []
+        if fecha_inicio and fecha_fin:
+            titulo = 'Productos más vendidos entre {} - {}'.format(
+                str(fecha_inicio.date().strftime('%d/%m/%Y')), str(fecha_fin.date().strftime('%d/%m/%Y')))
+            filtered_query = queryset.filter(detalles__orden__created_at__gte=fecha_inicio, detalles__orden__created_at__lte=fecha_fin,
+                                             detalles__orden__estado__in=[Orden.Status.PAID, Orden.Status.DES]).annotate(num_ventas=Count(
+                                                 'detalles')).order_by('-num_ventas', 'nombre')[:7]
+            for producto in filtered_query:
+                labels.append(producto.nombre)
+                dataset.append(producto.num_ventas or 0)
+        else:
+            titulo = 'Productos más vendidos durante el mes.'
+            current_month = timezone.now().astimezone().month
+            filtered_query = queryset.filter(detalles__orden__created_at__month=current_month,
+                                             detalles__orden__estado__in=[Orden.Status.PAID, Orden.Status.DES]).annotate(num_ventas=Count(
+                                                 'detalles')).order_by('-num_ventas', 'nombre')[:7]
+            for producto in filtered_query:
+                labels.append(producto.nombre)
+                dataset.append(producto.num_ventas or 0)
         return JsonResponse({
             'data': {
-                'mas_ventas': "",
-                "mas_dinero": ""
-            }
+                'chart_title': titulo,
+                'data_chart': {
+                    'labels': labels,
+                    'datasets': [{
+                        'label': 'Productos más vendidos',
+                        'data': dataset,
+                        'backgroundColor': ["rgba(0, 153, 51, 0.2)"],
+                        'borderColor': ["rgba(0, 153, 51, 1)"],
+                        'borderWidth': 1,
+                    }]
+                }
+            },
+            'status': 200
         })
     else:
         return JsonResponse({

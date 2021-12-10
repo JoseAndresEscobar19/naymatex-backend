@@ -67,7 +67,8 @@ class ProductoSerializer(serializers.ModelSerializer):
 class DetalleOrdenSerializer(serializers.ModelSerializer):
     class Meta:
         model = DetalleOrden
-        fields = ["producto", "cantidad_metro", "valor_metro", "valor_total"]
+        fields = ["producto", "cantidad_metro",
+                  "valor_metro", "valor_total", "cortes"]
 
 
 class OrdenSerializer(serializers.ModelSerializer):

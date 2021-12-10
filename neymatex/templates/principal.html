@@ -50,6 +50,25 @@
         </div>
       </div>
     </div>
+    {{% comment %}      
+    <div class="row mt-5">
+      <div class="col-12 col-lg">
+        <h2>Productos</h2>
+        <div class="row">
+          <div class="col-xl-8 col-lg-12 col-sm-8 col-12">
+            <input type="text" name="fecha_ventas" id="id_fecha_productos"
+              data-url="{% url 'neymatex:dashboard_productos' %}" class="daterange form-control" placeholder="Hoy">
+          </div>
+          <div class="col col-xl-4 text-center">
+            <h4 id="cantidad_productos"></h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-lg-8">
+        <canvas id="productos-semana" width="100px" height="40px"></canvas>
+      </div>
+    </div>
+    {% endcomment %}}
   </div>
 </div>
 {% endblock main %}

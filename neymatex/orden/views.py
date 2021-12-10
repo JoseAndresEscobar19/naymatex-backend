@@ -1,11 +1,10 @@
 import io
-from neymatex.utils import calculate_pages_to_render
-from django.http import request
 
 import xlsxwriter
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import request
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
@@ -16,6 +15,7 @@ from django.views.generic.detail import DetailView
 from django_filters.views import FilterView
 from neymatex.models import *
 from neymatex.orden.filters import OrdenFilter
+from neymatex.utils import calculate_pages_to_render, pdf_orden, print_file
 from seguridad.views import EmpleadoPermissionRequieredMixin
 
 from .forms import DetallesOrdenFormset, OrdenEditarForm, OrdenObservacionForm
@@ -110,6 +110,8 @@ class EditarOrden(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, UpdateVi
             orden.empleado.usuario.notificaciones.add(notificacion)
             messages.success(
                 request, "Se ha editado el pedido con éxito. Notificación enviada al vendedor")
+            rutas = pdf_orden(orden)
+            print_file(rutas[0])
             return HttpResponseRedirect(self.get_success_url())
         else:
             context = self.get_context_data()
