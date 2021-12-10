@@ -1,10 +1,7 @@
-import io
-
-import xlsxwriter
+from backend.settings import env
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import request
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
@@ -110,8 +107,9 @@ class EditarOrden(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, UpdateVi
             orden.empleado.usuario.notificaciones.add(notificacion)
             messages.success(
                 request, "Se ha editado el pedido con éxito. Notificación enviada al vendedor")
-            rutas = pdf_orden(orden)
-            print_file(rutas[0])
+            if env('USE_SQLITE') != "True":
+                rutas = pdf_orden(orden)
+                print_file(rutas[0])
             return HttpResponseRedirect(self.get_success_url())
         else:
             context = self.get_context_data()
