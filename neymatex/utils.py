@@ -7,7 +7,7 @@ from django.http.response import FileResponse
 from django.template.loader import get_template, render_to_string
 from django.utils import timezone
 from xhtml2pdf import context, pisa
-# import datetime
+import datetime
 
 
 def export_excel(columns, queryset, model_name):

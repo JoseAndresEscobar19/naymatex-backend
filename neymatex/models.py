@@ -227,7 +227,7 @@ class DetalleOrden(models.Model):
         Orden, related_name="detalles", on_delete=models.CASCADE)
     producto = models.ForeignKey(
         Producto, related_name="detalles", on_delete=models.SET_NULL, null=True)
-    cantidad_metro = models.PositiveIntegerField()
+    cantidad_metro = models.DecimalField(max_digits=7, decimal_places=2)
     valor_metro = models.DecimalField(
         max_digits=7, decimal_places=2, default=0)
     valor_total = models.DecimalField(
