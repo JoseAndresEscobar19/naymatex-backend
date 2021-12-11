@@ -12,7 +12,7 @@
     }
 
     body {
-      font-size: 9px;
+      font-size: 12px;
     }
 
     p {
@@ -24,6 +24,10 @@
     p,
     table {
       text-align: left;
+    }
+
+    td {
+      vertical-align: top;
     }
 
   </style>
@@ -51,9 +55,11 @@
           <br>
           {% if detalle.cortes %}
           CORTES: {{detalle.cortes}}
+          <br>
           {%endif%}
+          <br>
         </td>
-        <td>{{detalle.cantidad_metro}}{{detalle.producto.get_unidad_display}}/
+        <td>{{detalle.cantidad_metro|floatformat:2}}{{detalle.producto.get_unidad_display}}/
           ${{detalle.valor_metro}}
         </td>
         <td>${{detalle.valor_total}}</td>
