@@ -36,6 +36,22 @@ class ListarOrdenes(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, Filter
         context['num_pages'] = calculate_pages_to_render(self, page_obj)
         return context
 
+    def get_filterset_kwargs(self, filterset_class):
+        kwargs = super().get_filterset_kwargs(filterset_class)
+        groups = self.request.user.groups.all().values_list('name', flat=True)
+        estado = ""
+        if "Caja" in groups:
+            estado = Orden.Status.NOPAG
+        elif "Despacho" in groups:
+            estado = Orden.Status.PAID
+        if estado:
+            if kwargs["data"] is None:
+                kwargs["data"] = {"estado": estado}
+            elif "estado" not in kwargs["data"]:
+                kwargs["data"] = kwargs["data"].copy()
+                kwargs["data"]["estado"] = estado
+        return kwargs
+
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset
@@ -118,7 +134,7 @@ class EditarOrden(LoginRequiredMixin, EmpleadoPermissionRequieredMixin, UpdateVi
             return self.render_to_response(context)
 
 
-@login_required()
+@ login_required()
 def orden_confirmar_eliminacion(request, pk):
     orden = Orden.objects.get(id=pk)
     if request.POST:
@@ -129,7 +145,7 @@ def orden_confirmar_eliminacion(request, pk):
     return render(request, "ajax/orden_confirmar_elminar.html", {"orden": orden})
 
 
-@login_required()
+@ login_required()
 def orden_confirmar_pagar(request, pk):
     orden = Orden.objects.get(id=pk)
     if request.POST:
@@ -152,7 +168,7 @@ def orden_confirmar_pagar(request, pk):
     return render(request, "ajax/orden_confirmar_pagar.html", {"orden": orden})
 
 
-@login_required()
+@ login_required()
 def orden_confirmar_despachar(request, pk):
     orden = Orden.objects.get(id=pk)
     if request.POST:

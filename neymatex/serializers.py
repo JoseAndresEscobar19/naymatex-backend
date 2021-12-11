@@ -96,6 +96,7 @@ class OrdenSerializer(serializers.ModelSerializer):
         if env('USE_SQLITE') != "True":
             rutas = pdf_orden(orden)
             print_file(rutas[0])
+            print_file(rutas[0])
         return orden
 
     def update(self, instance, validated_data):
@@ -109,6 +110,7 @@ class OrdenSerializer(serializers.ModelSerializer):
         instance.save()
         if env('USE_SQLITE') != "True":
             rutas = pdf_orden(instance)
+            print_file(rutas[0])
             print_file(rutas[0])
         return instance
 
